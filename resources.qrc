@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="images">
+    <file>src/gui/resources/icon_16x16.png</file>
+    <file>src/gui/resources/banner_kdrs.jpg</file>
+    <file>src/gui/resources/banner_en.jpg</file>
+    <file>src/gui/resources/banner_no.jpg</file>
+    <file>src/gui/resources/banner_right.jpg</file>
+    <file>src/gui/resources/icon_32x32.png</file>
+    <file>src/gui/resources/banner.png</file>
+  </qresource>
+</RCC>
