@@ -28,7 +28,7 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
 
 * Bruk
 
-[[/Users/ole/dev/cmu_112/trunk/archivator/client_tools/insight/screenshot.png]]
+[[./screenshot.png]]
 
 1. Kjør /insight.exe/ fra katalogen /innsyn-v1.0.0/.
 2. Brukergrensesnittet har fire hovedelementer:

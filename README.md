@@ -1,38 +1,38 @@
 
 # Innhold
 
-1.  [Introduksjon](#org3d4bec4)
-2.  [Systemkrav](#org041aa76)
-3.  [Installasjon](#orga7d9700)
-4.  [Bruk](#orgcf2c816)
-5.  [Rapporter](#orgc0eba56)
-6.  [Loggfiler](#org64a6261)
-7.  [Konfigurasjonsfil](#org6ef0ee9)
-8.  [Ønsker, feil og mangler](#orgb832934)
-9.  [Hvordan rapportere feil](#org72c93fb)
-10. [Historikk](#org81961ce)
-    1.  [2018.06.01 innsyn-v1.0.0](#org3d7d8dd)
-    2.  [2018.04.13 innsyn-v1.0.0-rc1](#orge5870ea)
-    3.  [2018.02.05 innsyn-v1.0.0-beta2](#org3148598)
-    4.  [2018.01.18 innsyn-v1.0.0-beta1](#org663fd08)
+1.  [Introduksjon](#orgb17acb7)
+2.  [Systemkrav](#org6908c99)
+3.  [Installasjon](#orgf87553b)
+4.  [Bruk](#org50a01df)
+5.  [Rapporter](#orga858ba3)
+6.  [Loggfiler](#org4360dfd)
+7.  [Konfigurasjonsfil](#org4f16245)
+8.  [Ønsker, feil og mangler](#orgd3fbec5)
+9.  [Hvordan rapportere feil](#org0a0621c)
+10. [Historikk](#org11af6fc)
+    1.  [2018.06.01 innsyn-v1.0.0](#orgc243e8b)
+    2.  [2018.04.13 innsyn-v1.0.0-rc1](#org6968978)
+    3.  [2018.02.05 innsyn-v1.0.0-beta2](#orga66b728)
+    4.  [2018.01.18 innsyn-v1.0.0-beta1](#org5017c5f)
 
 
 
-<a id="org3d4bec4"></a>
+<a id="orgb17acb7"></a>
 
 # Introduksjon
 
 KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrollerers utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
 
 
-<a id="org041aa76"></a>
+<a id="org6908c99"></a>
 
 # Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
 
 
-<a id="orga7d9700"></a>
+<a id="orgf87553b"></a>
 
 # Installasjon
 
@@ -44,11 +44,11 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
 
-<a id="orgcf2c816"></a>
+<a id="org50a01df"></a>
 
 # Bruk
 
-![img](/Users/ole/dev/cmu_112/trunk/archivator/client_tools/insight/screenshot.png)
+![img](./screenshot.png)
 
 1.  Kjør *insight.exe* fra katalogen *innsyn-v1.0.0*.
 2.  Brukergrensesnittet har fire hovedelementer:
@@ -88,7 +88,7 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
 
-<a id="orgc0eba56"></a>
+<a id="orga858ba3"></a>
 
 # Rapporter
 
@@ -98,7 +98,7 @@ formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
 
-<a id="org64a6261"></a>
+<a id="org4360dfd"></a>
 
 # Loggfiler
 
@@ -109,7 +109,7 @@ legges også loggfiler fra indekseringen og indekserings databasen.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
 
 
-<a id="org6ef0ee9"></a>
+<a id="org4f16245"></a>
 
 # Konfigurasjonsfil
 
@@ -117,7 +117,7 @@ Konfigurasjonsfilen heter *insight.conf*. Alle nøkler er dokumentert i konfigur
 applikasjonen restartes.
 
 
-<a id="orgb832934"></a>
+<a id="orgd3fbec5"></a>
 
 # Ønsker, feil og mangler
 
@@ -144,7 +144,7 @@ applikasjonen restartes.
     på disken.
 
 
-<a id="org72c93fb"></a>
+<a id="org0a0621c"></a>
 
 # Hvordan rapportere feil
 
@@ -152,12 +152,12 @@ ole.liabo@piql.com / 454 69 123
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
 
-<a id="org81961ce"></a>
+<a id="org11af6fc"></a>
 
 # Historikk
 
 
-<a id="org3d7d8dd"></a>
+<a id="orgc243e8b"></a>
 
 ## 2018.06.01 innsyn-v1.0.0
 
@@ -166,7 +166,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 
-<a id="orge5870ea"></a>
+<a id="org6968978"></a>
 
 ## 2018.04.13 innsyn-v1.0.0-rc1
 
@@ -189,7 +189,7 @@ dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbj�
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
 
-<a id="org3148598"></a>
+<a id="orga66b728"></a>
 
 ## 2018.02.05 innsyn-v1.0.0-beta2
 
@@ -213,7 +213,7 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 eta
 
 
-<a id="org663fd08"></a>
+<a id="org5017c5f"></a>
 
 ## 2018.01.18 innsyn-v1.0.0-beta1
 
