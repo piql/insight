@@ -1,38 +1,38 @@
 
 # Innhold
 
-1.  [Introduksjon](#orgb17acb7)
-2.  [Systemkrav](#org6908c99)
-3.  [Installasjon](#orgf87553b)
-4.  [Bruk](#org50a01df)
-5.  [Rapporter](#orga858ba3)
-6.  [Loggfiler](#org4360dfd)
-7.  [Konfigurasjonsfil](#org4f16245)
-8.  [Ønsker, feil og mangler](#orgd3fbec5)
-9.  [Hvordan rapportere feil](#org0a0621c)
-10. [Historikk](#org11af6fc)
-    1.  [2018.06.01 innsyn-v1.0.0](#orgc243e8b)
-    2.  [2018.04.13 innsyn-v1.0.0-rc1](#org6968978)
-    3.  [2018.02.05 innsyn-v1.0.0-beta2](#orga66b728)
-    4.  [2018.01.18 innsyn-v1.0.0-beta1](#org5017c5f)
+1.  [Introduksjon](#org608a883)
+2.  [Systemkrav](#orge0b3f75)
+3.  [Installasjon](#orgb0f98b4)
+4.  [Bruk](#orgbada60c)
+5.  [Rapporter](#orgc00fd57)
+6.  [Loggfiler](#org2ba8e19)
+7.  [Konfigurasjonsfil](#orgeaf835c)
+8.  [Ønsker, feil og mangler](#org9a35a9c)
+9.  [Hvordan rapportere feil](#org83eac9f)
+10. [Historikk](#org7b9de2e)
+    1.  [2018.06.01 innsyn-v1.0.0](#orged6794c)
+    2.  [2018.04.13 innsyn-v1.0.0-rc1](#orge6c7468)
+    3.  [2018.02.05 innsyn-v1.0.0-beta2](#org76a4f05)
+    4.  [2018.01.18 innsyn-v1.0.0-beta1](#org759ec1b)
 
 
 
-<a id="orgb17acb7"></a>
+<a id="org608a883"></a>
 
 # Introduksjon
 
-KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrollerers utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
+KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
 
 
-<a id="org6908c99"></a>
+<a id="orge0b3f75"></a>
 
 # Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
 
 
-<a id="orgf87553b"></a>
+<a id="orgb0f98b4"></a>
 
 # Installasjon
 
@@ -44,7 +44,7 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
 
-<a id="org50a01df"></a>
+<a id="orgbada60c"></a>
 
 # Bruk
 
@@ -88,7 +88,7 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
 
-<a id="orga858ba3"></a>
+<a id="orgc00fd57"></a>
 
 # Rapporter
 
@@ -98,7 +98,7 @@ formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
 
-<a id="org4360dfd"></a>
+<a id="org2ba8e19"></a>
 
 # Loggfiler
 
@@ -109,7 +109,7 @@ legges også loggfiler fra indekseringen og indekserings databasen.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
 
 
-<a id="org4f16245"></a>
+<a id="orgeaf835c"></a>
 
 # Konfigurasjonsfil
 
@@ -117,7 +117,7 @@ Konfigurasjonsfilen heter *insight.conf*. Alle nøkler er dokumentert i konfigur
 applikasjonen restartes.
 
 
-<a id="orgd3fbec5"></a>
+<a id="org9a35a9c"></a>
 
 # Ønsker, feil og mangler
 
@@ -144,29 +144,27 @@ applikasjonen restartes.
     på disken.
 
 
-<a id="org0a0621c"></a>
+<a id="org83eac9f"></a>
 
 # Hvordan rapportere feil
 
-ole.liabo@piql.com / 454 69 123
+ole.liabo@piql.com  
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
 
-<a id="org11af6fc"></a>
+<a id="org7b9de2e"></a>
 
 # Historikk
 
 
-<a id="orgc243e8b"></a>
+<a id="orged6794c"></a>
 
 ## 2018.06.01 innsyn-v1.0.0
 
--   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset
-
-dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
+-   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 
-<a id="org6968978"></a>
+<a id="orge6c7468"></a>
 
 ## 2018.04.13 innsyn-v1.0.0-rc1
 
@@ -189,7 +187,7 @@ dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbj�
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
 
-<a id="orga66b728"></a>
+<a id="org76a4f05"></a>
 
 ## 2018.02.05 innsyn-v1.0.0-beta2
 
@@ -210,10 +208,8 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 -   [PIQL-20180122-02] Generere filen insight.dmp ved programkrasj.
 -   [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
-eta
 
-
-<a id="org5017c5f"></a>
+<a id="org759ec1b"></a>
 
 ## 2018.01.18 innsyn-v1.0.0-beta1
 

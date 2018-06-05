@@ -11,7 +11,7 @@
 
 * Introduksjon
 
-KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrollerers utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
+KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
 
 * Systemkrav
 
@@ -113,15 +113,14 @@ applikasjonen restartes.
 
 * Hvordan rapportere feil
 
-ole.liabo@piql.com / 454 69 123
+ole.liabo@piql.com\\
 Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis den finnes.
 
 * Historikk
 
 ** 2018.06.01 innsyn-v1.0.0
 
-- [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset
-dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
+- [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 ** 2018.04.13 innsyn-v1.0.0-rc1
 
@@ -162,7 +161,6 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 - [PIQL-20180122-02] Generere filen insight.dmp ved programkrasj.
 - [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
-eta
 ** 2018.01.18 innsyn-v1.0.0-beta1
 
 Første versjon levert til beta test.
