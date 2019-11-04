@@ -220,7 +220,7 @@ void DSearchThread::run()
         bool startFound = m_CurrentPage == 0;
 
         // Could consider launching one thread per root node here...
-        SearchResult res;
+        SearchResult res = SEARCH_UNDEFINED;
         unsigned int c = m_Model->rootCount();
         for ( unsigned int i = 0; i < c; i++ )
         {
