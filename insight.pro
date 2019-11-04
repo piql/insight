@@ -72,6 +72,13 @@ PRE_TARGETDEPS   +=   $$LIBS
 macx:LIBS        +=   -L/usr/local/Cellar/poppler/0.63.0_1/lib -lpoppler -lpoppler-qt5
 macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz
 
+# Tested on Debian GNU/Linux using distribution
+# libraries (libpoppler-qt5-dev and libquazip5-dev)
+unix {
+INCLUDEPATH      +=   /usr/include/quazip5 /usr/include/poppler/qt5
+LIBS             +=   -lquazip5 -lz -lpoppler -lpoppler-qt5
+}
+
                       
 GUI_SOURCES       =   src/gui/dinsightmainwindow.cpp \
                       src/gui/dinsightreportwindow.cpp \
@@ -140,8 +147,7 @@ SOURCES          +=   src/main.cpp \
                       src/dsearchthread.cpp \
                       src/dinsightconfig.cpp \
                       src/dinsightreport.cpp \
-                      $$GUI_SOURCES \
-                      $$ZIP_SOURCES
+                      $$GUI_SOURCES
 
 HEADERS          +=   src/drunguard.h \
                       src/dxmlparser.h \
@@ -150,8 +156,17 @@ HEADERS          +=   src/drunguard.h \
                       src/dsearchthread.h \
                       src/dinsightconfig.h \
                       src/dinsightreport.h \
-                      $$GUI_HEADERS \
-                      $$ZIP_HEADERS
+                      $$GUI_HEADERS
+
+win32 {
+SOURCES          +=   $$ZIP_SOURCES
+HEADERS          +=   $$ZIP_HEADERS
+}
+
+macx {
+SOURCES          +=   $$ZIP_SOURCES
+HEADERS          +=   $$ZIP_HEADERS
+}
 
 TRANSLATIONS      =   insight_no.ts \
                       insight_nn.ts \
