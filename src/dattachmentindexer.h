@@ -79,6 +79,7 @@ private:
     bool                   m_Error;
 
     friend class DPdf2Txt;
+    friend class DText;
 
 };
 

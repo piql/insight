@@ -96,6 +96,64 @@ void DPdf2Txt::run()
 
 
 /****************************************************************************/
+/*! \class DText dattachmentindexer.cpp
+ *  \ingroup Insight
+ *  \brief Runnable loading text into index
+ */
+
+class DText : public QRunnable
+{
+public:
+    DText( DAttachmentIndexer* indexer, const QString& attachment, unsigned int index );
+
+private:
+    void run();
+
+    DAttachmentIndexer* m_Indexer;
+    QString             m_Attachment;
+    unsigned int        m_Index;
+};
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  Constructor.
+ */
+
+DText::DText( DAttachmentIndexer* indexer, const QString& attachment, unsigned int index )
+  : m_Indexer( indexer ),
+    m_Attachment( attachment ),
+    m_Index( index )
+{
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  Runnable thread function.
+ */
+
+void DText::run()
+{
+    QProcess toolExe;
+
+    // Check size of out file
+    bool emptyFile = false;
+    QFile file( m_Attachment );
+    if ( !file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    {
+        emptyFile = true;
+    }
+    else
+    {
+        emptyFile = QString( file.readAll() ).trimmed().length() != 0;
+    }
+
+    m_Indexer->toolFinished( &toolExe, emptyFile, m_Attachment, m_Index, QString("<none>") );
+}
+
+
+/****************************************************************************/
 /*! \class DAttachmentIndexer dattachmentindexer.h
  *  \ingroup Insight
  *  \brief Indexing of attachments
@@ -176,6 +234,17 @@ void DAttachmentIndexer::run()
 
             // QThreadPool takes ownership and deletes 'pdfRunner' automatically
             QThreadPool::globalInstance()->start( pdfRunner );
+        }
+        else if ( info.suffix().toLower() == "txt" )
+	// FIXME Should also consider dokumentobjekt.format values
+        {
+            QString infile = DAttachmentParser::AttachmentPath( attachment, m_RootDir );
+
+            // Execute
+            DText *textRunner = new DText( this, attachment, i );
+
+            // QThreadPool takes ownership and deletes 'textRunner' automatically
+            QThreadPool::globalInstance()->start( textRunner );
         }
 
         if (isInterruptionRequested())
