@@ -28,7 +28,6 @@ copy lesmeg.txt %target%\.
 copy %appname%.conf %target%\%targetname%.conf
 copy sphinx\* %target%\.
 copy src\thirdparty\pdf2text\release\pdf2text.exe %target%\.
-copy src\thirdparty\create_xml\release\create_xml.exe %target%\.
 copy release\POPPLER-QT5.DLL %target%\.
 copy release\QT5GUI.DLL %target%\.
 copy release\QT5CORE.DLL %target%\.
