@@ -120,7 +120,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 
 ** 2018.06.01 innsyn-v1.0.0
 
-- [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
+- [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn så virker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 ** 2018.04.13 innsyn-v1.0.0-rc1
 
