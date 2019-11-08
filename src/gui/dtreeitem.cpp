@@ -459,7 +459,7 @@ void DTreeRootItem::deleteChildren()
             p->~DTreeItem();
             p++;
         }
-        delete (char*)*it;             
+        delete[] (char*)*it;
         it++;
     }
 
@@ -473,7 +473,7 @@ void DTreeRootItem::deleteChildren()
             p->~DLeafNode();
             p++;
         }
-        delete (char*)*itL;             
+        delete[] (char*)*itL;
         itL++;
     }
 
