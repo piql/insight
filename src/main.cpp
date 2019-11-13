@@ -118,6 +118,7 @@ int  main( int argc, char* argv[] )
     // Create application object
     QApplication qtApp( argc, argv );
     qtApp.setOrganizationName( "Piql" );
+    qtApp.setOrganizationDomain("piql.com");
     qtApp.setApplicationName( "insight" );
     qtApp.setApplicationVersion( "v1.0.0-rc1" );
 
