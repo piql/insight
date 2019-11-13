@@ -66,7 +66,7 @@
  * infoText += "<p><a href=\"www.cinevation.net\">www.cinevation.net</a></p>";
  * \endcode
  */
-QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoText, const QString& bitmapFilename, QWidget* parent /*=NULL*/ )
+QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoText, const QString& bitmapFilename, QWidget* parent /*=nullptr*/ )
 : QDialog(parent)
 {
     // Create user interface
@@ -108,7 +108,7 @@ QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoTe
  * infoText += "<p><a href=\"www.cinevation.net\">www.cinevation.net</a></p>";
  * \endcode
  */
-QAboutDialog::QAboutDialog(const QString& applicationName, const QString& bitmapFilename, QWidget* parent /*=NULL*/ )
+QAboutDialog::QAboutDialog(const QString& applicationName, const QString& bitmapFilename, QWidget* parent /*=nullptr*/ )
 : QDialog(parent)
 {
     // Create user interface

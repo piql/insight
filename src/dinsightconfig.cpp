@@ -33,15 +33,55 @@
 //  P U B L I C   I N T E R F A C E
 //===================================
 
+DInsightConfig::DInsightConfig( const QString& fileName )
+    : m_FileName( fileName )
+{
+}
+
+
+QString  DInsightConfig::get( const QString& key, const QString& def /*= ""*/ )
+{
+    return QSettings( m_FileName, QSettings::IniFormat ).value( key, def ).toString();
+}
+
+
+int DInsightConfig::getInt( const QString& key, int def /*= -1*/ )
+{
+    return QSettings( m_FileName, QSettings::IniFormat ).value( key, def ).toInt();
+}
+
+
+bool DInsightConfig::getBool( const QString& key, bool def /*= false*/ )
+{
+    return QSettings( m_FileName, QSettings::IniFormat ).value( key, def ).toBool();
+}
+
+
+DRegExps DInsightConfig::getRegExps( const QString& key, const QString& def /*= ""*/ )
+{
+    return StringToRegExps( get( key, def ) );
+}
+
+DLeafMatchers DInsightConfig::getLeafMatchers( const QString& key, const QString& def /*= ""*/ )
+{
+    return StringToLeafMatchers( get( key, def ) );
+}
+
+
+QString DInsightConfig::getLocalizedKey( const QString& key )
+{
+    return key + "_" + get( "LANGUAGE", "EN" );
+}
 
 //----------------------------------------------------------------------------
 /*! 
  *  Get config file value.
  */
 
-QString DInsightConfig::get( const QString& key, const QString& def /*= ""*/ )
+QString DInsightConfig::Get( const QString& key, const QString& def /*= ""*/ )
 {
-    return QSettings( defaultFileName(), QSettings::IniFormat ).value( key, def ).toString();
+    DInsightConfig conf( DefaultFileName() );
+    return conf.get( key, def );
 }
 
 
@@ -50,9 +90,10 @@ QString DInsightConfig::get( const QString& key, const QString& def /*= ""*/ )
  *  Get integer config file value.
  */
 
-int DInsightConfig::getInt( const QString& key, int def /*= -1*/ )
+int DInsightConfig::GetInt( const QString& key, int def /*= -1*/ )
 {
-    return QSettings( defaultFileName(), QSettings::IniFormat ).value( key, def ).toInt();
+    DInsightConfig conf( DefaultFileName() );
+    return conf.getInt( key, def );
 }
 
 
@@ -61,9 +102,10 @@ int DInsightConfig::getInt( const QString& key, int def /*= -1*/ )
  *  Get bool config file value.
  */
 
-bool DInsightConfig::getBool( const QString& key, bool def /*= false*/ )
+bool DInsightConfig::GetBool( const QString& key, bool def /*= false*/ )
 {
-    return QSettings( defaultFileName(), QSettings::IniFormat ).value( key, def ).toBool();
+    DInsightConfig conf( DefaultFileName() );
+    return conf.getBool( key, def );
 }
 
 
@@ -72,19 +114,22 @@ bool DInsightConfig::getBool( const QString& key, bool def /*= false*/ )
  *  Get regexp list.
  */
 
-DRegExps DInsightConfig::getRegExps( const QString& key, const QString& def /*= ""*/ )
+DRegExps DInsightConfig::GetRegExps( const QString& key, const QString& def /*= ""*/ )
 {
-    DRegExps regExps;
+    DInsightConfig conf( DefaultFileName() );
+    return conf.getRegExps( key, def );
+}
 
-    QStringList regExpsString = DInsightConfig::get( key, def ).split( "@" );
-    foreach( const QString& r, regExpsString )
-    {
-        QRegularExpression regExp( r );
-        regExp.optimize();
-        regExps.push_back( regExp );
-    }
 
-    return regExps;
+//----------------------------------------------------------------------------
+/*!
+ *  Get leaf matchers list.
+ */
+
+DLeafMatchers DInsightConfig::GetLeafMatchers( const QString& key, const QString& def /*= ""*/ )
+{
+    DInsightConfig conf( DefaultFileName() );
+    return conf.getLeafMatchers( key, def );
 }
 
 
@@ -93,9 +138,55 @@ DRegExps DInsightConfig::getRegExps( const QString& key, const QString& def /*= 
  *  Get localized regexp list.
  */
 
-QString DInsightConfig::getLocalizedKey( const QString& key )
+QString DInsightConfig::GetLocalizedKey( const QString& key )
 {
-    return key + "_" + DInsightConfig::get( "LANGUAGE", "en" );
+    DInsightConfig conf( DefaultFileName() );
+    return conf.getLocalizedKey( key );
+}
+
+
+DRegExps DInsightConfig::StringToRegExps( const QString& str )
+{
+    DRegExps regExps;
+
+    QStringList regExpsString = str.split( "@" );
+    foreach( const QString& r, regExpsString )
+    {
+        if ( r.length() )
+        {
+            QRegularExpression regExp( r );
+            regExp.optimize();
+            regExps.push_back( regExp );
+        }
+    }
+
+    return regExps;    
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *
+ */
+
+DLeafMatchers DInsightConfig::StringToLeafMatchers( const QString& str )
+{
+    DLeafMatchers matchers;
+
+    QStringList strings = str.split( "@" );
+    foreach( const QString& r, strings )
+    {
+        if ( r.length() )
+        {
+            DLeafMatcher matcher;
+            if ( DLeafMatcher::CreateFromString( matcher, r) )
+            {
+                matchers.push_back( matcher );
+            }
+        }
+    }
+
+    return matchers;
 }
 
 
@@ -104,9 +195,9 @@ QString DInsightConfig::getLocalizedKey( const QString& key )
  *  Set config file value.
  */
 
-void    DInsightConfig::set( const QString& key, const QString& value )
+void    DInsightConfig::Set( const QString& key, const QString& value )
 {
-    QSettings( defaultFileName(), QSettings::IniFormat ).setValue( key, value );
+    QSettings( DefaultFileName(), QSettings::IniFormat ).setValue( key, value );
 }
 
 
@@ -115,9 +206,9 @@ void    DInsightConfig::set( const QString& key, const QString& value )
  *  Return application log.
  */
 
-QDebug&  DInsightConfig::log()
+QDebug&  DInsightConfig::Log()
 {
-    static QFile logFile( get( "LOGFILE", QCoreApplication::applicationName() + ".log" ) );
+    static QFile logFile( Get( "LOGFILE", QCoreApplication::applicationName() + ".log" ) );
     static QDebug logStream( &logFile );
 
     if ( !logFile.isOpen() )
@@ -134,7 +225,7 @@ QDebug&  DInsightConfig::log()
  *  Get def config file name.
  */
 
-QString DInsightConfig::defaultFileName()
+QString DInsightConfig::DefaultFileName()
 {
     static QString def = QCoreApplication::applicationName() + QString( ".conf");
 

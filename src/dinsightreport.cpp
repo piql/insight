@@ -187,7 +187,10 @@ QString DInsightReport::getXmlReportName()
 
 QString DInsightReport::getReportsRootDir()
 {
-    return DInsightConfig::get( "REPORTS_DIR", QString(".") + QDir::separator() + tr("reports") );
+    QString root = DInsightConfig::Get( "REPORTS_DIR", QString(".") + QDir::separator() + tr("reports") );
+    //root = QDir::fromNativeSeparators( root );
+    root.replace('\\','/');
+    return root;
 }
 
 
@@ -202,7 +205,17 @@ QString DInsightReport::getReportsRootDir()
 QString DInsightReport::getReportsDir()
 {
     QString root = getReportsRootDir();
-    root = QDir::fromNativeSeparators( root );
+    if ( !root.endsWith( QDir::separator() ) )
+    {
+        root.append( QDir::separator() );
+    }
+
+    return getReportsDir( root );
+}
+
+QString DInsightReport::getReportsDir( const QString& r )
+{
+    QString root = r;
     if ( !root.endsWith( QDir::separator() ) )
     {
         root.append( QDir::separator() );
@@ -239,7 +252,7 @@ bool DInsightReport::save( const QString& fileName )
     else
     {
         QFile out( fileName );
-        if ( !out.open(  QIODevice::WriteOnly | QIODevice::Text ) )
+        if ( !out.open( QIODevice::WriteOnly | QIODevice::Text ) )
         {
             return false;
         }
@@ -261,8 +274,8 @@ bool DInsightReport::print( QPrinter& printer )
 
     QTextDocument doc;
     doc.setHtml( m_Text );
-    doc.setPageSize(printer.pageRect().size()); // This is necessary if you want to hide the page number
-    doc.print(&printer);
+    doc.setPageSize( printer.pageRect().size() ); // This is necessary if you want to hide the page number
+    doc.print( &printer );
 
     return true;
 }

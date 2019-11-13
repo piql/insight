@@ -148,7 +148,7 @@ void DAttachmentIndexer::run()
 {
     // Run conversion tool on attachments
     QString defaultPdfTool = "pdf2text -enc UTF-8 %INFILE% %OUTFILE%";
-    QString pdfToolOriginal = DInsightConfig::get( "PDF_TO_TEXT_TOOL", defaultPdfTool );
+    QString pdfToolOriginal = DInsightConfig::Get( "PDF_TO_TEXT_TOOL", defaultPdfTool );
 
     DAttachments& attachments = m_AttachmentParser->attachments();
     DAttachmentIndexes& attachmentsFound = m_AttachmentParser->attachmentsFound();
@@ -204,7 +204,7 @@ void DAttachmentIndexer::run()
     
     // Next step is to launch indexer...
     QString defaultIndexerTool = "index.cmd %REPORTS_DIR% %ATTACHMENT_DIR% %NAME%";
-    QString indexerTool = DInsightConfig::get( "INDEXER_TOOL", defaultIndexerTool );
+    QString indexerTool = DInsightConfig::Get( "INDEXER_TOOL", defaultIndexerTool );
     QProcess indexerExe;
 
     indexerTool = indexerTool.replace( "%REPORTS_DIR%", QDir::toNativeSeparators( m_ReportFolder ) );

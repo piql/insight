@@ -53,6 +53,7 @@ public:
 public:
     static QString getReportsRootDir();
     static QString getReportsDir();
+    static QString getReportsDir( const QString& root );
     static QString getXmlReportName();
 
 private:

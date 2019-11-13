@@ -8,13 +8,11 @@
 ##############################################################################
 
 QT               +=   xml widgets gui core printsupport sql 
-#debug:QT         +=   testlib
-#QT               +=   xmlpatterns
 TEMPLATE          =   app
-CONFIG           +=   qt debug_and_release 
+CONFIG           +=   qt debug_and_release
+CONFIG           +=   lrelease 
 macx:CONFIG      +=   app_bundle
 TARGET            =   insight
-
 
 ##  SUPPORT DEBUG AND RELEASE BUILDS  ##
 !debug_and_release|build_pass {
@@ -41,37 +39,88 @@ win32 {
         PLATFORM              =   W64
     }
 }
-
+macx:POPPLER_VER               =  0.77.0
 
 OBJECTS_DIR                    =  obj/$$PLATFORM/$$CURBUILD
 MOC_DIR                        =  obj/$$PLATFORM/$$CURBUILD
 QMAKE_CXXFLAGS                +=  -DQUAZIP_STATIC 
 win32:QMAKE_CXXFLAGS_RELEASE  +=  /O2 /Ob2 /Oi /Ot /GL
 win32:QMAKE_LFLAGS_RELEASE    +=  /LTCG /DEBUG
+macx:QMAKE_LFLAGS             +=  -stdlib=libc++ -liconv -Wno-c++11-narrowing -framework CoreFoundation
 
+
+CMU112_BASE       =   ../../../base
 
 INCLUDEPATH       =   src \
                       src/gui \
                       src/thirdparty/quazip-0.7.3/quazip/ \
                       src/thirdparty/minixml/inc \
+                      src/thirdparty/tools/inc \
+                      src/thirdparty/posixtar/inc \
                       $$[QT_INSTALL_PREFIX]/include/QtZlib 
 win32:INCLUDEPATH+=   $$(CV_THIRDPARTY)/w32/poppler-0.57.0/qt5/src
-macx:INCLUDEPATH +=   /usr/local/Cellar/poppler/0.63.0_1/include/poppler \
-                      /usr/local/Cellar/poppler/0.63.0_1/include/poppler/qt5/
-
+macx:INCLUDEPATH +=   /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler \
+                      /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler/qt5/ \
+                      $$(CV_BOOST_INCLUDE)
+                      
 DEPENDPATH       +=   $$INCLUDEPATH
 
-win32:contains(QT_ARCH, i386):release:LIBS += $$(CV_THIRDPARTY)/w32/poppler-0.57.0/qt5/src/Release/poppler-qt5.lib \
+win32:contains(QT_ARCH, i386):release:LIBS += \
+                      $$(CV_THIRDPARTY)/w32/poppler-0.57.0/qt5/src/Release/poppler-qt5.lib \
                       $$(CV_THIRDPARTY)/w32/poppler-0.57.0/Release/poppler.lib
-win32:!contains(QT_ARCH, i386):release:LIBS += $$(CV_THIRDPARTY)/w64/poppler-0.57.0/qt5/src/Release/poppler-qt5.lib \
+win32:!contains(QT_ARCH, i386):release:LIBS += \
+                      $$(CV_THIRDPARTY)/w64/poppler-0.57.0/qt5/src/Release/poppler-qt5.lib \
                       $$(CV_THIRDPARTY)/w64/poppler-0.57.0/Release/poppler.lib
 
+CV_BOOST_LIBS    =    /Users/ole/dev/cmu_112/trunk/../thirdparty/mac/boost_1_60_0/stage/x64/lib                      
+unix:LIBS       +=    $$CV_BOOST_LIBS/libboost_thread.a \
+                      $$CV_BOOST_LIBS/libboost_date_time.a \
+                      $$CV_BOOST_LIBS/libboost_regex.a \
+                      $$CV_BOOST_LIBS/libboost_system.a \
+                      $$CV_BOOST_LIBS/libboost_chrono.a
+   
 # Library dependency checking
 PRE_TARGETDEPS   +=   $$LIBS
 
-macx:LIBS        +=   -L/usr/local/Cellar/poppler/0.63.0_1/lib -lpoppler -lpoppler-qt5
+macx:LIBS        +=   -L/usr/local/Cellar/poppler/$$POPPLER_VER/lib -lpoppler -lpoppler-qt5
 macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz
 
+POSIXTAR_SOURCES +=   src/thirdparty/posixtar/src/posixtar.c
+POSIXTAR_INCLUDES+=   src/thirdparty/posixtar/inc/posixtar.h
+
+TOOLS_INCLUDES    =   src/thirdparty/tools/inc/dtartools.h \
+                      src/thirdparty/tools/inc/dcommon.h \
+                      src/thirdparty/tools/inc/dconfig.h \
+                      src/thirdparty/tools/inc/derror.h \
+                      src/thirdparty/tools/inc/derrorman.h \
+                      src/thirdparty/tools/inc/dpath.h \
+                      src/thirdparty/tools/inc/dtimeval.h \
+                      src/thirdparty/tools/inc/dtypes.h \
+                      src/thirdparty/tools/inc/dstringtools.h \
+                      src/thirdparty/tools/inc/dtimetools.h \
+                      src/thirdparty/tools/inc/dsystemtools.h \
+                      src/thirdparty/tools/inc/dfilesystemtools.h \
+                      src/thirdparty/tools/inc/dexception.h \
+                      src/thirdparty/tools/inc/dbase.h \
+                      src/thirdparty/tools/inc/dbaseio.h \
+                      src/thirdparty/tools/inc/dbasefile.h \
+                      src/thirdparty/tools/inc/dfile.h
+                      
+
+TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \
+                      src/thirdparty/tools/src/derrorman.cpp \
+                      src/thirdparty/tools/src/dpath.cpp \
+                      src/thirdparty/tools/src/dtartools.cpp \
+                      src/thirdparty/tools/src/dtimeval.cpp \
+                      src/thirdparty/tools/src/dstringtools.cpp \
+                      src/thirdparty/tools/src/dtimetools.cpp \
+                      src/thirdparty/tools/src/dsystemtools.cpp \
+                      src/thirdparty/tools/src/dfilesystemtools.cpp \
+                      src/thirdparty/tools/src/dexception.cpp \
+                      src/thirdparty/tools/src/dbase.cpp \
+                      src/thirdparty/tools/src/dbaseio.cpp \
+                      src/thirdparty/tools/src/dbasefile.cpp \
+                      src/thirdparty/tools/src/dfile.cpp
                       
 GUI_SOURCES       =   src/gui/dinsightmainwindow.cpp \
                       src/gui/dinsightreportwindow.cpp \
@@ -135,30 +184,70 @@ include( src/thirdparty/yxml/yxml.pri )
 SOURCES          +=   src/main.cpp \
                       src/drunguard.cpp \
                       src/dxmlparser.cpp \
+                      src/dtarparser.cpp \
+                      src/ddirparser.cpp \
                       src/dattachmentindexer.cpp \
                       src/dattachmentparser.cpp \
                       src/dsearchthread.cpp \
                       src/dinsightconfig.cpp \
                       src/dinsightreport.cpp \
+                      src/dimportformat.cpp \
+                      src/dosxtools.cpp \
+                      src/dleafmatcher.cpp \
                       $$GUI_SOURCES \
-                      $$ZIP_SOURCES
+                      $$ZIP_SOURCES \
+                      $$TOOLS_SOURCES \
+                      $$POSIXTAR_SOURCES
 
 HEADERS          +=   src/drunguard.h \
                       src/dxmlparser.h \
+                      src/dtarparser.h \
+                      src/ddirparser.h \
                       src/dattachmentindexer.h \
                       src/dattachmentparser.h \
                       src/dsearchthread.h \
                       src/dinsightconfig.h \
                       src/dinsightreport.h \
+                      src/dimportformat.h \
+                      src/dosxtools.h \
+                      src/dleafmatcher.h \
                       $$GUI_HEADERS \
-                      $$ZIP_HEADERS
+                      $$ZIP_HEADERS \
+                      $$TOOLS_INCLUDES \
+                      $$POSIXTAR_INCLUDES   
 
 TRANSLATIONS      =   insight_no.ts \
                       insight_nn.ts \
                       insight_en.ts
 
-# Tool for testing qt models
-#win32:debug:SOURCES     +=  $$(QTDIR)/tests/auto/other/modeltest/modeltest.cpp
-#win32:debug:HEADERS     +=  $$(QTDIR)/tests/auto/other/modeltest/modeltest.h
-#win32:debug:INCLUDEPATH +=  $$(QTDIR)/tests/auto/other/modeltest/
+# OS-X create icons
+createicons.depends = src/gui/resources/icon_32x32.png
+createicons.target = src/gui/resources/icon_32x32.icns
+createicons.commands = \
+    /bin/zsh -c                                            \'; \
+    src=src/gui/resources/icon_32x32.png                     ; \
+                                                             ; \
+    NAME=\$$\(basename \$$src .png); DIR="\$$NAME.iconset"   ; \
+    mkdir -pv \$$DIR                                     \'\"; \
+    for m r in \'n\' \'\' \'((n+1))\' \'@2x\'; do        \"\'; \
+        for n in \$$\(seq 4 9 | grep -v 6); do               ; \
+            p=\$$\((2**\$$m)); q=\$$\((2**\$$n))             ; \
+            OUT="\$$DIR/icon_\$${q}x\$${q}\$${r}.png"        ; \
+            sips -z \$$p \$$p \$$src --out \$$OUT            ; \
+        done                                                 ; \
+    done                                                     ; \
+    iconutil -c icns \$$DIR                                  ; \
+    rm -frv \$$DIR                                           ; \
+    mv icon_32x32.icns src/gui/resources/.                 \' 
 
+
+LANGUAGE_FILES.files = insight_en.qm insight_no.qm insight_nn.qm
+LANGUAGE_FILES.path  = Contents/Resources    
+CONFIG_FILES.files   = insight.conf formats testdata
+CONFIG_FILES.path    = Contents/Resources
+QMAKE_BUNDLE_DATA   += CONFIG_FILES LANGUAGE_FILES
+
+#macx:ICON                 = src/gui/resources/icon_32x32.icns
+#!macx:ICON                = src/gui/resources/icon_32x32.png
+#macx:QMAKE_EXTRA_TARGETS += createicons
+#macx:PRE_TARGETDEPS      += src/gui/resources/icon_32x32.icns

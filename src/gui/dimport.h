@@ -1,5 +1,5 @@
-#ifndef DIMOPRT_H
-#define DIMOPRT_H
+#ifndef DIMPORT_H
+#define DIMPORT_H
 
 /*****************************************************************************
 **  
@@ -16,6 +16,7 @@
 //  PROJECT INCLUDES
 //
 #include    "dregexp.h"
+#include    "dleafmatcher.h"
 #include    "dtreeitem.h"
 
 //  QT INCLUDES
@@ -31,6 +32,7 @@ class DXmlParser;
 class DAttachmentParser;
 class DAttachmentIndexer;
 class DAttachment;
+class DImportFormats;
 
 //============================================================================
 // CLASS: DImport
@@ -49,7 +51,8 @@ public:
 
 public:
     void            loadReport();
-    void            load();
+    void            load( DXmlParser* parser );
+    void            load( const DImportFormat* format );
     void            unload();
     void            unloadChildren();
     void            index();
@@ -58,10 +61,12 @@ public:
     DTreeRootItem*  root();
     QString         fileName();
     QString         fileNameRoot();
+    QString         formatName();
     QString         databaseName();
     QString         reportsDir();
     QString         attachmentsDir();
     QString         searchConfig();
+    QString         extractDir();
     unsigned int    attachmentsNotFound();
     unsigned int    attachmentsFound();
     unsigned int    attachmentsFailedToConvert();
@@ -72,8 +77,10 @@ public:
     qint64          attachmentsSizeInBytes();
 
 public:
-    static QString  fileNameKey();
-    static QString  reportsDirKey();
+    static QString              FileNameKey();
+    static QString              ReportsDirKey();
+    static void                 SetReportFormat( const DImportFormat* importFormat );
+    static const DImportFormat* GetReportFormat();
 
 signals:
     void            imported( bool ok );
@@ -91,9 +98,20 @@ private:
 
 
 public:
-    static DImport* CreateFromXml( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DRegExps& documentTypeRegExp );
-    static DImport* CreateFromReport( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DRegExps& documentTypeRegExp );
+    static DImport* CreateFromExtract( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
+    static DImport* CreateFromTar( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
+    static DImport* CreateFromXml( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
+    static DImport* CreateFromReport( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormats* formats );
 
+private:
+    static DImport* CreateFromFile(
+        const QString& fileName,
+        DTreeModel* model,
+        DInsightMainWindow* window,
+        const DImportFormat* format,
+        DTreeItem* parent,
+        DImport* parentImport );
+    
 private:
     DImportState        m_ImportState;
     DTreeModel*         m_Model;
@@ -105,11 +123,13 @@ private:
     bool                m_AttachmentFinished;
     QString             m_FileName;
     QString             m_FileNameDir;
+    QString             m_ImportFormat;
     QString             m_ReportsDir;
     DTreeItems          m_TreeItems;
     DInsightMainWindow* m_Window;
-    DRegExps            m_DocumentTypeRegExp;
+    DLeafMatchers       m_DocumentTypeRegExp;
     bool                m_FromReport;
+    QString             m_ExtractDir;
 };
 
 
@@ -120,4 +140,4 @@ typedef std::vector<DImport*> DImports;
 typedef DImports::iterator    DImportsIterator;
 
 
-#endif // DIMOPRT_H
+#endif // DIMPORT_H

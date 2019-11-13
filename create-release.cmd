@@ -37,10 +37,11 @@ copy c:\windows\system32\MSVCP120.DLL %target%\.
 copy c:\windows\system32\MSVCR120.DLL %target%\.
 copy *qm %target%\.
 
+:: FORMATS
+xcopy /s/i formats %target%\formats
+
 :: TESTDATA
-mkdir %target%\testdata
-copy arkivstruktur2.xml %target%\testdata\arkivstruktur.xml
-xcopy /s/i dokumenter %target%\testdata\dokumenter
+xcopy /s/i testdata %target%\testdata
 
 set tgz=%target%.tgz
 tar czf %tgz% %target%/*

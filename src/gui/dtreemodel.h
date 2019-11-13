@@ -28,6 +28,8 @@ class DTreeItem;
 class QTreeView;
 class DLeafNode;
 class DTreeRootItem;
+class DImportFormat;
+class DImportFormats;
 
 //============================================================================
 // CLASS: DTreeModel
@@ -38,7 +40,7 @@ class DTreeModel : public QAbstractItemModel
 
 public:
 
-    explicit DTreeModel(const DRegExps& nodeRegExp, const DRegExps& labelRegExp);
+    explicit DTreeModel( const DImportFormats* formats );
     virtual ~DTreeModel();
 
     virtual QModelIndex     index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
@@ -50,10 +52,12 @@ public:
     virtual bool            setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     virtual bool            hasChildren(const QModelIndex &parent = QModelIndex()) const;
 
-    DTreeRootItem*          createDocumentRoot( const QString& fileName );
+    DTreeRootItem*          createDocumentRoot( const QString& fileName, DTreeItem* parent, const DImportFormat* format );
+
     void                    deleteDocumentRoot( DTreeItem* root, bool onlyChildren );
     unsigned int            rootCount();
     DTreeItem*              documentRoot( unsigned int index );
+    DTreeItem*              firstDocumentRoot();
     void                    setVisible( QTreeView* view, DTreeItem* node, bool show );
 
     DTreeItem*              createItem( DTreeRootItem* root, DTreeItem* parent, const char* text );
@@ -67,8 +71,7 @@ public:
 
 private:
     DTreeItem* m_Root;
-    DRegExps   m_NodeRegExp;
-    DRegExps   m_LabelRegExp;
+    const DImportFormats* m_ImportFormats;
     friend class DXmlContext;
 };
 

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<avlxml xmlns="http://www.arkivverket.no/standarder/nha/avlxml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.arkivverket.no/standarder/nha/avlxml avlxml.xsd">
+	<avlxmlversjon>2.16.578.1.39.100.5.2.2</avlxmlversjon>
+	<avleveringsidentifikator>2.16.578.1.39.100.11.1.1002</avleveringsidentifikator>
+	<avleveringsbeskrivelse>Mareavdelingen</avleveringsbeskrivelse>
+	<arkivskaper>Krankenholm Asyl</arkivskaper>
+	<avtale>
+		<avtaleidentifikator>2.16.578.1.39.100.11.1</avtaleidentifikator>
+		<avtaledato>2019-03-14</avtaledato>
+		<avtalebeskrivelse>Pestlandia HF</avtalebeskrivelse>
+		<virksomhet>
+			<virksomhetsnavn>Pestlandia HF</virksomhetsnavn>
+			<foretaksnavn>Krankenholm Asyl</foretaksnavn>
+			<organisasjonsnummer>987654321</organisasjonsnummer>
+		</virksomhet>
+	</avtale>
+	<pasientjournal>
+		<journalidentifikator>D8F5CA15-308F-414D-A643-D4898E6A5C05</journalidentifikator>
+		<fanearkidentifikator>585569999946</fanearkidentifikator>
+		<lopenummer>L-6</lopenummer>
+		<journalnummer>J-6</journalnummer>
+		<fodselsnummer>22060919414</fodselsnummer>
+		<pasientnavn>Embla Roeine</pasientnavn>
+		<fodtdato>1909-06-22</fodtdato>
+		<morsdato>1947-08-30</morsdato>
+		<kjonn>K</kjonn>
+		<diagnose>
+			<diagnosedato>1911</diagnosedato>
+			<diagnosetekst>Ambustio capitis, colli, nuchae / Forbrenning av hode, hals og nakke</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>EBADD855-C6A9-41BF-8462-3B8B841A3EF6</journalidentifikator>
+		<fanearkidentifikator>585569999953</fanearkidentifikator>
+		<lopenummer>L-5</lopenummer>
+		<journalnummer>J-5</journalnummer>
+		<fodselsnummer>06069818496</fodselsnummer>
+		<pasientnavn>Emilie Leine</pasientnavn>
+		<fodtdato>1998-06-06</fodtdato>
+		<morsdato>2003-07-27</morsdato>
+		<kjonn>K</kjonn>
+		<diagnose>
+			<diagnosedato>2002</diagnosedato>
+			<diagnosekode>W5N1P</diagnosekode>
+			<diagnosetekst>Skadd av pers,dyr,plant;veitrafikk;Annen idrett</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7110</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>2001</diagnosedato>
+			<diagnosekode>F3200</diagnosekode>
+			<diagnosetekst>Mild depressiv episode uten somatisk syndrom</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7110</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>2003</diagnosedato>
+			<diagnosekode>P838</diagnosekode>
+			<diagnosetekst>Andre spes. tilst. som angaar hud spes. for foster og nyfoedt</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7110</diagnosekodeverk>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>DEFA5912-EA87-40AA-B3C6-58B0842F0AF9</journalidentifikator>
+		<fanearkidentifikator>585569999922</fanearkidentifikator>
+		<lopenummer>L-8</lopenummer>
+		<journalnummer>J-8</journalnummer>
+		<fodselsnummer>14128266950</fodselsnummer>
+		<pasientnavn>Erling Hoegset</pasientnavn>
+		<fodtdato>1882-12-14</fodtdato>
+		<morsdato>1938-11-27</morsdato>
+		<kjonn>M</kjonn>
+		<diagnose>
+			<diagnosedato>1920</diagnosedato>
+			<diagnosetekst>Invaliditas post accidentiam vehiculi motoris / Ufoerhet etter motorvognsulykke</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1928</diagnosedato>
+			<diagnosetekst>Fall og snubling uten naermere spesifikasjon</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1916</diagnosedato>
+			<diagnosetekst>Vulnera, lacerationes multiplicia extremitatum inferiorum ambarum / Multiple, aapne saar og overrivning av vev paa begge underekstremiteter</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1892</diagnosedato>
+			<diagnosetekst>Vulnus, laceratio regionis radiocarpicae cum laesione tendium / AApent saar og overrivning av vev paa haandleddet med seneskade</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>1EF1A2FA-C192-4EBD-8D9B-D2D31418AEC2</journalidentifikator>
+		<fanearkidentifikator>585569999915</fanearkidentifikator>
+		<lopenummer>L-9</lopenummer>
+		<journalnummer>J-9</journalnummer>
+		<fodselsnummer>19100613924</fodselsnummer>
+		<pasientnavn>Iver Kolle</pasientnavn>
+		<fodtdato>1906-10-19</fodtdato>
+		<morsdato>1975-12-19</morsdato>
+		<kjonn>M</kjonn>
+		<diagnose>
+			<diagnosedato>1939</diagnosedato>
+			<diagnosetekst>Motorvognulykke utenfor vanlig trafikk hvor den tilskadekomne er fotgjenger</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1929</diagnosedato>
+			<diagnosetekst>Neoplasma malignum hepatis primarium / Ondartet svulst i leveren</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1947</diagnosedato>
+			<diagnosetekst>Contusio, haematoma capillitii / Skrubbsaar, bloduttredelse o. 1. i haarbunnen</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0003</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>90F38C57-0201-4A49-9457-B452E6AA241E</journalidentifikator>
+		<fanearkidentifikator>585569999977</fanearkidentifikator>
+		<lopenummer>L-3</lopenummer>
+		<journalnummer>J-3</journalnummer>
+		<fodselsnummer>24044119710</fodselsnummer>
+		<pasientnavn>Jermund Aaseboe</pasientnavn>
+		<fodtdato>1941-04-24</fodtdato>
+		<morsdato>1962-07-16</morsdato>
+		<kjonn>M</kjonn>
+		<diagnose>
+			<diagnosedato>1950</diagnosedato>
+			<diagnosetekst>Amputatio traumatica pollicis / Avrivning av tommelfinger</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>F880A318-63B2-4FDE-BA55-41AF6FEFD5FC</journalidentifikator>
+		<fanearkidentifikator>585569999960</fanearkidentifikator>
+		<lopenummer>L-4</lopenummer>
+		<journalnummer>J-4</journalnummer>
+		<fodselsnummer>11032731440</fodselsnummer>
+		<pasientnavn>Kine Moholt</pasientnavn>
+		<fodtdato>1927-03-11</fodtdato>
+		<morsdato>2002-12-25</morsdato>
+		<kjonn>K</kjonn>
+		<diagnose>
+			<diagnosedato>1988</diagnosedato>
+			<diagnosekode>E9298</diagnosekode>
+			<diagnosetekst>Seinfoelger av andre ulykker</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7120</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1930</diagnosedato>
+			<diagnosetekst>Motorvogntrafildculykker ikke naermere spesifisert, unntatt naar den tilskadekomne er fotgjenger, syklist, motorsyklist eller passasjer paa motorsykkel</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>4DC9058B-AEBA-44B9-9EB0-446B1F65B2F9</journalidentifikator>
+		<fanearkidentifikator>585569999991</fanearkidentifikator>
+		<lopenummer>L-1</lopenummer>
+		<journalnummer>J-1</journalnummer>
+		<fodselsnummer>07104441348</fodselsnummer>
+		<pasientnavn>Leidulf Stenberg</pasientnavn>
+		<fodtdato>1944-10-07</fodtdato>
+		<morsdato>1994-11-28</morsdato>
+		<kjonn>M</kjonn>
+		<diagnose>
+			<diagnosedato>1950</diagnosedato>
+			<diagnosetekst>Traumata alia s. NUD / Andre eller ikke naermere spesifiserte skader</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1970</diagnosedato>
+			<diagnosekode>E8160</diagnosekode>
+			<diagnosetekst>Mistet herredoemmet over kjoeretoeyet, uten kollisjon - foerer av motorkjoeretoey (ekskl. motorsykkel og traktor/bulldozer).</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7121</diagnosekodeverk>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>04286802-08F1-42DF-95AB-739C4A49153C</journalidentifikator>
+		<fanearkidentifikator>585569999939</fanearkidentifikator>
+		<lopenummer>L-7</lopenummer>
+		<journalnummer>J-7</journalnummer>
+		<fodselsnummer>09064042804</fodselsnummer>
+		<pasientnavn>Natalia Elstad</pasientnavn>
+		<fodtdato>1940-06-09</fodtdato>
+		<morsdato>1992-06-22</morsdato>
+		<kjonn>K</kjonn>
+		<diagnose>
+			<diagnosedato>1977</diagnosedato>
+			<diagnosekode>Y04</diagnosekode>
+			<diagnosetekst>Andedrettsorganene.</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7121</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1956</diagnosedato>
+			<diagnosetekst>Vulnus, laceratio digitorum manus / AApent saar og overrivning av vev paa fingrene</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1968</diagnosedato>
+			<diagnosekode>Y622</diagnosekode>
+			<diagnosetekst>Invaliditas post morbos nervorum aliorum s. post morbos mentales / Ufoerhet etter andre nervesykdommer eller sinnslidelser</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7122</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1949</diagnosedato>
+			<diagnosetekst>Veneficium olei mineralis / Forgiftning med mineralolje og produkter av den</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>CFC2B6A2-6AF5-435D-A629-D51794E30483</journalidentifikator>
+		<fanearkidentifikator>585569999908</fanearkidentifikator>
+		<lopenummer>L-10</lopenummer>
+		<journalnummer>J-10</journalnummer>
+		<fodselsnummer>02125929292</fodselsnummer>
+		<pasientnavn>Ninni Unhjem</pasientnavn>
+		<fodtdato>1959-12-02</fodtdato>
+		<morsdato>1982-08-23</morsdato>
+		<kjonn>K</kjonn>
+		<diagnose>
+			<diagnosedato>1978</diagnosedato>
+			<diagnosekode>50509</diagnosekode>
+			<diagnosetekst>POLYPUS NASI NUD</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7121</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1964</diagnosedato>
+			<diagnosekode>275</diagnosekode>
+			<diagnosetekst>Dysfunctio ovarialis / Forstyrrelser i eggstokkens indresekresjon</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7122</diagnosekodeverk>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1967</diagnosedato>
+			<diagnosekode>E9272</diagnosekode>
+			<diagnosetekst>Ulykker framkalt ved giftig hitt eller stikk av dyr eller insekt. Omfatter ikke bitt og stikk som ikke er giftig (E928)</diagnosetekst>
+			<diagnosekodeverk>2.16.578.1.12.4.1.1.7122</diagnosekodeverk>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0003</lagringsenhet>
+	</pasientjournal>
+	<pasientjournal>
+		<journalidentifikator>DA83D12E-C919-4561-B70D-3FA4179ECBCD</journalidentifikator>
+		<fanearkidentifikator>585569999984</fanearkidentifikator>
+		<lopenummer>L-2</lopenummer>
+		<journalnummer>J-2</journalnummer>
+		<fodselsnummer>22029765972</fodselsnummer>
+		<pasientnavn>Villy Froeyland</pasientnavn>
+		<fodtdato>1897-02-22</fodtdato>
+		<morsdato>1949-11-05</morsdato>
+		<kjonn>M</kjonn>
+		<diagnose>
+			<diagnosedato>1936</diagnosedato>
+			<diagnosetekst>Forgiftningsulykke med andre smertestillende og soevnframkallende legemidler</diagnosetekst>
+		</diagnose>
+		<diagnose>
+			<diagnosedato>1909</diagnosedato>
+			<diagnosetekst>Lymphosarcoma, reticulosarcoma / Ondartet svulst i lymfeknuter</diagnosetekst>
+		</diagnose>
+		<lagringsenhet>LID:2.16.578.1.39.100.11.1.1002:Fz-0002</lagringsenhet>
+	</pasientjournal>
+</avlxml>

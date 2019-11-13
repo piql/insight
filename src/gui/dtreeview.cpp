@@ -30,7 +30,7 @@
  *  Constructor.
  */
 
-DTreeView::DTreeView(QWidget* parent/*=NULL*/)
+DTreeView::DTreeView(QWidget* parent/*=nullptr*/)
   : QTreeView( parent )
 {
 

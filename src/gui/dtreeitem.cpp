@@ -14,6 +14,8 @@
 //
 #include    "dtreeitem.h"
 #include    "dxmlparser.h"
+#include    "dimportformat.h"
+#include    "dimport.h"
 
 //  SYSTEM INCLUDES
 //
@@ -36,8 +38,8 @@
  */
 
 DLeafNode::DLeafNode()
-    : m_Key( NULL ),
-      m_Value( NULL )
+    : m_Key( nullptr ),
+      m_Value( nullptr )
 {
 }
 
@@ -103,7 +105,7 @@ DLeafNode& DLeafNode::operator=( const DLeafNode& node )
 
 int DLeafNode::match( const char* text ) const
 {
-    if ( text == NULL || strlen(text) == 0 )
+    if ( text == nullptr || strlen(text) == 0 )
     {
         return -1;
     }
@@ -237,7 +239,7 @@ int DTreeItem::row()
 
 int DTreeItem::rowSlow() 
 {
-    if (m_Parent == NULL )
+    if (m_Parent == nullptr )
     {
         return 0;
     }
@@ -335,29 +337,93 @@ DLeafNode* DTreeItem::findLeaf( const char* key )
         }
         it++;
     }
-    return NULL;
+    return nullptr;
 }
 
+DTreeItem* DTreeItem::findChild( const char* text )
+{
+    DChildrenIterator it = m_Children.begin();
+    while ( it != m_Children.end() )
+    {
+        if ( strcmp((*it)->m_Text, text) == 0 )
+        {
+            return *it;
+        }
+        ++it;
+    }
+    return nullptr;
+}
 
 //----------------------------------------------------------------------------
 /*! 
  *  Find items root parent.
  */
 
-DTreeRootItem* DTreeItem::findRootItem()
+const DTreeRootItem* DTreeItem::findRootItem() const
 {
-    DTreeItem* i = this;
+    const DTreeItem* i = this;
     while ( i )
     {
-        if ( dynamic_cast<DTreeRootItem*>(i) )
+        if ( dynamic_cast<const DTreeRootItem*>(i) )
         {
-            return dynamic_cast<DTreeRootItem*>(i);
+            return dynamic_cast<const DTreeRootItem*>(i);
         }
         i = i->m_Parent;
     }
-    return NULL;
+    return nullptr;
 }
 
+//----------------------------------------------------------------------------
+/*!
+ *  Find items root parent.
+ */
+
+QString DTreeItem::findRootPath() const
+{
+    QString path;
+    const DTreeItem* i = this;
+    while ( i )
+    {
+        path.prepend("/" + QString( i->m_Text ) );
+        if ( dynamic_cast<const DTreeRootItem*>(i) )
+        {
+            return path;
+        }
+        i = i->m_Parent;
+    }
+    return QString();
+}
+
+
+//----------------------------------------------------------------------------
+/*! 
+ *  Get import format
+ */
+
+const DImportFormat* DTreeItem::format() const
+{
+    const DTreeRootItem* root = findRootItem();
+    if ( root )
+    {
+        if ( root == this ) // Root nodes always has import format for now
+        {
+            return DImport::GetReportFormat();
+        }
+
+        return root->format();
+    }
+    return nullptr;
+}
+
+const DRegExps& DTreeItem::nodeRegExp() const
+{
+    return format()->treeViewNodeRegExp();
+}
+
+const DRegExps& DTreeItem::labelRegExp() const
+{
+    return format()->treeViewLabelRegExp();
+}
 
 //----------------------------------------------------------------------------
 /*! 
@@ -394,12 +460,13 @@ DTreeItems DTreeItem::Anchestors( DTreeItem* item )
  *  Constructor.
  */
 
-DTreeRootItem::DTreeRootItem( DTreeItem* parent, const QString& text )
+DTreeRootItem::DTreeRootItem( DTreeItem* parent, const QString& text, const DImportFormat* format )
   : DTreeItem( parent, text ),
-    m_CurrentTreeItemBlockEnd(NULL),
-    m_CurrentTreeItemBlockPos(NULL),
-    m_CurrentLeafNodeBlockEnd(NULL),
-    m_CurrentLeafNodeBlockPos(NULL)
+    m_CurrentTreeItemBlockEnd(nullptr),
+    m_CurrentTreeItemBlockPos(nullptr),
+    m_CurrentLeafNodeBlockEnd(nullptr),
+    m_CurrentLeafNodeBlockPos(nullptr),
+    m_Format( format )
 {
 
 }
@@ -410,12 +477,13 @@ DTreeRootItem::DTreeRootItem( DTreeItem* parent, const QString& text )
  *  Constructor.
  */
 
-DTreeRootItem::DTreeRootItem( DTreeItem* parent, const char* text )
+DTreeRootItem::DTreeRootItem( DTreeItem* parent, const char* text, const DImportFormat* format )
   : DTreeItem( parent, text ),
-    m_CurrentTreeItemBlockEnd(NULL),
-    m_CurrentTreeItemBlockPos(NULL),
-    m_CurrentLeafNodeBlockEnd(NULL),
-    m_CurrentLeafNodeBlockPos(NULL)
+    m_CurrentTreeItemBlockEnd(nullptr),
+    m_CurrentTreeItemBlockPos(nullptr),
+    m_CurrentLeafNodeBlockEnd(nullptr),
+    m_CurrentLeafNodeBlockPos(nullptr),
+    m_Format( format )
 {
 
 }
@@ -479,13 +547,32 @@ void DTreeRootItem::deleteChildren()
 
     m_TreeItemBlocks.clear();
     m_LeafNodeBlocks.clear();
-    m_CurrentTreeItemBlockPos = NULL;
-    m_CurrentTreeItemBlockEnd = NULL;
-    m_CurrentLeafNodeBlockPos = NULL;
-    m_CurrentLeafNodeBlockEnd = NULL;
+    m_CurrentTreeItemBlockPos = nullptr;
+    m_CurrentTreeItemBlockEnd = nullptr;
+    m_CurrentLeafNodeBlockPos = nullptr;
+    m_CurrentLeafNodeBlockEnd = nullptr;
     m_Children.clear();
 }
 
+const DRegExps& DTreeRootItem::nodeRegExp() const
+{
+    return m_Format->treeViewNodeRegExp();
+}
+
+const DRegExps& DTreeRootItem::labelRegExp() const
+{
+    return m_Format->treeViewLabelRegExp();
+}
+
+const DImportFormat* DTreeRootItem::format() const
+{
+    return m_Format;
+}
+
+void DTreeRootItem::setImportFormat( const DImportFormat* format )
+{
+    m_Format = format;
+}
 
 //----------------------------------------------------------------------------
 /*! 
@@ -596,4 +683,9 @@ void DTreeRootItem::removeNode( const QString& key )
         }
         it++;
     }
+}
+
+bool DTreeRootItem::isToplevelRoot()
+{
+    return m_Parent->m_Parent == nullptr;
 }

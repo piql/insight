@@ -89,13 +89,16 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="spacing">
        <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="bannerLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -307,6 +310,9 @@
            <property name="title">
             <string>Information</string>
            </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="QScrollArea" name="infoViewScrollArea">
@@ -324,8 +330,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>415</width>
-                 <height>69</height>
+                 <width>429</width>
+                 <height>72</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -345,6 +351,12 @@
                  <layout class="QFormLayout" name="infoView">
                   <property name="fieldGrowthPolicy">
                    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                  </property>
+                  <property name="horizontalSpacing">
+                   <number>5</number>
+                  </property>
+                  <property name="verticalSpacing">
+                   <number>5</number>
                   </property>
                  </layout>
                 </item>
@@ -524,7 +536,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resources.qrc"/>
   <include location="../../resources.qrc"/>
  </resources>
  <connections/>

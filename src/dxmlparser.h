@@ -63,10 +63,12 @@ public:
     typedef StringHash::const_iterator StringHashIterator;
 
 public:
-    DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode );
+    DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode, const DImportFormat* importFormat );
+    virtual ~DXmlParser();
 
     unsigned long   nodeCount();
     DTreeRootItem*  root();
+    const DImportFormat*  importFormat() const;
 
 signals:
     void       nodesReady( unsigned long count, float progress );    
@@ -78,14 +80,17 @@ public:
     static StringHashIterator NodeHashMapEnd();
 
 private:
-    void       run();
-    void       reportProgress( unsigned long nodeCount, float progress );
+    virtual void run();
 
-private:
-    DTreeItems*     m_TreeItems;
-    QString         m_Filename;
-    DTreeModel*     m_Model;
-    DTreeRootItem*  m_RootNode;
+protected:
+    void         reportProgress( unsigned long nodeCount, float progress );
+
+protected:
+    DTreeItems*           m_TreeItems;
+    QString               m_Filename;
+    DTreeModel*           m_Model;
+    DTreeRootItem*        m_RootNode;
+    const DImportFormat*  m_ImportFormat;
 
     // Statistics
     unsigned long   m_NodeCount;

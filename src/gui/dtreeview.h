@@ -31,7 +31,7 @@ class DTreeView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit DTreeView(QWidget* parent=NULL);
+    explicit DTreeView(QWidget* parent=nullptr);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

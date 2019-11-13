@@ -183,8 +183,8 @@ void DSearchThread::run()
                 if ( !ok )
                 {
                     QString dbError = query.lastError().text();
-                    DInsightConfig::log() << "Search deamon query failed: " << queryString << endl;
-                    DInsightConfig::log() << "Search deamon error: " << dbError << endl;    
+                    DInsightConfig::Log() << "Search deamon query failed: " << queryString << endl;
+                    DInsightConfig::Log() << "Search deamon error: " << dbError << endl;    
                 }
                 else
                 {
@@ -301,12 +301,12 @@ DSearchThread::SearchResult DSearchThread::searchTree( DTreeItem* node, const ch
                         }
                         value[valueLength] = '\0';
                         
-                        leafMatch = strstr( value, text ) != NULL;
+                        leafMatch = strstr( value, text ) != nullptr;
                         free(value);
                     }
                     else
                     {
-                        leafMatch = strstr( node->m_Text, text ) != NULL;
+                        leafMatch = strstr( node->m_Text, text ) != nullptr;
                     }
 
                     if ( leafMatch )

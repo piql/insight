@@ -16,6 +16,7 @@
 //  PROJECT INCLUDES
 //
 #include    "dregexp.h"
+#include    "dleafmatcher.h"
 #include    "dtreeitem.h"
 
 //  QT INCLUDES
@@ -60,7 +61,7 @@ class DAttachmentParser : public QThread
     Q_OBJECT
 public:
 
-    DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DRegExps& attachmentTypeRegExp );
+    DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DLeafMatchers& attachmentTypeRegExp );
    ~DAttachmentParser();
 
     DAttachments&       attachments();
@@ -77,7 +78,7 @@ public slots:
 
 private:
     void                run();
-    bool                isAttachmentNode( const char* text );
+    bool                isAttachmentNode(  const char* text, const char* content );
 
 private:
     unsigned int        m_MaxNodeCount;
@@ -88,7 +89,7 @@ private:
     DAttachments        m_Attachments;
     DAttachmentIndexes  m_AttachmentsFound;
     DAttachmentIndexes  m_AttachmentsNotFound;
-    DRegExps            m_AttachmentTypeRegExp;
+    DLeafMatchers       m_AttachmentTypeRegExp;
     QMutex              m_Mutex;
     QWaitCondition      m_Wait;
     qint64              m_AttachmentsSizeBytes;

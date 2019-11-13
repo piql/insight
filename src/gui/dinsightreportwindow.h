@@ -49,6 +49,8 @@ private:
     bool createAttachmentArchive( const QString& fileName, const QString& reportFileName );
     bool printReport( QPrinter& printer );
     bool printAttachments( QPrinter& printer );
+    bool printPdfAttachment( QPainter& painter, QPrinter& printer, const QString& attachment );
+    bool printImageAttachment( QPainter& painter, QPrinter& printer, const QString& attachment );
 
 private:
     Ui::IngestToolReportWindow m_Ui;

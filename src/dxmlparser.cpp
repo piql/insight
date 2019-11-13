@@ -102,6 +102,7 @@ public:
     DTreeItems*         m_TreeItems;
     DTreeModel*         m_Model;
     DTreeRootItem*      m_RootNode;
+    const DImportFormat*m_ImportFormat;
 
     // Stats
     unsigned long long  m_Items;
@@ -117,7 +118,7 @@ public:
  */
 
 DXmlContext::DXmlContext()
-    : m_LastUpdateNode( NULL ),
+    : m_LastUpdateNode( nullptr ),
       m_Items( 0ULL ),
       m_ItemsLastReport( 0ULL )
 {
@@ -154,7 +155,7 @@ void DXmlContext::incItems( DTreeItem* item, bool finalItem )
         m_ItemsLastReport = m_Items;
     }
 
-    m_LastUpdateNode = item;
+    m_LastUpdateNode = item; // Todo: NOT USED?
 }
 
 
@@ -174,11 +175,11 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
             // Create new node?
             if ( context->m_Name )
             {
-                // If root node is NULL, first element found should be root
-                if ( context->m_RootNode == NULL )
+                // If root node is nullptr, first element found should be root
+                if ( context->m_RootNode == nullptr )
                 {
                     context->m_Model->beginInsert( 0, 1, QModelIndex() );
-                    context->m_RootNode = context->m_Model->createDocumentRoot( context->m_Name );
+                    context->m_RootNode = context->m_Model->createDocumentRoot( context->m_Name, nullptr, context->m_ImportFormat );
                     context->m_CurrentNode = context->m_RootNode;
                     context->m_Model->endInsert();
                     DXmlParser::AddToNodeHashMap( context->m_Name );
@@ -211,7 +212,7 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
             }
             context->m_DataPos = context->m_Data;
             *context->m_DataPos = '\0';
-            context->m_Name = NULL;
+            context->m_Name = nullptr;
             context->m_LastClose = true;
         break;
     case YXML_ATTRSTART:
@@ -268,12 +269,17 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
  *  Constructor.
  */
 
-DXmlParser::DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode )
+DXmlParser::DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode, const DImportFormat* importFormat )
     : m_TreeItems( treeItems ),
       m_Filename( fileName ),
       m_Model( model ),
       m_RootNode( rootNode ),
+      m_ImportFormat( importFormat ),
       m_NodeCount( 0UL )
+{
+}
+
+DXmlParser::~DXmlParser()
 {
 }
 
@@ -308,7 +314,7 @@ void DXmlParser::run()
     context.m_DataPos = context.m_Data;
     *context.m_DataPos = '\0';
     context.m_LastClose = false;
-    context.m_Name = NULL;
+    context.m_Name = nullptr;
     context.m_Thread = this;
     context.m_FileSize = 0UL;
     context.m_FilePos = 0UL;
@@ -320,10 +326,11 @@ void DXmlParser::run()
     context.m_TreeItems = m_TreeItems;
     context.m_Model = m_Model;
     context.m_RootNode = m_RootNode;
+    context.m_ImportFormat = m_ImportFormat;
 
     if ( context.m_FileHandle == -1 )
     {
-        DInsightConfig::log() << "Opening failed, file does not exist: " << m_Filename << endl;
+        DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << endl;
         return;
     }
     
@@ -417,3 +424,9 @@ DTreeRootItem* DXmlParser::root()
 {
     return m_RootNode;
 }
+
+const DImportFormat* DXmlParser::importFormat() const
+{
+    return m_ImportFormat;
+}
+

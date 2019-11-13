@@ -43,8 +43,8 @@ class QAboutDialog : public QDialog
 {
     Q_OBJECT
 public:
-    QAboutDialog( const QString& applicationName, const QString& infoText, const QString& bitmapFilename, QWidget* parent=NULL );
-    QAboutDialog( const QString& applicationName, const QString& bitmapFilename, QWidget* parent=NULL );
+    QAboutDialog( const QString& applicationName, const QString& infoText, const QString& bitmapFilename, QWidget* parent=nullptr );
+    QAboutDialog( const QString& applicationName, const QString& bitmapFilename, QWidget* parent=nullptr );
     ~QAboutDialog();
 
 private:

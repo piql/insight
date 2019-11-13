@@ -11,7 +11,15 @@
 
 * Introduksjon
 
-KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
+Innsyn er en applikasjon som opprinnelig ble utviklet for Kommunenes Digitale Ressursjsentral (KDRS) for å støtte innsyn i NOARK-5 uttrekk. Applikasjonen har senere blitt utvidet til å støtte flere typer uttrekksformat.
+
+Applikasjonen validerer ikke importformatene utover å sjekke at vedleggene finnes. Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til filformat spesifike nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen. Dette betyr at applikasjonen kan tilpasses til å støtte flere typer XML baserte format ved å kun endre konfigurasjonsfilene.
+
+Innsyn kommer med støtte for disse filformatene:
+ - NOARK-5: XML basert arkivformat brukt av stat og kommune i Norge.
+ - EPJ avleveringsliste: XML basert dokumentasjonsformat brukt ved avlevering av pasientjournaler, fysiske eller elektroniske, til Norsk Helsearkiv.
+ - EPJ pakkeliste: XML basert dokumentasjonsformat brukt ved avlevering av elektronsike pasientjournaler til Norsk Helsearkiv.
+ - TAR: Filformat for som pakker mange filer sammen til en fil og bevarer filinformasjon (filnavn, dato, rettigheter). Innsyn støtter ikke utpakking av enkle tar filer, men viser strukturen.
 
 * Systemkrav
 
@@ -82,13 +90,16 @@ legges også loggfiler fra indekseringen og indekserings databasen.
 - *REPORTS_DIR\YYYY\MM\DD\TTMMSS\indexer.log*: Logg fra indekserings applikasjonen som genererer indekserings databasen.
 - *REPORTS_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log*: Logg fra søkemotoren.
 
-* Konfigurasjonsfil
+* Konfigurasjon
 
-Konfigurasjonsfilen heter /insight.conf/. Alle nøkler er dokumentert i konfigurasjonsfilen. Ved endring må
-applikasjonen restartes.
+Konfigurasjonsfilen heter /insight.conf/. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen /formats/. Alle filene som slutter på /.conf/ i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
 * Ønsker, feil og mangler
 
+- [RA-20181209-01] Innlesing av arkivstruktur til minne, denne topper lett ut ved 8 GB minne ved det største arkivuttrekket som er prøvd. I tillegg medførte antatte feilmeldinger i bakgrunnen til at pcen saknet betraktelig, før den til slutt ikke svarte og trengte hard omstart.
+- [RA-20181209-02] Programmet mangler klar tilbakemelding om når en handling er ferdig, kan fint stå lang tid på 100% og jobbe.
+- [RA-20181209-03] Det er en grunn til at uttrekksleverandører lager mapper med maks 5000 filer per mappe: FAT-partisjoner har et tak på 65,534 filer per mappe, mens NTFS har et tak på 4,29 milliarder. En idé til vedleggs-mappen.
+- [RA-20181209-04] For det andre arkivuttrekket ble vedlegg-filen dumpet lenge etter indeksering var ferdig, tyder på at oppgaven ble forsøkt utført i minne. Pga. flertråds-løsningen er dette forståelig, men lite ønsket (stort minneforbruk).
 - [IKAMR-20180515-01] Du burde kanskje hatt en boks med informasjon eller på en eller annen måte oversiktlig vist hvilke uttrekk du faktisk har åpen no som kan søkes i?
 - [IKAMR-20180515-02] Det samme gjelder treff i søk, hvordan vet jeg hvilken av uttrekkene søket fant sine treff i?
 - [IKAMR-20180514-01] Etter å ha lukket uttrekk: Her står "Import ble avbrutt av brukeren", mener programmet at jeg har avbrutt fordi jeg klikket LUKK?
@@ -118,6 +129,24 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 
 * Historikk
 
+** innsyn-v1.1.0
+
+*** DONE Barne-import skal ikke lage import rapport i hovedmappen
+*** DONE TAR filnavn skal brukes til å bygge opp treet.
+*** DONE Knapper skal ha fast størrelse
+*** Formater avleveringsliste formatet
+*** Støtte for å vise elementer inne i taren
+*** Tekst bokser i info view bør være multi line
+*** Krasj ved Unload på node
+*** Knapper har mye luft rundt seg
+*** import med stor bokstav
+*** Legg inn format spesifik link om filformatet
+*** Støtte for lasting av "base" format
+*** Nye funksjoner
+- Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.
+- Støtte for import av TAR filer.
+- Støtte for import av dokumenter som refereres fra hoveddokumentet. Det importerte dokumentet lastes inn og blir en del av nodetreet.
+- Støtte for sjekksumvalidering av filer referert fra node treet.
 ** 2018.06.01 innsyn-v1.0.0
 
 - [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
