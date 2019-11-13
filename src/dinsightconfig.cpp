@@ -28,7 +28,20 @@
  *  Handles config file settings.
  *  
  */
- 
+
+#ifdef _WIN32
+// Stay compatible with released Windows version, looking for insight.conf
+// file only in current working directory
+#  define SETTINGS QSettings( defaultFileName(), QSettings::IniFormat )
+#else // _WIN32
+// Use default Qt behaviour elsewhere, looking for insight.ini in
+// /usr/share/, /etc/ and ~/.config/ on unix and MacOS.
+#  define SETTINGS QSettings( QSettings::IniFormat, \
+                              QSettings::UserScope, \
+                              QCoreApplication::organizationName(),\
+                              QCoreApplication::applicationName())
+#endif // _WIN32
+
 //===================================
 //  P U B L I C   I N T E R F A C E
 //===================================
@@ -41,7 +54,7 @@
 
 QString DInsightConfig::get( const QString& key, const QString& def /*= ""*/ )
 {
-    return QSettings( defaultFileName(), QSettings::IniFormat ).value( key, def ).toString();
+    return SETTINGS.value( key, def ).toString();
 }
 
 
@@ -52,7 +65,7 @@ QString DInsightConfig::get( const QString& key, const QString& def /*= ""*/ )
 
 int DInsightConfig::getInt( const QString& key, int def /*= -1*/ )
 {
-    return QSettings( defaultFileName(), QSettings::IniFormat ).value( key, def ).toInt();
+    return SETTINGS.value( key, def ).toInt();
 }
 
 
@@ -63,7 +76,7 @@ int DInsightConfig::getInt( const QString& key, int def /*= -1*/ )
 
 bool DInsightConfig::getBool( const QString& key, bool def /*= false*/ )
 {
-    return QSettings( defaultFileName(), QSettings::IniFormat ).value( key, def ).toBool();
+    return SETTINGS.value( key, def ).toBool();
 }
 
 
@@ -106,7 +119,7 @@ QString DInsightConfig::getLocalizedKey( const QString& key )
 
 void    DInsightConfig::set( const QString& key, const QString& value )
 {
-    QSettings( defaultFileName(), QSettings::IniFormat ).setValue( key, value );
+    SETTINGS.setValue( key, value );
 }
 
 
