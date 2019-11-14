@@ -85,28 +85,6 @@ PRE_TARGETDEPS   +=   $$LIBS
 macx:LIBS        +=   -L/usr/local/Cellar/poppler/$$POPPLER_VER/lib -lpoppler -lpoppler-qt5
 macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz
 
-POSIXTAR_SOURCES +=   src/thirdparty/posixtar/src/posixtar.c
-POSIXTAR_INCLUDES+=   src/thirdparty/posixtar/inc/posixtar.h
-
-TOOLS_INCLUDES    =   src/thirdparty/tools/inc/dtartools.h \
-                      src/thirdparty/tools/inc/dcommon.h \
-                      src/thirdparty/tools/inc/dconfig.h \
-                      src/thirdparty/tools/inc/derror.h \
-                      src/thirdparty/tools/inc/derrorman.h \
-                      src/thirdparty/tools/inc/dpath.h \
-                      src/thirdparty/tools/inc/dtimeval.h \
-                      src/thirdparty/tools/inc/dtypes.h \
-                      src/thirdparty/tools/inc/dstringtools.h \
-                      src/thirdparty/tools/inc/dtimetools.h \
-                      src/thirdparty/tools/inc/dsystemtools.h \
-                      src/thirdparty/tools/inc/dfilesystemtools.h \
-                      src/thirdparty/tools/inc/dexception.h \
-                      src/thirdparty/tools/inc/dbase.h \
-                      src/thirdparty/tools/inc/dbaseio.h \
-                      src/thirdparty/tools/inc/dbasefile.h \
-                      src/thirdparty/tools/inc/dfile.h
-                      
-
 TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \
                       src/thirdparty/tools/src/derrorman.cpp \
                       src/thirdparty/tools/src/dpath.cpp \
@@ -184,7 +162,6 @@ include( src/thirdparty/yxml/yxml.pri )
 SOURCES          +=   src/main.cpp \
                       src/drunguard.cpp \
                       src/dxmlparser.cpp \
-                      src/dtarparser.cpp \
                       src/ddirparser.cpp \
                       src/dattachmentindexer.cpp \
                       src/dattachmentparser.cpp \
@@ -196,12 +173,10 @@ SOURCES          +=   src/main.cpp \
                       src/dleafmatcher.cpp \
                       $$GUI_SOURCES \
                       $$ZIP_SOURCES \
-                      $$TOOLS_SOURCES \
                       $$POSIXTAR_SOURCES
 
 HEADERS          +=   src/drunguard.h \
                       src/dxmlparser.h \
-                      src/dtarparser.h \
                       src/ddirparser.h \
                       src/dattachmentindexer.h \
                       src/dattachmentparser.h \

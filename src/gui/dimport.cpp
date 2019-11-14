@@ -14,7 +14,6 @@
 //
 #include    "dimport.h"
 #include    "dxmlparser.h"
-#include    "dtarparser.h"
 #include    "ddirparser.h"
 #include    "dinsightmainwindow.h"
 #include    "dattachmentparser.h"
@@ -100,10 +99,6 @@ void DImport::load( const DImportFormat* format )
     if ( format->parser() == "xml" )
     {
         parser  = new DXmlParser( &m_TreeItems, m_FileName, m_Model, m_RootItem, format );
-    }
-    else if ( format->parser() == "tar" )
-    {
-        parser  = new DTarParser( &m_TreeItems, m_FileName, m_Model, m_RootItem, format );
     }
     else if ( format->parser() == "dir" )
     {
@@ -413,10 +408,6 @@ DImport* DImport::CreateFromFile(
     if ( format->parser() == "xml" )
     {
         parser = new DXmlParser( &import->m_TreeItems, import->m_FileName, import->m_Model, import->m_RootItem, format );
-    }
-    else if ( format->parser() == "tar" )
-    {
-        parser = new DTarParser( &import->m_TreeItems, import->m_FileName, import->m_Model, import->m_RootItem, format );
     }
     else if ( format->parser() == "dir" )
     {
