@@ -194,3 +194,16 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 
 Første versjon levert til beta test.
 
+* Utvikling
+
+Programmet er laget ved hjelp av Qt rammeverket. Er dette installert kan man bygge med:
+#+BEGIN_SRC
+(cd src/thirdparty ; unzip quazip-0.7.3.zip)
+./update-translations.sh
+qmake
+make
+#+END_SRC
+
+For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:
+create-release-osx.sh
+create-release.cmd

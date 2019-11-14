@@ -1,38 +1,61 @@
 
 # Innhold
 
-1.  [Introduksjon](#org608a883)
-2.  [Systemkrav](#orge0b3f75)
-3.  [Installasjon](#orgb0f98b4)
-4.  [Bruk](#orgbada60c)
-5.  [Rapporter](#orgc00fd57)
-6.  [Loggfiler](#org2ba8e19)
-7.  [Konfigurasjonsfil](#orgeaf835c)
-8.  [Ønsker, feil og mangler](#org9a35a9c)
-9.  [Hvordan rapportere feil](#org83eac9f)
-10. [Historikk](#org7b9de2e)
-    1.  [2018.06.01 innsyn-v1.0.0](#orged6794c)
-    2.  [2018.04.13 innsyn-v1.0.0-rc1](#orge6c7468)
-    3.  [2018.02.05 innsyn-v1.0.0-beta2](#org76a4f05)
-    4.  [2018.01.18 innsyn-v1.0.0-beta1](#org759ec1b)
+1.  [Introduksjon](#org5de544d)
+2.  [Systemkrav](#org9669538)
+3.  [Installasjon](#org013ff8f)
+4.  [Bruk](#org97f5f44)
+5.  [Rapporter](#orga6c473c)
+6.  [Loggfiler](#org0ba2417)
+7.  [Konfigurasjon](#org79e18e4)
+8.  [Ønsker, feil og mangler](#org689337d)
+9.  [Hvordan rapportere feil](#org3b44f19)
+10. [Historikk](#orgc072b22)
+    1.  [innsyn-v1.1.0](#org55c3ed2)
+        1.  [Barne-import skal ikke lage import rapport i hovedmappen](#orgfc6b468)
+        2.  [TAR filnavn skal brukes til å bygge opp treet.](#org19531d5)
+        3.  [Knapper skal ha fast størrelse](#orgd34eb6e)
+        4.  [Formater avleveringsliste formatet](#org09655cc)
+        5.  [Støtte for å vise elementer inne i taren](#org0cbd5e6)
+        6.  [Tekst bokser i info view bør være multi line](#orgbd9dfa6)
+        7.  [Krasj ved Unload på node](#orge83c416)
+        8.  [Knapper har mye luft rundt seg](#orgd4f832b)
+        9.  [import med stor bokstav](#org88ca11a)
+        10. [Legg inn format spesifik link om filformatet](#org916e60e)
+        11. [Støtte for lasting av "base" format](#org5621b2d)
+        12. [Nye funksjoner](#org516db23)
+    2.  [2018.06.01 innsyn-v1.0.0](#org424cce4)
+    3.  [2018.04.13 innsyn-v1.0.0-rc1](#org3c93930)
+    4.  [2018.02.05 innsyn-v1.0.0-beta2](#org75a5353)
+    5.  [2018.01.18 innsyn-v1.0.0-beta1](#org40ee344)
+11. [Utvikling](#org01f60f9)
 
 
 
-<a id="org608a883"></a>
+<a id="org5de544d"></a>
 
 # Introduksjon
 
-KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
+Innsyn er en applikasjon som opprinnelig ble utviklet for Kommunenes Digitale Ressursjsentral (KDRS) for å støtte innsyn i NOARK-5 uttrekk. Applikasjonen har senere blitt utvidet til å støtte flere typer uttrekksformat.
+
+Applikasjonen validerer ikke importformatene utover å sjekke at vedleggene finnes. Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til filformat spesifike nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen. Dette betyr at applikasjonen kan tilpasses til å støtte flere typer XML baserte format ved å kun endre konfigurasjonsfilene.
+
+Innsyn kommer med støtte for disse filformatene:
+
+-   NOARK-5: XML basert arkivformat brukt av stat og kommune i Norge.
+-   EPJ avleveringsliste: XML basert dokumentasjonsformat brukt ved avlevering av pasientjournaler, fysiske eller elektroniske, til Norsk Helsearkiv.
+-   EPJ pakkeliste: XML basert dokumentasjonsformat brukt ved avlevering av elektronsike pasientjournaler til Norsk Helsearkiv.
+-   TAR: Filformat for som pakker mange filer sammen til en fil og bevarer filinformasjon (filnavn, dato, rettigheter). Innsyn støtter ikke utpakking av enkle tar filer, men viser strukturen.
 
 
-<a id="orge0b3f75"></a>
+<a id="org9669538"></a>
 
 # Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
 
 
-<a id="orgb0f98b4"></a>
+<a id="org013ff8f"></a>
 
 # Installasjon
 
@@ -44,7 +67,7 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
 
-<a id="orgbada60c"></a>
+<a id="org97f5f44"></a>
 
 # Bruk
 
@@ -88,7 +111,7 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
 
-<a id="orgc00fd57"></a>
+<a id="orga6c473c"></a>
 
 # Rapporter
 
@@ -98,7 +121,7 @@ formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
 
-<a id="org2ba8e19"></a>
+<a id="org0ba2417"></a>
 
 # Loggfiler
 
@@ -109,18 +132,21 @@ legges også loggfiler fra indekseringen og indekserings databasen.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
 
 
-<a id="orgeaf835c"></a>
+<a id="org79e18e4"></a>
 
-# Konfigurasjonsfil
+# Konfigurasjon
 
-Konfigurasjonsfilen heter *insight.conf*. Alle nøkler er dokumentert i konfigurasjonsfilen. Ved endring må
-applikasjonen restartes.
+Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen *formats*. Alle filene som slutter på *.conf* i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
 
-<a id="org9a35a9c"></a>
+<a id="org689337d"></a>
 
 # Ønsker, feil og mangler
 
+-   [RA-20181209-01] Innlesing av arkivstruktur til minne, denne topper lett ut ved 8 GB minne ved det største arkivuttrekket som er prøvd. I tillegg medførte antatte feilmeldinger i bakgrunnen til at pcen saknet betraktelig, før den til slutt ikke svarte og trengte hard omstart.
+-   [RA-20181209-02] Programmet mangler klar tilbakemelding om når en handling er ferdig, kan fint stå lang tid på 100% og jobbe.
+-   [RA-20181209-03] Det er en grunn til at uttrekksleverandører lager mapper med maks 5000 filer per mappe: FAT-partisjoner har et tak på 65,534 filer per mappe, mens NTFS har et tak på 4,29 milliarder. En idé til vedleggs-mappen.
+-   [RA-20181209-04] For det andre arkivuttrekket ble vedlegg-filen dumpet lenge etter indeksering var ferdig, tyder på at oppgaven ble forsøkt utført i minne. Pga. flertråds-løsningen er dette forståelig, men lite ønsket (stort minneforbruk).
 -   [IKAMR-20180515-01] Du burde kanskje hatt en boks med informasjon eller på en eller annen måte oversiktlig vist hvilke uttrekk du faktisk har åpen no som kan søkes i?
 -   [IKAMR-20180515-02] Det samme gjelder treff i søk, hvordan vet jeg hvilken av uttrekkene søket fant sine treff i?
 -   [IKAMR-20180514-01] Etter å ha lukket uttrekk: Her står "Import ble avbrutt av brukeren", mener programmet at jeg har avbrutt fordi jeg klikket LUKK?
@@ -144,7 +170,7 @@ applikasjonen restartes.
     på disken.
 
 
-<a id="org83eac9f"></a>
+<a id="org3b44f19"></a>
 
 # Hvordan rapportere feil
 
@@ -152,19 +178,89 @@ ole.liabo@piql.com
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
 
-<a id="org7b9de2e"></a>
+<a id="orgc072b22"></a>
 
 # Historikk
 
 
-<a id="orged6794c"></a>
+<a id="org55c3ed2"></a>
+
+## innsyn-v1.1.0
+
+
+<a id="orgfc6b468"></a>
+
+### DONE Barne-import skal ikke lage import rapport i hovedmappen
+
+
+<a id="org19531d5"></a>
+
+### DONE TAR filnavn skal brukes til å bygge opp treet.
+
+
+<a id="orgd34eb6e"></a>
+
+### DONE Knapper skal ha fast størrelse
+
+
+<a id="org09655cc"></a>
+
+### Formater avleveringsliste formatet
+
+
+<a id="org0cbd5e6"></a>
+
+### Støtte for å vise elementer inne i taren
+
+
+<a id="orgbd9dfa6"></a>
+
+### Tekst bokser i info view bør være multi line
+
+
+<a id="orge83c416"></a>
+
+### Krasj ved Unload på node
+
+
+<a id="orgd4f832b"></a>
+
+### Knapper har mye luft rundt seg
+
+
+<a id="org88ca11a"></a>
+
+### import med stor bokstav
+
+
+<a id="org916e60e"></a>
+
+### Legg inn format spesifik link om filformatet
+
+
+<a id="org5621b2d"></a>
+
+### Støtte for lasting av "base" format
+
+
+<a id="org516db23"></a>
+
+### Nye funksjoner
+
+-   Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.
+-   Støtte for import av TAR filer.
+-   Støtte for import av dokumenter som refereres fra hoveddokumentet. Det importerte dokumentet lastes inn og blir en del av nodetreet.
+-   Støtte for sjekksumvalidering av filer referert fra node treet.
+
+
+<a id="org424cce4"></a>
 
 ## 2018.06.01 innsyn-v1.0.0
 
 -   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 
-<a id="orge6c7468"></a>
+<a id="org3c93930"></a>
 
 ## 2018.04.13 innsyn-v1.0.0-rc1
 
@@ -187,7 +283,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
 
-<a id="org76a4f05"></a>
+<a id="org75a5353"></a>
 
 ## 2018.02.05 innsyn-v1.0.0-beta2
 
@@ -209,9 +305,25 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 -   [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
 
-<a id="org759ec1b"></a>
+<a id="org40ee344"></a>
 
 ## 2018.01.18 innsyn-v1.0.0-beta1
 
 Første versjon levert til beta test.
+
+
+<a id="org01f60f9"></a>
+
+# Utvikling
+
+Programmet er laget ved hjelp av Qt rammeverket. Er dette installert kan man bygge med:
+
+    (cd src/thirdparty ; unzip quazip-0.7.3.zip)
+    ./update-translations.sh
+    qmake
+    make
+
+For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:
+create-release-osx.sh
+create-release.cmd
 
