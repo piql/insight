@@ -134,7 +134,15 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 *** DONE Barne-import skal ikke lage import rapport i hovedmappen
 *** DONE TAR filnavn skal brukes til å bygge opp treet.
 *** DONE Knapper skal ha fast størrelse
-*** Formater avleveringsliste formatet
+*** DONE Vis knapp på \*.tif og \*.pdf og \*.csv
+*** DONE /Archivematica AIP/: Håndtere *Åpne* etter at programmet er åpnet lukket. 
+*** DONE /avlxml/: Bytte navn fra EPJ til AVLXML.
+*** DONE Formater avleveringsliste formatet
+*** Rapport: Viser node navn som %node% - %leafnode%
+*** Rapport: Failed to open image: rapport.xml
+*** Rapport: Print sends attachments to printer before user has confirmed anything
+*** Rapport: To Export Rapport hvis noden er fra en barne-import
+
 *** Støtte for å vise elementer inne i taren
 *** Tekst bokser i info view bør være multi line
 *** Krasj ved Unload på node

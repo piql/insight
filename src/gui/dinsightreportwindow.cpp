@@ -161,9 +161,19 @@ bool DInsightReportWindow::printAttachments( QPrinter& printer )
                 return false;
             }
         }
-        else
+        else if ( attachment.endsWith(".tif", Qt::CaseSensitivity::CaseInsensitive) ||
+                  attachment.endsWith(".tiff", Qt::CaseSensitivity::CaseInsensitive) ||
+                  attachment.endsWith(".jpg", Qt::CaseSensitivity::CaseInsensitive) ||
+                  attachment.endsWith(".jpeg", Qt::CaseSensitivity::CaseInsensitive) )
         {
             if ( !printImageAttachment( painter, printer, attachment ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !printTextAttachment( painter, printer, attachment ) )
             {
                 return false;
             }
@@ -223,6 +233,24 @@ bool DInsightReportWindow::printImageAttachment( QPainter& painter, QPrinter& pr
 
     painter.drawImage( 0, 0, image );
     printer.newPage();
+
+    return true;
+}
+
+
+bool DInsightReportWindow::printTextAttachment( QPainter& /*painter*/, QPrinter& printer, const QString& attachment )
+{
+    QFile data(attachment);
+    if ( !data.open(QFile::ReadOnly) )
+    {
+        QMessageBox::warning( this, tr( "Failed to open file" ), tr( "Failed to open file: %1" ).arg( attachment ) );
+        return false;
+    }
+
+    QTextStream out( &data );
+    QTextDocument doc( out.readAll() );
+    doc.setPageSize( printer.pageRect().size() ); // This is necessary if you want to hide the page number
+    doc.print( &printer );
 
     return true;
 }
@@ -333,14 +361,14 @@ void DInsightReportWindow::printButtonClicked()
     QPrinter printer;
     QPrintDialog dialog( &printer, this );
     dialog.setWindowTitle( tr("Print Report") );
-    if ( dialog.exec() != QDialog::Accepted ) 
+    if ( dialog.exec() != QDialog::Accepted )
     {
         return;
     }
 
-    printReport( printer );
+    bool printOK = printReport( printer );
 
-    if ( includeAttachments == QMessageBox::Yes )
+    if ( printOK && includeAttachments == QMessageBox::Yes )
     {
         printAttachments( printer );
     }

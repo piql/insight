@@ -567,6 +567,16 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
         return nullptr;
     }
 
+    DLeafNode* extractDirLeaf = import->m_RootItem->findLeaf( ExtractDirKey().toStdString().c_str() );
+    if ( extractDirLeaf )
+    {
+        import->m_ExtractDir = QString( extractDirLeaf->m_Value );
+    }
+    else
+    {
+        // Not all formats have an extract dir
+    }
+
     return import;
 }
 
@@ -810,6 +820,18 @@ QString DImport::ReportsDirKey()
 {
     return tr("reportsFolder");
 }
+
+//----------------------------------------------------------------------------
+/*!
+ *  Return node name for extract dir. This is where import formats that are
+ *  containers (TAR, ZIP, etc) are extracted during import.
+ */
+
+QString DImport::ExtractDirKey()
+{
+    return tr("extractFolder");
+}
+
 
 void DImport::SetReportFormat( const DImportFormat* importFormat )
 {

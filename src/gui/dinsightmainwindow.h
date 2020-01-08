@@ -58,6 +58,7 @@ public:
 
 public:
     static void    ReplaceString( QString& key, const DRegExps& regExps );
+    static QString GetTreeItemLabel(DTreeItem *item);
 
 public slots:
     void importFileFinished( bool ok );

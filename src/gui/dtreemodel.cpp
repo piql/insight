@@ -205,69 +205,9 @@ QVariant DTreeModel::data(const QModelIndex &index, int role /*= Qt::DisplayRole
     }
     else if (role == Qt::DisplayRole)
     {
-        static QRegularExpression getVariables("%(.*?)%");
-        static QString nodeVariable( "%node%" );
         DTreeItem *item = static_cast<DTreeItem*>(index.internalPointer());
 
-        QString nodeName = QString( item->m_Text );
-        const DRegExps& labelRegExp = item->labelRegExp();
-        const DRegExps& nodeRegExp = item->nodeRegExp();
-
-        
-        QString label;
-        bool foundLabelMatch = false;
-        for ( int i = 0; i < labelRegExp.length(); i += 2 )
-        {
-            QRegularExpressionMatch match = labelRegExp.at(i).match( nodeName );
-            if ( match.hasMatch() )
-            {
-                label = labelRegExp.at(i+1).pattern();
-    
-                // extract all varable names
-                QRegularExpressionMatchIterator it = getVariables.globalMatch( label );
-                while ( it.hasNext() ) 
-                {                
-                    QRegularExpressionMatch match = it.next();
-                    QString word = match.captured(1); 
-
-                    if ( word == "node" )
-                    {
-                        DInsightMainWindow::ReplaceString( nodeName, nodeRegExp );
-                        label.replace( nodeVariable, nodeName );
-                    }
-                    else
-                    {
-                        // Search in nodes
-                        DLeafNodesIterator nodeIt = item->m_Nodes.begin();
-                        bool nodeFound = false;
-                        while ( nodeIt != item->m_Nodes.end() )
-                        {
-                            if ( QString((*nodeIt)->m_Key) == word )
-                            {
-                                label.replace( QString("%%1%").arg( word ), (*nodeIt)->m_Value );
-                                nodeFound = true;
-                                break;
-                            }
-                            nodeIt++;
-                        }
-
-                        if ( !nodeFound )
-                        {
-                            label = item->m_Text; // Default to text from XML if not found
-                        }
-                    }
-                    
-                }
-                foundLabelMatch = true;
-                break;    
-            }
-        }
-
-        if ( !foundLabelMatch )
-        {
-            label = nodeName;
-            DInsightMainWindow::ReplaceString( label, nodeRegExp );
-        }
+        QString label = DInsightMainWindow::GetTreeItemLabel(item);
 
         return QVariant( label );
     }

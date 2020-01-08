@@ -1994,6 +1994,12 @@ void DInsightMainWindow::exportButtonClicked()
         DImportsIterator itEnd = m_Imports.end();
         while ( it != itEnd )
         {
+            // Exclude child imports
+            if ( !(*it)->root()->isToplevelRoot() )
+            {
+                it++;
+                continue;
+            }
 
             if ( treeNodeCountRecursive( (*it)->root(), true ) )
             {
@@ -2091,7 +2097,8 @@ void DInsightMainWindow::createReport(
     if ( !onlyChecked || parent->checked() )
     {
         // Add report heading - based on level
-        report.addHeader( parent->m_Text, level );
+        QString header = DInsightMainWindow::GetTreeItemLabel(parent);
+        report.addHeader( header, level );
 
         // Search through data attached to this node
         report.startTable( level );
@@ -2101,7 +2108,7 @@ void DInsightMainWindow::createReport(
             QString key = (*it)->m_Key;
             if (replaceLabels)
             {
-                ReplaceString( key, parent->labelRegExp() );
+                ReplaceString( key, parent->nodeRegExp() );
             }
             report.addRow( key, (*it)->m_Value );
 
@@ -2295,7 +2302,7 @@ QString DInsightMainWindow::getInfoViewLabel( const DImportFormat* format, const
 {
     QString k( key );
     ReplaceString( k, format->infoViewLabelRegExp() );
-    
+
     return k;
 }
 
@@ -2615,6 +2622,83 @@ void DInsightMainWindow::getNodesToExcludeFromSearch( DXmlParser::StringHash& no
             }
         }
     }
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  The tree item label is derived from the XML tag name.
+ *  Two regular expressions can change the name. The regular expressions are
+ *  defined in the import format config file, using the keys:
+ *   - TREEVIEW_LABEL_REGEXP: Composes label that can include child node data
+ *   - TREEVIEW_NODE_REGEXP: Replaces XML tag name
+ */
+
+QString DInsightMainWindow::GetTreeItemLabel(DTreeItem *item)
+{
+    QString nodeName = QString( item->m_Text );
+    const DRegExps& labelRegExp = item->labelRegExp();
+    const DRegExps& nodeRegExp = item->nodeRegExp();
+
+    static QRegularExpression getVariables("%(.*?)%");
+    static QString nodeVariable( "%node%" );
+
+    bool foundLabelMatch = false;
+    QString label;
+    for ( int i = 0; i < labelRegExp.length(); i += 2 )
+    {
+        QRegularExpressionMatch match = labelRegExp.at(i).match( nodeName );
+        if ( match.hasMatch() )
+        {
+            label = labelRegExp.at(i+1).pattern();
+
+            // extract all varable names
+            QRegularExpressionMatchIterator it = getVariables.globalMatch( label );
+            while ( it.hasNext() )
+            {
+                QRegularExpressionMatch match = it.next();
+                QString word = match.captured(1);
+
+                if ( word == "node" )
+                {
+                    DInsightMainWindow::ReplaceString( nodeName, nodeRegExp );
+                    label.replace( nodeVariable, nodeName );
+                }
+                else
+                {
+                    // Search in nodes
+                    DLeafNodesIterator nodeIt = item->m_Nodes.begin();
+                    bool nodeFound = false;
+                    while ( nodeIt != item->m_Nodes.end() )
+                    {
+                        if ( QString((*nodeIt)->m_Key) == word )
+                        {
+                            label.replace( QString("%%1%").arg( word ), (*nodeIt)->m_Value );
+                            nodeFound = true;
+                            break;
+                        }
+                        nodeIt++;
+                    }
+
+                    if ( !nodeFound )
+                    {
+                        label = item->m_Text; // Default to text from XML if not found
+                    }
+                }
+
+            }
+            foundLabelMatch = true;
+            break;
+        }
+    }
+
+    if ( !foundLabelMatch )
+    {
+        label = nodeName;
+        DInsightMainWindow::ReplaceString( label, nodeRegExp );
+    }
+
+    return label;
 }
 
 

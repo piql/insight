@@ -79,6 +79,7 @@ public:
 public:
     static QString              FileNameKey();
     static QString              ReportsDirKey();
+    static QString              ExtractDirKey();
     static void                 SetReportFormat( const DImportFormat* importFormat );
     static const DImportFormat* GetReportFormat();
 
