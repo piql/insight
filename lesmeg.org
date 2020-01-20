@@ -138,17 +138,20 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 *** DONE /Archivematica AIP/: Håndtere *Åpne* etter at programmet er åpnet lukket. 
 *** DONE /avlxml/: Bytte navn fra EPJ til AVLXML.
 *** DONE Formater avleveringsliste formatet
-*** Rapport: Viser node navn som %node% - %leafnode%
-*** Rapport: Failed to open image: rapport.xml
+*** DONE Rapport: Viser node navn som %node% - %leafnode%
+*** DONE Rapport: Overskrift - kjører ikke regexp
+*** DONE Rapport: To Export Rapport hvis noden er fra en barne-import
+*** DONE Rapport: Failed to open image: rapport.xml
+*** DONE Legg inn format spesifik link om filformatet
 *** Rapport: Print sends attachments to printer before user has confirmed anything
-*** Rapport: To Export Rapport hvis noden er fra en barne-import
+*** Indexer: Setup for OS-X / linux
+*** Crash when opening *.md5 files as part of TAR 
 
 *** Støtte for å vise elementer inne i taren
 *** Tekst bokser i info view bør være multi line
 *** Krasj ved Unload på node
 *** Knapper har mye luft rundt seg
 *** import med stor bokstav
-*** Legg inn format spesifik link om filformatet
 *** Støtte for lasting av "base" format
 *** Nye funksjoner
 - Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.

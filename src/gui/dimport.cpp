@@ -72,16 +72,23 @@ DImport::~DImport()
  *  Loading report XML.
  */
 
-void DImport::loadReport()
+bool DImport::loadReport()
 {
+    assert( m_XmlParser == nullptr );
     m_XmlParser = new DXmlParser( &m_TreeItems, m_FileName, m_Model, m_RootItem, GetReportFormat() );
     m_XmlParser->start();
     m_XmlParser->wait();
 
-    m_RootItem = m_XmlParser->root();
+    bool loadOk = m_XmlParser->loadedOK();
+    if ( loadOk )
+    {
+        m_RootItem = m_XmlParser->root();
+    }
 
     delete m_XmlParser;
     m_XmlParser = nullptr;
+
+    return loadOk;
 }
 
 
@@ -520,7 +527,12 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
     import->m_FileName = fileName;
     import->m_FileNameDir = QFileInfo( import->m_FileName ).path();
     import->m_RootItem = nullptr;
-    import->loadReport();
+    if ( !import->loadReport() )
+    {
+        DInsightConfig::Log() << "Import failed: " << fileName << " XML parsing failed." << endl;
+        delete import;
+        return nullptr;
+    }
 
     // Find format in report:
     DLeafNode* fileFormatNode = import->m_RootItem->findLeaf( "importFormat" );

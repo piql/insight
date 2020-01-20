@@ -50,7 +50,7 @@ public:
     ~DImport();
 
 public:
-    void            loadReport();
+    bool            loadReport();
     void            load( DXmlParser* parser );
     void            load( const DImportFormat* format );
     void            unload();

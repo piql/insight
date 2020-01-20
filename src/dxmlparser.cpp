@@ -296,6 +296,17 @@ unsigned long DXmlParser::nodeCount()
 
 
 //----------------------------------------------------------------------------
+/*!
+ *  Returns true if XML parsing was successful.
+ */
+
+bool DXmlParser::loadedOK() const
+{
+    return m_LoadedOk;
+}
+
+
+//----------------------------------------------------------------------------
 /*! 
  *  Thread entry point
  */
@@ -328,6 +339,8 @@ void DXmlParser::run()
     context.m_RootNode = m_RootNode;
     context.m_ImportFormat = m_ImportFormat;
 
+    m_LoadedOk = true;
+
     if ( context.m_FileHandle == -1 )
     {
         DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << endl;
@@ -354,9 +367,16 @@ void DXmlParser::run()
         char *b = buffer;
         while ( bytesRead )
         {
-        r = yxml_parse(x, *b);
-        sax_cb(x, r, &context);
+            r = yxml_parse(x, *b);
 
+            if ( r == YXML_ESYN  )
+            {
+                requestInterruption();
+                m_LoadedOk = false;
+                break;
+            }
+
+            sax_cb(x, r, &context);
             b++;
             bytesRead--;
         }

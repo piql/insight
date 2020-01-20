@@ -66,9 +66,10 @@ public:
     DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode, const DImportFormat* importFormat );
     virtual ~DXmlParser();
 
-    unsigned long   nodeCount();
-    DTreeRootItem*  root();
+    unsigned long         nodeCount();
+    DTreeRootItem*        root();
     const DImportFormat*  importFormat() const;
+    bool                  loadedOK() const;
 
 signals:
     void       nodesReady( unsigned long count, float progress );    
@@ -91,9 +92,10 @@ protected:
     DTreeModel*           m_Model;
     DTreeRootItem*        m_RootNode;
     const DImportFormat*  m_ImportFormat;
+    bool                  m_LoadedOk;
 
     // Statistics
-    unsigned long   m_NodeCount;
+    unsigned long         m_NodeCount;
 
     friend class DXmlContext;
 };
