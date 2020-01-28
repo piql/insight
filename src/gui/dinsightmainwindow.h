@@ -62,7 +62,7 @@ public:
 
 public slots:
     void importFileFinished( bool ok );
-    void indexingFinished( bool ok );
+    void indexingFinished( DImport::DIndexingState state );
     void indexingProgress( float progress );
     void indexingIndexerStated();
     void loadXmlProgress( unsigned long /*count*/, float progress );

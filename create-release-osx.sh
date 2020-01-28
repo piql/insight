@@ -64,7 +64,7 @@ install_name_tool -change \
     @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui \
     $appname/Contents/Frameworks//QtSvg.framework/Versions/5/QtSvg
 
-Install_name_tool -change \
+install_name_tool -change \
     /usr/local/Cellar/qt5/$qtver/lib/QtWidgets.framework/Versions/5/QtWidgets \
     @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets \
     $appname/Contents/Frameworks//QtSvg.framework/Versions/5/QtSvg

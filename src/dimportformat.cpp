@@ -91,7 +91,21 @@ const DRegExps & DImportFormat::checksumSourceTypeRegExp() const
 
 QString DImportFormat::extractTool( const QString& fileName, const QString& destination ) const
 {
-    QString tool = m_ExtractTool;
+    if (m_ExtractTool.length() == 0 || m_ExtractTool.length() % 2 != 0)
+    {
+        return QString();
+    }
+
+    QString extractTool = m_ExtractTool[0+1].pattern(); // First tool is default
+    for ( int i = 0; i < m_ExtractTool.length(); i += 2 )
+    {
+        if ( m_ExtractTool[i].match(fileName).hasMatch() )
+        {
+            extractTool = m_ExtractTool[i+1].pattern();
+        }
+    }
+
+    QString tool = extractTool;
     tool.replace("%FILENAME%", fileName);
     tool.replace("%DESTINATION%", destination);
 
@@ -104,7 +118,6 @@ QString DImportFormat::fileIdTool( const QString& fileName ) const
     tool.replace("%FILENAME%", fileName);
     return tool;
 }
-
 
 DRegExps DImportFormat::getRegExps( const QString& key )
 {
@@ -166,7 +179,7 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
     format.m_Parser = format.m_Config->get( "IMPORT_FORMAT_PARSER", "xml" );
 
     // Exctract tool - used to expand some format types (ZIP, 7Z, tgz, etc) before parsing
-    format.m_ExtractTool = format.m_Config->get( "EXTRACT_TOOL", "" );
+    format.m_ExtractTool = format.m_Config->getRegExps( "EXTRACT_TOOL", "" );
 
     // File id tool - used to identify file formats, prefered before extension matching
     format.m_FileIdTool = format.m_Config->get( "IMPORT_FORMAT_ID_TOOL", "" );

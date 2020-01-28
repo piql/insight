@@ -73,7 +73,7 @@ private:
     DLeafMatchers               m_ImportTypeRegExp;
     DRegExps                    m_ChecksumTypeRegExp;
     DRegExps                    m_ChecksumSourceTypeRegExp;
-    QString                     m_ExtractTool;
+    DRegExps                    m_ExtractTool;
     QString                     m_FileIdTool;
 
     DImportFormat*              m_BaseFormat;

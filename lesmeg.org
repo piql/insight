@@ -5,7 +5,7 @@
 #+OPTIONS: ^:nil
 #+DESCRIPTION:KDRS Innsyn
 #+LANGUAGE: no
-#+CREATOR: Cooyright (c) 2018 <a href="http://www.piql.com">Piql AS</a>
+#+CREATOR: Cooyright (c) 2020 <a href="http://www.piql.com">Piql AS</a>
 #+latex_header: \hypersetup{colorlinks=true,linkcolor=blue}
 # #+TOC: headlines 5
 
@@ -24,6 +24,20 @@ Innsyn kommer med støtte for disse filformatene:
 * Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
+
+** OS-X
+Indekseringsverktøyet Sphinx må ligge i søkestien. Installeres enklest med Homebrew:
+#+BEGIN_SRC
+datamaskin$ brew install sphinx
+#+END_SRC
+
+Sjekk at det ligger i pathen med:
+#+BEGIN_SRC
+datamaskin$ indexer 
+Sphinx 2.2.11-id64-release (95ae9a6)
+Copyright (c) 2001-2016, Andrew Aksyonoff
+Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
+#+END_SRC
 
 * Installasjon
 
@@ -129,35 +143,17 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 
 * Historikk
 
-** innsyn-v1.1.0
-
-*** DONE Barne-import skal ikke lage import rapport i hovedmappen
-*** DONE TAR filnavn skal brukes til å bygge opp treet.
-*** DONE Knapper skal ha fast størrelse
-*** DONE Vis knapp på \*.tif og \*.pdf og \*.csv
-*** DONE /Archivematica AIP/: Håndtere *Åpne* etter at programmet er åpnet lukket. 
-*** DONE /avlxml/: Bytte navn fra EPJ til AVLXML.
-*** DONE Formater avleveringsliste formatet
-*** DONE Rapport: Viser node navn som %node% - %leafnode%
-*** DONE Rapport: Overskrift - kjører ikke regexp
-*** DONE Rapport: To Export Rapport hvis noden er fra en barne-import
-*** DONE Rapport: Failed to open image: rapport.xml
-*** DONE Legg inn format spesifik link om filformatet
-*** Rapport: Print sends attachments to printer before user has confirmed anything
-*** Indexer: Setup for OS-X / linux
-*** Crash when opening *.md5 files as part of TAR 
-
-*** Støtte for å vise elementer inne i taren
-*** Tekst bokser i info view bør være multi line
-*** Krasj ved Unload på node
-*** Knapper har mye luft rundt seg
-*** import med stor bokstav
-*** Støtte for lasting av "base" format
+** innsyn-v1.1.0-beta1
 *** Nye funksjoner
-- Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.
-- Støtte for import av TAR filer.
-- Støtte for import av dokumenter som refereres fra hoveddokumentet. Det importerte dokumentet lastes inn og blir en del av nodetreet.
-- Støtte for sjekksumvalidering av filer referert fra node treet.
+ - Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.
+ - Støtte for import av TAR filer og andre pakkeformater. Filen pakkes ut under rapport mappen og indekseres.
+ - Støtte for import av dokumenter som refereres fra hoveddokumentet. Det importerte dokumentet lastes inn og blir en del av nodetreet.
+ - Støtte for sjekksumvalidering av filer referert fra node treet.
+ - Støtte for å endre XML-løv noder basert på både node navnet og innholdet i noden.
+*** Feilrettinger
+ - Oppsett av Sphinx indexer og søkemotor på Linux / OS-X.
+ - Melding etter konvertering av vedlegg. Får beskjed både om at konvertering feilet og at vedlegg er tomme.
+
 ** 2018.06.01 innsyn-v1.0.0
 
 - [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
@@ -213,6 +209,12 @@ Programmet er laget ved hjelp av Qt rammeverket. Er dette installert kan man byg
 ./update-translations.sh
 qmake
 make
+#+END_SRC
+
+Det kan også være nødvendig å bygge MySql driveren:
+#+BEGIN_SRC
+cd $QTDIR/qtbase/src/plugins/sqldrivers/mysql
+make install
 #+END_SRC
 
 For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:

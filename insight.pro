@@ -195,6 +195,13 @@ TRANSLATIONS      =   insight_no.ts \
                       insight_nn.ts \
                       insight_en.ts
 
+# Install create_xml tool, used by Sphinx indexer
+createxml.depends = src/thirdparty/create_xml/create_xml.pro
+createxml.target = sphinx/create_xml
+unix:createxml.commands = (cd src/thirdparty/create_xml; qmake; make; cp release/create_xml ../../../sphinx/. )
+macx:createxml.commands = (cd src/thirdparty/create_xml; qmake; make; cp create_xml.app/Contents/MacOS/create_xml ../../../sphinx/. )
+win32:createxml.commands = (cd src/thirdparty/create_xml; qmake; make; copy release/create_xml ../../../sphinx/. )
+
 # OS-X create icons
 createicons.depends = src/gui/resources/icon_32x32.png
 createicons.target = src/gui/resources/icon_32x32.icns
@@ -226,3 +233,5 @@ QMAKE_BUNDLE_DATA   += CONFIG_FILES LANGUAGE_FILES
 #!macx:ICON                = src/gui/resources/icon_32x32.png
 #macx:QMAKE_EXTRA_TARGETS += createicons
 #macx:PRE_TARGETDEPS      += src/gui/resources/icon_32x32.icns
+#PRE_TARGETDEPS      += sphinx/create_xml
+#QMAKE_EXTRA_TARGETS += createxml

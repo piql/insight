@@ -42,6 +42,7 @@ class DImport : public QObject
     Q_OBJECT
 public:
     enum DImportState { IMPORT_STATE_IMPORTING, IMPORT_STATE_CANCELING, IMPORT_STATE_INDEXING, IMPORT_STATE_DONE };
+    enum DIndexingState { INDEXING_STATE_OK, INDEXING_STATE_CANCELED, INDEXING_STATE_ERROR };
 
 private:
     DImport( DTreeModel* model );
@@ -85,7 +86,7 @@ public:
 
 signals:
     void            imported( bool ok );
-    void            indexed( bool ok );
+    void            indexed( DIndexingState state );
     void            removed( bool ok );
 
 public slots:

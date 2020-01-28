@@ -1689,26 +1689,30 @@ void DInsightMainWindow::cancelSearchDeamon()
  *  Slot called when attachment indexer is finished
  */
 
-void DInsightMainWindow::indexingFinished( bool ok )
+void DInsightMainWindow::indexingFinished( DImport::DIndexingState state )
 {
     QString message;
     DImport* import = (DImport*)sender();
 
-    if ( ok )
+    if ( state == DImport::INDEXING_STATE_OK )
     {
         QString failedMessage;
-        int failCount = import->attachmentsFailedToConvert();
+        unsigned int failCount = import->attachmentsFailedToConvert();
         if ( failCount )
         {
             failedMessage = tr( "Warning: %1 attachments failed to convert. See report log for details." ).arg( failCount );
         }
-        int emptyCount = import->attachmentsEmpty();
+        unsigned int emptyCount = import->attachmentsEmpty();
         if ( emptyCount )
         {
             failedMessage += tr( " Warning: %1 attachments are empty. See report log for details." ).arg( emptyCount );
         }
 
         message = QString( tr( "Indexing of %1 attachments complete! %2" ) ).arg( import->attachmentsFound() ).arg( failedMessage );
+    }
+    else if ( state == DImport::INDEXING_STATE_ERROR )
+    {
+        message = QString( tr( "Failed to start indexer! See import log for more details." ) );
     }
     else
     {
@@ -2097,7 +2101,15 @@ void DInsightMainWindow::createReport(
     if ( !onlyChecked || parent->checked() )
     {
         // Add report heading - based on level
-        QString header = DInsightMainWindow::GetTreeItemLabel(parent);
+        QString header;
+        if ( replaceLabels )
+        {
+            header = DInsightMainWindow::GetTreeItemLabel( parent );
+        }
+        else
+        {
+            header = parent->m_Text;
+        }
         report.addHeader( header, level );
 
         // Search through data attached to this node
@@ -2539,7 +2551,7 @@ void DInsightMainWindow::startSearchDeamon()
     }
 
     QString defaultsSearchTool = "searchd.exe --config %CONFIG_FILE%";
-    QString searchTool = DInsightConfig::Get( "INDEXER_TOOL", defaultsSearchTool );
+    QString searchTool = DInsightConfig::Get( "SEARCH_DEAMON_TOOL", defaultsSearchTool );
 
     searchTool = searchTool.replace( "%CONFIG_FILE%", combinedConfigFile );
 
@@ -2634,7 +2646,7 @@ void DInsightMainWindow::getNodesToExcludeFromSearch( DXmlParser::StringHash& no
  *   - TREEVIEW_NODE_REGEXP: Replaces XML tag name
  */
 
-QString DInsightMainWindow::GetTreeItemLabel(DTreeItem *item)
+QString DInsightMainWindow::GetTreeItemLabel( DTreeItem *item )
 {
     QString nodeName = QString( item->m_Text );
     const DRegExps& labelRegExp = item->labelRegExp();

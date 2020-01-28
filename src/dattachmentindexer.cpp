@@ -87,7 +87,9 @@ void DPdf2Txt::run()
     }
     else
     {
-        emptyFile = QString( file.readAll() ).trimmed().length() != 0;
+        QString fileContent =  QString( file.readAll() );
+        QString fileContentTrimmed = fileContent.trimmed();
+        emptyFile = fileContentTrimmed.length() == 0;
     }
     
     
@@ -344,7 +346,7 @@ void DAttachmentIndexer::toolFinished( QProcess* toolExe, bool emptyFile, const 
         m_ConvertOK.push_back( index );
     }
 
-    if ( emptyFile )
+    if ( emptyFile && toolExe->error() != QProcess::FailedToStart)
     {
         *m_ConvertLog << attachment << ": " << tr("Convert result is empty (has no text)") << endl;
         m_AttachmentsEmpty.push_back( attachment );

@@ -67,6 +67,7 @@ DImport::~DImport()
 {
 }
 
+
 //----------------------------------------------------------------------------
 /*! 
  *  Loading report XML.
@@ -120,6 +121,7 @@ void DImport::load( const DImportFormat* format )
     
     load( parser );
 }
+
 
 //----------------------------------------------------------------------------
 /*! 
@@ -197,7 +199,7 @@ void DImport::unload()
 
 //----------------------------------------------------------------------------
 /*! 
- *  Index all attachment found for this import.
+ *  Index all attachments found for this import.
  */
 
 void DImport::index()
@@ -214,17 +216,23 @@ void DImport::index()
         m_AttachmentIndexer = nullptr;
     }
 
+    QString attachmentRootDir = m_FileNameDir;
+    if ( m_ExtractDir.length() )
+    {
+        attachmentRootDir = m_ExtractDir;
+    }
+
     assert( m_AttachmentIndexer == nullptr );
     m_AttachmentIndexer = new DAttachmentIndexer(
-        m_FileNameDir, 
+        attachmentRootDir,
         m_AttachmentParser, 
         m_ReportsDir,  
         attachmentsDir(),
         m_FileName );
-    connect( m_AttachmentIndexer, &DAttachmentIndexer::finished, this, &DImport::indexingFinished);
-    connect( m_AttachmentIndexer, &DAttachmentIndexer::progress, m_Window, &DInsightMainWindow::indexingProgress);
-    connect( m_AttachmentIndexer, &DAttachmentIndexer::indexerStarted, this, &DImport::indexingIndexerStarted);
-    connect( this, &DImport::indexed, m_Window, &DInsightMainWindow::indexingFinished);
+    connect( m_AttachmentIndexer, &DAttachmentIndexer::finished, this, &DImport::indexingFinished );
+    connect( m_AttachmentIndexer, &DAttachmentIndexer::progress, m_Window, &DInsightMainWindow::indexingProgress );
+    connect( m_AttachmentIndexer, &DAttachmentIndexer::indexerStarted, this, &DImport::indexingIndexerStarted );
+    connect( this, &DImport::indexed, m_Window, &DInsightMainWindow::indexingFinished );
 
     // Launch attachment extractor thread
     m_AttachmentIndexer->start();
@@ -318,12 +326,23 @@ void DImport::importFinished()
 
 //----------------------------------------------------------------------------
 /*! 
- *  Slot called when iindexing is finished.
+ *  Slot called when indexing is finished.
  */
 
 void DImport::indexingFinished()
 {
-    emit indexed( m_ImportState == IMPORT_STATE_INDEXING );
+    if ( m_AttachmentIndexer && m_AttachmentIndexer->error() )
+    {
+        emit indexed( DImport::INDEXING_STATE_ERROR );
+    }
+    else if ( m_ImportState == IMPORT_STATE_INDEXING )
+    {
+        emit indexed( DImport::INDEXING_STATE_OK );
+    }
+    else
+    {
+        emit indexed( DImport::INDEXING_STATE_CANCELED );
+    }
     m_ImportState = IMPORT_STATE_DONE;
 }
 
@@ -651,7 +670,7 @@ QString DImport::formatName()
 //----------------------------------------------------------------------------
 /*! 
  *  Return database name. The database name is used to query the search demon 
- *  when saerching through attachments.
+ *  when searching through attachments.
  */
 
 QString DImport::databaseName()

@@ -23,6 +23,7 @@
 #include    <QSettings>
 #include    <QMessageBox>
 #include    <QDir>
+#include    <QSqlDatabase>
 
 //  PLATFORM INCLUDES
 //
@@ -128,6 +129,8 @@ int  main( int argc, char* argv[] )
     QString languageFile = QString( "insight_%1.qm" ).arg( language );
     languageFile = DOsXTools::GetBundleResource( languageFile.toStdString() ).c_str();
 
+    DInsightConfig::Log() << QSqlDatabase::drivers() << endl;
+    DInsightConfig::Log() << QCoreApplication::libraryPaths() << endl;
 
     // Localization support
     QTranslator translator;
