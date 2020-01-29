@@ -129,20 +129,7 @@ QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoTe
  * \code
  * QString infoText;
  * infoText += "Version: " + QCoreApplication::applicationVersion() + "<br />";
-**  Copyright (c) 2020 Piql AS.
-**  
-**  This program is free software; you can redistribute it and/or modify
-**  it under the terms of the GNU General Public License as published by
-**  the Free Software Foundation; either version 3 of the License, or
-**  any later version.
-**  
-**  This program is distributed in the hope that it will be useful,
-**  but WITHOUT ANY WARRANTY; without even the implied warranty of
-**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**  GNU General Public License for more details.
-**  
-**  You should have received a copy of the GNU General Public License
-**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * infoText += "Copyright Piql 2010";
  * infoText += "<p>Support: <a href=\"mailto:support@cinevation.net\">support@conevation.net</a></p>";
  * infoText += "<p><a href=\"www.cinevation.net\">www.cinevation.net</a></p>";
  * \endcode
@@ -156,20 +143,7 @@ QAboutDialog::QAboutDialog(const QString& applicationName, const QString& bitmap
     // Set info label
     QString infoText;
     infoText += "Version: " + QCoreApplication::applicationVersion() + "<br />";
-**  Copyright (c) 2020 Piql AS.
-**  
-**  This program is free software; you can redistribute it and/or modify
-**  it under the terms of the GNU General Public License as published by
-**  the Free Software Foundation; either version 3 of the License, or
-**  any later version.
-**  
-**  This program is distributed in the hope that it will be useful,
-**  but WITHOUT ANY WARRANTY; without even the implied warranty of
-**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-**  GNU General Public License for more details.
-**  
-**  You should have received a copy of the GNU General Public License
-**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    infoText += "Copyright Piql 2015";
     infoText += "<p>Support: <a href=\"mailto:support@piql.com\">support@piql.com</a></p>";
     infoText += "<p><a href=\"www.piql.com\">www.piql.com</a></p>";
     m_Ui.infoTextLabel->setText( infoText );
