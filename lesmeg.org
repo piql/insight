@@ -25,10 +25,11 @@ Innsyn kommer med støtte for disse filformatene:
 
 Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
 
-** OS-X
+** OS-X / Linux
 Indekseringsverktøyet Sphinx må ligge i søkestien. Installeres enklest med Homebrew:
 #+BEGIN_SRC
-datamaskin$ brew install sphinx
+osx$ brew install sphinx
+centos-redhat$ sudo yum install sphinx
 #+END_SRC
 
 Sjekk at det ligger i pathen med:

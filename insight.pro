@@ -191,7 +191,7 @@ HEADERS          +=   src/drunguard.h \
                       $$TOOLS_INCLUDES \
                       $$POSIXTAR_INCLUDES   
 
-TRANSLATIONS      =   insight_no.ts \
+TRANSLATIONS      =   insight_nb.ts \
                       insight_nn.ts \
                       insight_en.ts
 
@@ -223,7 +223,7 @@ createicons.commands = \
     mv icon_32x32.icns src/gui/resources/.                 \' 
 
 
-LANGUAGE_FILES.files = insight_en.qm insight_no.qm insight_nn.qm
+LANGUAGE_FILES.files = insight_en.qm insight_nb.qm insight_nn.qm
 LANGUAGE_FILES.path  = Contents/Resources    
 CONFIG_FILES.files   = insight.conf formats testdata
 CONFIG_FILES.path    = Contents/Resources
