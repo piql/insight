@@ -1192,11 +1192,12 @@ void DInsightMainWindow::checksumClicked()
     {
         QCryptographicHash::Algorithm m_Method;
         const char* m_Name;
+        int m_Length;
     } methods[] =
     {
-        { QCryptographicHash::Sha256, "sha256" },
-        { QCryptographicHash::Sha512, "sha512" },
-        { QCryptographicHash::Sha1, "sha1" },
+        { QCryptographicHash::Sha256, "sha256", 256/8*2 },
+        { QCryptographicHash::Sha512, "sha512", 512/8*2 },
+        { QCryptographicHash::Sha1, "sha1", 20*2 },
     };
 
     // String length determines method
@@ -1209,7 +1210,7 @@ void DInsightMainWindow::checksumClicked()
             // Last method is default;
             algorithm = methods[i].m_Method;
             method = methods[i].m_Name;
-            if (methodLength == QCryptographicHash::hashLength(algorithm)*2)
+            if (methodLength == methods[i].m_Length/*QCryptographicHash::hashLength(algorithm)*2*/)
             {
                 break;
             }
@@ -2539,9 +2540,15 @@ QString DInsightMainWindow::createCombinedSearchConfigFile()
             QByteArray data = config.readAll();
             tempFile.write( data );                
         }
+	else
+        {
+            DInsightConfig::Log() << "Failed to open: " << "sphinx.conf" << endl;
+            return QString();
+        }
         return tempFile.fileName();    
     }
-
+    DInsightConfig::Log() << "Failed to open: " << "sphinx_temp.conf" << endl;
+    
     return QString();
 }
 
@@ -2573,6 +2580,8 @@ void DInsightMainWindow::startSearchDeamon()
     assert( m_SearchDeamonProcess == nullptr );
     m_SearchDeamonProcess = new QProcess( this );
     QObject::connect( m_SearchDeamonProcess, &QProcess::errorOccurred, this, &DInsightMainWindow::searchDeamonError );
+    QObject::connect( QCoreApplication::instance(), SIGNAL(aboutToQuit()), m_SearchDeamonProcess, SLOT(kill()));
+
     m_SearchDeamonProcess->start( searchTool );
 
 #if defined WIN32
@@ -2596,9 +2605,16 @@ void DInsightMainWindow::startSearchDeamon()
             if ( (*it)->hasChildren() )
             {
                 QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", (*it)->databaseName() );
+                if (!db.isValid())
+		{
+                   DInsightConfig::Log() << "Could not create database connection for: " << (*it)->databaseName() << endl;
+                }
                 db.setHostName( "localhost" );
-                //db.setConnectOptions( "CLIENT_INTERACTIVE=true" );
+                //db.setConnectOptions( "CLIENT_INTERACTIVE=TRUE" );
                 db.setPort( 9306 );
+		db.setUserName("root");
+		db.setPassword("");
+		db.setDatabaseName((*it)->databaseName());
                 /* Disabled since we dont know how long time the index needs to load..
                 if ( !db.open() )
                 {
@@ -2627,6 +2643,8 @@ void DInsightMainWindow::startSearchDeamon()
     {
         message = QString( tr( "Failed to start indexer!" ) );
     }
+
+    DInsightConfig::Log() << "Search deamon: " << message << endl;
 
     m_Ui.searchAttachmentsCheckBox->setVisible( startCount );
     m_StatusBar->showMessage( message );

@@ -190,7 +190,19 @@ void DSearchThread::run()
             {
                 QString dbName = (*it)->databaseName();
                 QSqlDatabase db = QSqlDatabase::database( dbName );
-                QString queryString = QString("SELECT\ni\nFROM\n%1\nWHERE\nMATCH('%2');").arg( dbName ).arg(m_SearchString);
+		if (!db.isOpen())
+                {
+		   if (!db.open())
+		   {
+		      DInsightConfig::Log() 
+                          << "Failed to open database: " 
+                          << db.lastError().text() 
+                          << " port: " << db.port()
+                          << " database: " << dbName
+                          << endl;
+		   }
+                }
+                QString queryString = QString("SELECT i FROM %1 WHERE MATCH('%2');").arg( dbName ).arg(m_SearchString);
                 QSqlQuery query( queryString, db );
                 bool ok = query.exec();
                 if ( !ok )
@@ -233,7 +245,7 @@ void DSearchThread::run()
         bool startFound = m_CurrentPage == 0;
 
         // Could consider launching one thread per root node here...
-        SearchResult res;
+        SearchResult res = SEARCH_NOT_FOUND;
         unsigned int c = m_Model->rootCount();
         for ( unsigned int i = 0; i < c; i++ )
         {
