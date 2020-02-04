@@ -29,6 +29,7 @@
 #include    "dtreemodel.h"
 #include    "dtreeitem.h"
 #include    "dattachmentindexer.h"
+#include    "dinsightconfig.h"
 
 //  QT INCLUDES
 //
@@ -42,6 +43,7 @@
 #include    <string>
 #include    <cctype>
 #include    <locale>
+#include    <iostream>
 
 //  NAMESPACES
 //
@@ -181,6 +183,38 @@ void DSearchThread::run()
     m_MatchCount = 0;
     if ( searchAttachments )
     {
+        QSqlDatabase db;
+        if ( QSqlDatabase::contains( "insight" ) )
+        {
+            // Database must be created in same thread..
+            QSqlDatabase::removeDatabase("insight");
+        }
+        db = QSqlDatabase::addDatabase( "QMYSQL", "insight" );
+
+        if (!db.isValid())
+        {
+           DInsightConfig::Log() << "Could not create database connection" << endl;
+        }
+        db.setHostName( "127.0.0.1" );
+        //db.setConnectOptions( "CLIENT_INTERACTIVE=TRUE" );
+        db.setPort( 9306 );
+        //db.setUserName("root");
+        //db.setPassword("");
+        //db.setDatabaseName((*it)->databaseName());
+        if (!db.isOpen())
+        {
+           if (!db.open())
+           {
+              DInsightConfig::Log()
+                  << "Failed to open database: "
+                  << db.lastError().text()
+                  << " port: " << db.port()
+                  << endl;
+              m_SearchResult = SEARCH_ABORTED;
+              return;
+            }
+        }
+
         DImportsIterator it = m_Imports->begin();
         DImportsIterator itEnd = m_Imports->end();
         int importIndex = 0;
@@ -189,19 +223,6 @@ void DSearchThread::run()
             if ( (*it)->hasChildren() )
             {
                 QString dbName = (*it)->databaseName();
-                QSqlDatabase db = QSqlDatabase::database( dbName );
-		if (!db.isOpen())
-                {
-		   if (!db.open())
-		   {
-		      DInsightConfig::Log() 
-                          << "Failed to open database: " 
-                          << db.lastError().text() 
-                          << " port: " << db.port()
-                          << " database: " << dbName
-                          << endl;
-		   }
-                }
                 QString queryString = QString("SELECT i FROM %1 WHERE MATCH('%2');").arg( dbName ).arg(m_SearchString);
                 QSqlQuery query( queryString, db );
                 bool ok = query.exec();

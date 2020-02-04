@@ -39,7 +39,7 @@ win32 {
         PLATFORM              =   W64
     }
 }
-macx:POPPLER_VER               =  0.77.0
+macx:POPPLER_VER               =  0.84.0
 
 OBJECTS_DIR                    =  obj/$$PLATFORM/$$CURBUILD
 MOC_DIR                        =  obj/$$PLATFORM/$$CURBUILD

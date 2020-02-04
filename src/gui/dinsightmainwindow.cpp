@@ -2523,6 +2523,11 @@ QString DInsightMainWindow::createCombinedSearchConfigFile()
                     QByteArray data = config.readAll();
                     tempFile.write( data );                
                     importCount++;
+                    //DInsightConfig::Log() << "Opened: " << (*it)->searchConfig() << endl;
+                }
+                else
+                {
+                    DInsightConfig::Log() << "Failed to open: " << (*it)->searchConfig() << endl;
                 }
             }
             it++;
@@ -2604,17 +2609,19 @@ void DInsightMainWindow::startSearchDeamon()
         {
             if ( (*it)->hasChildren() )
             {
+                /* Runs in different thread - gives error on Qt 5.14
                 QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", (*it)->databaseName() );
                 if (!db.isValid())
-		{
+                {
                    DInsightConfig::Log() << "Could not create database connection for: " << (*it)->databaseName() << endl;
                 }
                 db.setHostName( "localhost" );
                 //db.setConnectOptions( "CLIENT_INTERACTIVE=TRUE" );
                 db.setPort( 9306 );
-		db.setUserName("root");
-		db.setPassword("");
-		db.setDatabaseName((*it)->databaseName());
+                db.setUserName("root");
+                db.setPassword("");
+                db.setDatabaseName((*it)->databaseName());
+                */
                 /* Disabled since we dont know how long time the index needs to load..
                 if ( !db.open() )
                 {
