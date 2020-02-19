@@ -239,6 +239,7 @@ DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
     // Enumerate all project files
     enumerateProjects( DInsightReport::getReportsRootDir() );
 
+
     // Testing
     QString autostartFile = DInsightConfig::Get( "STARTUP_LOAD_FILE", "" );
     if ( autostartFile.length() )
@@ -377,49 +378,53 @@ void DInsightMainWindow::enumerateProjects( const QString& rootDir )
  */
 
 void DInsightMainWindow::importFile(
-        const QString& fileNameRelative,
-        const QString& importFormatName,
-        DTreeItem* parent )
+    const QString& fileNameRelative,
+    const QString& importFormatName,
+    DTreeItem* parent )
 {
     // Cancel search
     cancelSearch();
     cancelSearchDeamon();
 
     // Convert to full path
-    QFileInfo info( fileNameRelative );
-    if ( !info.exists() )
+    QString fileName;
+    if ( importFormatName != "random" )
     {
-        DInsightConfig::Log() << "Importing failed, file does not exist: " << fileNameRelative << endl;
-        QMessageBox::information( this, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileNameRelative ), QMessageBox::Ok );
-        return;
-    }
-    
-    QString fileName = info.absoluteFilePath();
-    DInsightConfig::Log() << "Importing file: " << fileName << endl;
-
-    // First check that file is not loaded already
-    DImportsIterator it = m_Imports.begin();
-    DImportsIterator itEnd = m_Imports.end();
-    while ( it != itEnd )
-    {
-        if ( (*it)->fileName() == fileName )
+        QFileInfo info( fileNameRelative );
+        if ( !info.exists() )
         {
-            if ( (*it)->hasChildren() )
-            {
-                QMessageBox::information( this, tr("Already loaded"), tr("Project '%1' is already loaded. Please unload first if you want to re-load it.").arg( fileName ) );
-                return;
-            }
-            else
-            {
-                DInsightConfig::Log() << "Already loaded, reloading" << endl;
-                m_CurrentImport = *it;
-                (*it)->load( m_ImportFormats->find( (*it)->formatName() ) );
-                return;
-            }
+            DInsightConfig::Log() << "Importing failed, file does not exist: " << fileNameRelative << endl;
+            QMessageBox::information( this, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileNameRelative ), QMessageBox::Ok );
+            return;
         }
 
-        it++;
-    }    
+        fileName = info.absoluteFilePath();
+        DInsightConfig::Log() << "Importing file: " << fileName << endl;
+
+        // First check that file is not loaded already
+        DImportsIterator it = m_Imports.begin();
+        DImportsIterator itEnd = m_Imports.end();
+        while ( it != itEnd )
+        {
+            if ( (*it)->fileName() == fileName )
+            {
+                if ( (*it)->hasChildren() )
+                {
+                    QMessageBox::information( this, tr("Already loaded"), tr("Project '%1' is already loaded. Please unload first if you want to re-load it.").arg( fileName ) );
+                    return;
+                }
+                else
+                {
+                    DInsightConfig::Log() << "Already loaded, reloading" << endl;
+                    m_CurrentImport = *it;
+                    (*it)->load( m_ImportFormats->find( (*it)->formatName() ) );
+                    return;
+                }
+            }
+
+            it++;
+        }
+    }
 
     // Determine what type of import - could replace with factory pattern
     DImport* parentImport = nullptr;
@@ -429,8 +434,13 @@ void DInsightMainWindow::importFile(
     }
     
     DImport* import = nullptr;
-    QString suffix = info.suffix();
     const DImportFormat* format = m_ImportFormats->find(importFormatName);
+    if (format == nullptr)
+    {
+        QMessageBox::information( this, tr("Unknown parser type"), tr("No import parser registered for %1.").arg( format->parser() ) );
+        return;
+    }
+
     if ( format->parser() == "xml" )
     {
         import = DImport::CreateFromXml( fileName, m_Model, this, format, parent, parentImport );
@@ -442,6 +452,10 @@ void DInsightMainWindow::importFile(
     else if ( format->parser() == "dir" )
     {
         import = DImport::CreateFromExtract( fileName, m_Model, this, format, parent, parentImport );
+    }
+    else if ( importFormatName == "random" )
+    {
+        import = DImport::CreateFromXml( "", m_Model, this, format, parent, parentImport );
     }
     else
     {

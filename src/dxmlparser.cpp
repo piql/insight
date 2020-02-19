@@ -54,6 +54,152 @@
 using namespace std;
 
 
+class DXmlStream
+{
+public:
+    virtual ~DXmlStream() {}
+    virtual bool open() = 0;
+    virtual ssize_t read(char* buffer, size_t bufferSize) = 0;
+    virtual off_t pos() = 0;
+    virtual size_t size() = 0;
+};
+
+class DFileStream : public DXmlStream
+{
+public:
+    DFileStream(const QString& fileName)
+    {
+        m_FileName = fileName;
+    }
+    ~DFileStream()
+    {
+#if defined (WIN32)
+        _close( m_FileHandle );
+#else
+        close( m_FileHandle );
+#endif
+    }
+
+    bool open()
+    {
+#if defined (WIN32)
+        context.m_FileHandle = _open( m_FileName.toStdString().c_str(), _O_RDONLY | _O_SEQUENTIAL );
+#else
+        m_FileHandle = ::open( m_FileName.toStdString().c_str(), O_RDONLY );
+#endif
+        return m_FileHandle != -1;
+    }
+
+    off_t pos()
+    {
+#if defined (WIN32)
+        return _telli64(m_FileHandle);
+#else
+        return lseek(m_FileHandle,0,SEEK_CUR);
+#endif
+    }
+
+    size_t size()
+    {
+        size_t s;
+#if defined (WIN32)
+        _lseeki64( cm_FileHandle, 0, SEEK_END );
+        s = _telli64( m_FileHandle );
+        _lseeki64( m_FileHandle, 0, SEEK_SET );
+#else
+        s = (size_t)lseek( m_FileHandle, 0, SEEK_END );
+        lseek( m_FileHandle, 0, SEEK_SET );
+#endif
+        return s;
+    }
+
+    ssize_t read(char* buffer, size_t bufferSize)
+    {
+#if defined (WIN32)
+        return _read( m_FileHandle,  buffer, sizeof(buffer));
+#else
+        return ::read( m_FileHandle,  buffer, sizeof(buffer));
+#endif
+    }
+
+private:
+    QString m_FileName;
+    int     m_FileHandle;
+
+};
+
+/****************************************************************************/
+/*! \class RandomStream dxmlparser.cpp
+ *  \ingroup Insight
+ *  \brief Create random stream of XML, for testing
+ */
+
+class DRandomStream : public DXmlStream
+{
+public:
+    DRandomStream(unsigned int maxNodeCount )
+    {
+        m_MaxNodeCount = maxNodeCount;
+        m_NodeCount = 0;
+        m_Depth = 0;
+        m_MaxDepth = 10;
+    }
+
+    bool open()
+    {
+        return true;
+    }
+
+    ssize_t read(char* buffer, size_t /*bufferSize*/)
+    {
+        buffer[0] = '\0';
+
+        if (m_NodeCount == 0)
+        {
+            strcpy(buffer, "<rot>");
+        }
+        else if (m_NodeCount > m_MaxNodeCount)
+        {
+            strcpy(buffer, "</rot>");
+        }
+        else
+        {
+            int node = rand() % 10 + 1;
+            for ( int n = 0; n < node; n++)
+            {
+                strcat(buffer, "<node>");
+            }
+            // Leaf
+            strcat(buffer, "<leaf>");
+            int attributes = rand() % 20 + 1;
+            for (int i = 0; i < attributes; i++)
+            {
+                strcat(buffer, "<attribute>data</attribute>");
+            }
+            strcat(buffer, "</leaf>");
+
+            for ( int n = 0; n < node; n++)
+            {
+                strcat(buffer, "</node>");
+            }
+            m_NodeCount+=node+attributes;
+        }
+
+        m_NodeCount++;
+        return strlen(buffer);
+    }
+
+    off_t pos() { return m_NodeCount; }
+    size_t size() { return m_MaxNodeCount; }
+
+private:
+    unsigned int m_NodeCount;
+    unsigned int m_MaxNodeCount;
+    unsigned int m_Depth;
+    unsigned int m_MaxDepth;
+};
+
+
 /****************************************************************************/
 /*! \class UnorderedSetEqualString dxmlparser.cpp
  *  \ingroup Insight
@@ -111,11 +257,11 @@ public:
 
     // Thread
     DXmlParser*         m_Thread;
-    int                 m_FileHandle;
     DTreeItems*         m_TreeItems;
     DTreeModel*         m_Model;
     DTreeRootItem*      m_RootNode;
     const DImportFormat*m_ImportFormat;
+    DXmlStream*         m_Stream;
 
     // Stats
     unsigned long long  m_Items;
@@ -159,11 +305,7 @@ void DXmlContext::incItems( DTreeItem* item, bool finalItem )
     }
     else if ( m_Items == m_ItemsLastReport + reportInterval )
     {
-#if defined (WIN32)        
-        m_FilePos = _telli64(m_FileHandle);
-#else
-        m_FilePos = lseek(m_FileHandle,0,SEEK_CUR);
-#endif
+        m_FilePos = m_Stream->pos();
         m_Thread->reportProgress( m_Items, (m_FilePos / (float)m_FileSize) );
         m_ItemsLastReport = m_Items;
     }
@@ -342,11 +484,6 @@ void DXmlParser::run()
     context.m_Thread = this;
     context.m_FileSize = 0UL;
     context.m_FilePos = 0UL;
-#if defined (WIN32)    
-    context.m_FileHandle = _open( m_Filename.toStdString().c_str(), _O_RDONLY | _O_SEQUENTIAL );
-#else
-    context.m_FileHandle = open( m_Filename.toStdString().c_str(), O_RDONLY );    
-#endif
     context.m_TreeItems = m_TreeItems;
     context.m_Model = m_Model;
     context.m_RootNode = m_RootNode;
@@ -354,28 +491,31 @@ void DXmlParser::run()
 
     m_LoadedOk = true;
 
-    if ( context.m_FileHandle == -1 )
+    DXmlStream* stream;
+    if ( m_Filename.isEmpty())
     {
+        stream = new DRandomStream(1000*1000);
+    }
+    else
+    {
+        stream = new DFileStream(m_Filename);
+    }
+    context.m_Stream = stream;
+
+    if ( !stream->open() )
+    {
+        delete stream;
         DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << endl;
         return;
     }
     
-#if defined (WIN32)    
-    _lseeki64( context.m_FileHandle, 0, SEEK_END );
-    context.m_FileSize = _telli64( context.m_FileHandle );
-    _lseeki64( context.m_FileHandle, 0, SEEK_SET );
-#else
-    context.m_FileSize = lseek( context.m_FileHandle, 0, SEEK_END );
-    lseek( context.m_FileHandle, 0, SEEK_SET );
-#endif
+    context.m_FileSize = stream->size();
     
     char buffer[1024*16];
-#if defined (WIN32)
-    int bytesRead = _read( context.m_FileHandle,  buffer, sizeof(buffer));
-#else
-    int bytesRead = read( context.m_FileHandle,  buffer, sizeof(buffer));
-#endif    
-    while( bytesRead > 0 && !isInterruptionRequested()) 
+
+    int bytesRead = stream->read(buffer, sizeof(buffer));
+
+    while( bytesRead > 0 && !isInterruptionRequested())
     {
         char *b = buffer;
         while ( bytesRead )
@@ -393,21 +533,16 @@ void DXmlParser::run()
             b++;
             bytesRead--;
         }
-#if defined (WIN32)
-        bytesRead = _read( context.m_FileHandle,  buffer, sizeof(buffer));
-#else
-        bytesRead = read( context.m_FileHandle,  buffer, sizeof(buffer));
-#endif
+        bytesRead = stream->read(buffer, sizeof(buffer));
     }
 
-#if defined (WIN32)
-    _close( context.m_FileHandle );
-#else
-    close( context.m_FileHandle );
-#endif
     context.incItems( context.m_CurrentNode, !isInterruptionRequested() );
     m_NodeCount = context.m_Items;
     m_RootNode = context.m_RootNode;
+
+    DInsightConfig::Log() << "XML loading complete" << endl;
+
+    delete stream;
 }
 
 

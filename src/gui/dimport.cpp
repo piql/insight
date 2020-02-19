@@ -405,11 +405,14 @@ DImport* DImport::CreateFromFile(
     
     // Open file
     QFile file( import->m_FileName );
-    if ( !file.open(QIODevice::ReadOnly) )
+    if ( format->parser() != "random" )
     {
-        QMessageBox::information( window, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileName ), QMessageBox::Ok );
-        delete import;
-        return nullptr;
+        if ( !file.open(QIODevice::ReadOnly) )
+        {
+            QMessageBox::information( window, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileName ), QMessageBox::Ok );
+            delete import;
+            return nullptr;
+        }
     }
 
     // Create root node
@@ -425,7 +428,7 @@ DImport* DImport::CreateFromFile(
         import->m_RootItem = model->createDocumentRoot( tr("import"), parent, format );
         model->endInsert();
     }
-        
+
     // Add a couple of info nodes for the root node
     QDateTime dateTime = QDateTime::currentDateTime().toLocalTime();
     QString importDate = QString( "%1 %2" ).arg( dateTime.date().toString( "dddd dd.MM.yyyy" ) ).arg( dateTime.time().toString() );
@@ -433,7 +436,7 @@ DImport* DImport::CreateFromFile(
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importDate"), importDate ) );
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, FileNameKey(), fileName ) );
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("sizeBytes"), QString("%1").arg( file.size() ) ) );
-    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("fileDate"), QString("%1").arg( QFileInfo(file).created().toString() ) ) );
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("fileDate"), QString("%1").arg( QFileInfo(file).birthTime().toString() ) ) );
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importFormat"), format->name() ) );
     file.close();
 
@@ -480,8 +483,13 @@ DImport* DImport::CreateFromFile(
         // Parse temp dir
         parser = new DDirParser( &import->m_TreeItems, extractPath, import->m_Model, import->m_RootItem, format );
     }
+    else if ( format->parser() == "random" )
+    {
+        parser = new DXmlParser( &import->m_TreeItems, "", import->m_Model, import->m_RootItem, format );
+    }
     else
     {
+        DInsightConfig::Log() << "Unknown parser: " << format->parser() << endl;
         delete import;
         return nullptr;
     }
@@ -539,6 +547,7 @@ DImport* DImport::CreateFromExtract(
 {
     return CreateFromFile( fileName, model, window, format, parent, parentImport );
 }
+
 
 //----------------------------------------------------------------------------
 /*! 
