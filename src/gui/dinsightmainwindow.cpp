@@ -661,7 +661,7 @@ void DInsightMainWindow::importFileFinished( bool ok )
     }
     m_Ui.treeView->expandAll();
     int nodeCount = treeNodeCount( false );
-    m_Ui.treeView->setItemsExpandable( nodeCount < 200000 ); // Can be really slow, disable on large trees
+    m_Ui.treeView->setItemsExpandable( nodeCount < DInsightConfig::GetInt( "TREE_VIEW_MAX_NODE_EXPAND_COUNT", 20000000) ); // Can be really slow, disable on large trees
     int nodeCountSelected = treeNodeCount( true );
     m_Ui.exportButton->setEnabled( nodeCountSelected > 0 );
     m_Ui.searchEdit->setEnabled( m_Imports.size() );

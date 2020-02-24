@@ -38,6 +38,7 @@
 #include    <sys/stat.h>
 #include    <fcntl.h>
 #include    <stdio.h>
+#include    <string>
 
 //  PLATFORM INCLUDES
 //
@@ -141,8 +142,8 @@ public:
     {
         m_MaxNodeCount = maxNodeCount;
         m_NodeCount = 0;
-        m_Depth = 0;
         m_MaxDepth = 10;
+        m_LastDown = false;
     }
 
     bool open()
@@ -150,42 +151,81 @@ public:
         return true;
     }
 
+    string getRandomString()
+    {
+
+        int randomLength = rand() % 20 + 1;
+        string rnd;
+        for ( int i = 0; i < randomLength; i++ )
+        {
+            rnd.push_back( 'a' + rand() % 10 );
+        }
+        rnd.push_back('>');
+        rnd.push_back('\0');
+
+        return rnd;
+    }
+
     ssize_t read(char* buffer, size_t /*bufferSize*/)
     {
         buffer[0] = '\0';
 
-        if (m_NodeCount == 0)
+        if (m_NodeCount > m_MaxNodeCount && m_Stack.size() == 0)
         {
-            strcpy(buffer, "<rot>");
+            return 0;
         }
-        else if (m_NodeCount > m_MaxNodeCount)
+
+        if (m_Stack.size() == 0)
         {
-            strcpy(buffer, "</rot>");
+            m_Stack.push_back("rot>");
+            strcat(buffer, "<");
+            strcat(buffer, m_Stack.back().c_str() );
+            m_NodeCount++;
+        }
+        else if (m_NodeCount > m_MaxNodeCount )
+        {
+            strcat(buffer, "</");
+            strcat(buffer, m_Stack.back().c_str());
+            m_Stack.pop_back();
         }
         else
         {
-            int node = rand() % 10 + 1;
-            for ( int n = 0; n < node; n++)
+            int updown = rand() % 3;
+            if (updown == 0 && m_LastDown != true && m_Stack.size() > 1)
+            {
+                // Up
+                strcat(buffer, "</");
+                strcat(buffer, m_Stack.back().c_str());
+                m_Stack.pop_back();
+                m_LastDown = false;
+            }
+            else if (updown == 1 && m_Stack.size() < m_MaxDepth)
+            {
+                // Down
+                strcat(buffer, "<");
+                m_Stack.push_back(getRandomString());
+                strcat(buffer, m_Stack.back().c_str() );
+                m_NodeCount++;
+                m_LastDown = true;
+            }
+            else
             {
                 strcat(buffer, "<node>");
-            }
-            // Leaf
-            strcat(buffer, "<leaf>");
-            int attributes = rand() % 20 + 1;
-            for (int i = 0; i < attributes; i++)
-            {
-                strcat(buffer, "<attribute>data</attribute>");
-            }
-            strcat(buffer, "</leaf>");
+                // Leaf
+                strcat(buffer, "<leaf>");
+                int attributes = rand() % 20 + 1;
+                for (int i = 0; i < attributes; i++)
+                {
+                    strcat(buffer, "<attribute>data</attribute>");
+                }
+                strcat(buffer, "</leaf>");
 
-            for ( int n = 0; n < node; n++)
-            {
                 strcat(buffer, "</node>");
+                m_NodeCount += 1 + attributes;
+                m_LastDown = false;
             }
-            m_NodeCount+=node+attributes;
         }
 
-        m_NodeCount++;
         return strlen(buffer);
     }
 
@@ -195,8 +235,9 @@ public:
 private:
     unsigned int m_NodeCount;
     unsigned int m_MaxNodeCount;
-    unsigned int m_Depth;
     unsigned int m_MaxDepth;
+    std::vector<std::string> m_Stack;
+    bool m_LastDown;
 };
 
 
