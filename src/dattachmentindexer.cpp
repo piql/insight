@@ -192,6 +192,10 @@ void DAttachmentIndexer::run()
             // QThreadPool takes ownership and deletes 'pdfRunner' automatically
             QThreadPool::globalInstance()->start( pdfRunner );
         }
+        else
+        {
+             *m_ConvertLog << tr("Skipping convert for file") << ": " << attachment << endl;
+        }
 
         if (isInterruptionRequested())
         {

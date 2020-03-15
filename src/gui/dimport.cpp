@@ -464,7 +464,7 @@ DImport* DImport::CreateFromFile(
         }
 
         // Extract to import folder
-        QString extractPath = QString("%1/%2").arg( rootExtractDir.path() ).arg( extractDir );
+        QString extractPath = QDir::toNativeSeparators( QString("%1/%2").arg( rootExtractDir.path() ).arg( extractDir ) );
         QString extractTool = format->extractTool( import->m_FileName, extractPath );
 
         int ok = QProcess::execute(extractTool);

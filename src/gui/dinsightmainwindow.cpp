@@ -217,8 +217,10 @@ DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
 
     // Status bar
     m_StatusBar = statusBar();
+
     QWidget* frame = new QWidget();
     frame->show();
+
     QHBoxLayout* layout = new QHBoxLayout( frame );
     layout->setContentsMargins(0,0,0,0);
     m_ProgressBar = new QProgressBar(frame);
@@ -230,8 +232,10 @@ DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
     layout->addWidget( m_ProgressBar );
     layout->addWidget( m_ProgressBarInfo );
     layout->addStretch(100);
+
     m_StatusBar->addWidget( frame );
     m_StatusBar->show();
+
 
     m_Ui.exportButton->setEnabled( false );
     m_Ui.searchResult->setVisible( false );
@@ -251,6 +255,8 @@ DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
         //updateInfo( m_Model->firstDocumentRoot() );
         startSearchDeamon();
     }
+
+
 }
 
 

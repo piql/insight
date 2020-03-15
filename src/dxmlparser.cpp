@@ -43,6 +43,8 @@
 //  PLATFORM INCLUDES
 //
 #if defined (WIN32)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #include    <io.h>
 #else
 #include    <unistd.h>
@@ -84,7 +86,7 @@ public:
     bool open()
     {
 #if defined (WIN32)
-        context.m_FileHandle = _open( m_FileName.toStdString().c_str(), _O_RDONLY | _O_SEQUENTIAL );
+        m_FileHandle = _open( m_FileName.toStdString().c_str(), _O_RDONLY | _O_SEQUENTIAL );
 #else
         m_FileHandle = ::open( m_FileName.toStdString().c_str(), O_RDONLY );
 #endif
@@ -104,7 +106,7 @@ public:
     {
         size_t s;
 #if defined (WIN32)
-        _lseeki64( cm_FileHandle, 0, SEEK_END );
+        _lseeki64( m_FileHandle, 0, SEEK_END );
         s = _telli64( m_FileHandle );
         _lseeki64( m_FileHandle, 0, SEEK_SET );
 #else

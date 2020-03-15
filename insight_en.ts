@@ -17,49 +17,49 @@
 <context>
     <name>DAttachmentIndexer</name>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="124"/>
+        <location filename="src/dattachmentindexer.cpp" line="139"/>
         <source>attachments.log</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="215"/>
+        <location filename="src/dattachmentindexer.cpp" line="230"/>
         <source>Starting indexer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="226"/>
+        <location filename="src/dattachmentindexer.cpp" line="241"/>
         <source>Indexer interrupted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="236"/>
-        <location filename="src/dattachmentindexer.cpp" line="330"/>
+        <location filename="src/dattachmentindexer.cpp" line="251"/>
+        <location filename="src/dattachmentindexer.cpp" line="345"/>
         <source>Failed to start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="241"/>
+        <location filename="src/dattachmentindexer.cpp" line="256"/>
         <source>Indexer failed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="330"/>
-        <location filename="src/dattachmentindexer.cpp" line="335"/>
+        <location filename="src/dattachmentindexer.cpp" line="345"/>
+        <location filename="src/dattachmentindexer.cpp" line="350"/>
         <source>ERROR</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="336"/>
+        <location filename="src/dattachmentindexer.cpp" line="351"/>
         <source>OUTPUT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="343"/>
+        <location filename="src/dattachmentindexer.cpp" line="358"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="349"/>
+        <location filename="src/dattachmentindexer.cpp" line="364"/>
         <source>Convert result is empty (has no text)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -67,483 +67,513 @@
 <context>
     <name>DImport</name>
     <message>
-        <location filename="src/gui/dimport.cpp" line="269"/>
+        <location filename="src/gui/dimport.cpp" line="312"/>
         <source>nodeCount</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="270"/>
-        <location filename="src/gui/dimport.cpp" line="580"/>
+        <location filename="src/gui/dimport.cpp" line="313"/>
+        <location filename="src/gui/dimport.cpp" line="723"/>
         <source>attachments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="271"/>
+        <location filename="src/gui/dimport.cpp" line="314"/>
         <source>attachmentsNotFound</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="272"/>
-        <location filename="src/gui/dimport.cpp" line="280"/>
+        <location filename="src/gui/dimport.cpp" line="315"/>
+        <location filename="src/gui/dimport.cpp" line="323"/>
         <source>importCanceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="280"/>
+        <location filename="src/gui/dimport.cpp" line="323"/>
         <source>Import canceled by user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="344"/>
+        <location filename="src/gui/dimport.cpp" line="391"/>
         <source>childimports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="354"/>
+        <location filename="src/gui/dimport.cpp" line="401"/>
         <source>Directory creation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="354"/>
+        <location filename="src/gui/dimport.cpp" line="401"/>
         <source>Failed to create directory &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="363"/>
+        <location filename="src/gui/dimport.cpp" line="412"/>
         <source>Failed to open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="363"/>
+        <location filename="src/gui/dimport.cpp" line="412"/>
         <source>Failed to open &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="372"/>
-        <location filename="src/gui/dimport.cpp" line="378"/>
+        <location filename="src/gui/dimport.cpp" line="422"/>
+        <location filename="src/gui/dimport.cpp" line="428"/>
         <source>import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="386"/>
+        <location filename="src/gui/dimport.cpp" line="436"/>
         <source>importDate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="388"/>
+        <location filename="src/gui/dimport.cpp" line="438"/>
         <source>sizeBytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="389"/>
+        <location filename="src/gui/dimport.cpp" line="439"/>
         <source>fileDate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="390"/>
+        <location filename="src/gui/dimport.cpp" line="440"/>
         <source>importFormat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="709"/>
+        <location filename="src/gui/dimport.cpp" line="456"/>
+        <source>extract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dimport.cpp" line="461"/>
+        <source>Failed to create directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dimport.cpp" line="461"/>
+        <source>Failed to create &apos;%1/%2&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dimport.cpp" line="474"/>
+        <source>Failed to extract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dimport.cpp" line="474"/>
+        <source>Failed to extract &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dimport.cpp" line="481"/>
+        <location filename="src/gui/dimport.cpp" line="885"/>
+        <source>extractFolder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dimport.cpp" line="863"/>
         <source>importFileName</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="720"/>
+        <location filename="src/gui/dimport.cpp" line="874"/>
         <source>reportsFolder</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DImportFormat</name>
-    <message>
-        <location filename="src/dimportformat.cpp" line="151"/>
-        <source>reportsFolder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dimportformat.cpp" line="159"/>
-        <source>importFileName</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dimportformat.cpp" line="164"/>
-        <source>sjekksum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dimportformat.cpp" line="168"/>
-        <source>filReferanse</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DInsightMainWindow</name>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="179"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1283"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1966"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="200"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1388"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2087"/>
         <source>Select</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="285"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="318"/>
         <source>Select files to import</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1940"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2061"/>
         <source>Attachments</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="158"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="179"/>
         <source>Location</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="159"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="180"/>
         <source>Search Result</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="369"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="419"/>
         <source>Already loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="369"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="419"/>
         <source>Project &apos;%1&apos; is already loaded. Please unload first if you want to re-load it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="431"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="446"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="468"/>
+        <source>Unknown parser type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="446"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="468"/>
+        <source>No import parser registered for %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="495"/>
         <source>Cancel Import</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="493"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="557"/>
         <source>Attachments not found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="493"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="557"/>
         <source>%1 attachments referenced by the AIP where not found during import.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="522"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="586"/>
         <source>Searchable attachments?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="528"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="592"/>
         <source>Ja</source>
         <translation>Yes</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="529"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="593"/>
         <source>Nei</source>
         <translation>No</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="563"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="568"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="627"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="632"/>
         <source>import.pdf</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="450"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="468"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="514"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="532"/>
         <source>Canceling</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="353"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1153"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1228"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="403"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1248"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1323"/>
         <source>Failed to open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="353"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1153"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1228"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="403"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1248"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1323"/>
         <source>Failed to open &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="404"/>
-        <source>Unknown file type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="404"/>
-        <source>No import handler registered for file type %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="429"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="493"/>
         <source>read</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="517"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="581"/>
         <source>%1 attachments found (total %2). Should they be made searchable?
 
 Please note that this operation might take a long time, depending on the amount and size of the attachments.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="542"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="606"/>
         <source>of attachments converted to text</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="568"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="569"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="632"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="633"/>
         <source>child</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="575"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="639"/>
         <source>Import Report</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="589"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="653"/>
         <source>Import canceled!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="593"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="657"/>
         <source>Unloaded: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="598"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="662"/>
         <source>Indexing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="602"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="666"/>
         <source>Import complete!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="646"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1265"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1647"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="710"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1370"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1756"/>
         <source>Import</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="653"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="717"/>
         <source>Cancel Indexing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="779"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="850"/>
         <source>View</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="789"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="929"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="860"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1002"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="799"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="922"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="870"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="995"/>
         <source>Unload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="799"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="922"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="870"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="995"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="823"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="894"/>
         <source>Validate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="937"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1010"/>
         <source>Select All Children</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="938"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1011"/>
         <source>Unselect All Children</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="943"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1016"/>
         <source>Select All</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="944"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1017"/>
         <source>Unselect All</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="945"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1018"/>
         <source>Invert selection</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="989"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1049"/>
+        <source>extract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1083"/>
         <source>File not found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="989"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1083"/>
         <source>Could not locate file: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1042"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1136"/>
         <source>Folder not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1042"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1136"/>
         <source>Could not locate folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1046"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1140"/>
         <source>Delete Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1046"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1140"/>
         <source>This will delete the report folder %1 and all files and folders below it. It will also remove this archive from the tree view. This operation can&apos;t be reverted. Are you sure you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1165"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1260"/>
         <source>Checksum mismatch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1165"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1260"/>
         <source>Checksum not equal for file &apos;%1&apos; using %2 calculation. Got &apos;%3&apos;, expected &apos;%4&apos; using method %5.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1176"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1271"/>
         <source>Checksum OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1176"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1271"/>
         <source>Checksum validated OK!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1191"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1286"/>
         <source>Import already in progress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1191"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1286"/>
         <source>Please wait untill ongoing import is complete before importing more documents.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1205"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1300"/>
         <source>Unloaded file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1335"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1331"/>
+        <source>Format not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1331"/>
+        <source>Import format not found: &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1440"/>
         <source>search in progress</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1362"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1467"/>
         <source>No match.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1384"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1489"/>
         <source>Search complete! %1 matches found.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1388"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1493"/>
         <source>Search complete! Over %1 matches found, displaying first %1 matches.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1632"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1737"/>
         <source>Warning: %1 attachments failed to convert. See report log for details.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1637"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1742"/>
         <source> Warning: %1 attachments are empty. See report log for details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1640"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1745"/>
         <source>Indexing of %1 attachments complete! %2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2482"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1749"/>
+        <source>Failed to start indexer! See import log for more details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2662"/>
         <source>Indexer started!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2486"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2666"/>
         <source>Failed to connect to indexer!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2491"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2671"/>
         <source>Failed to start indexer!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1644"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1753"/>
         <source>Indexing canceled!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1679"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1788"/>
         <source>Indexing attachments, might take a long time</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1787"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1896"/>
         <source>%1 nodes selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1791"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1900"/>
         <source>%1 node selected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1930"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2045"/>
         <source>Export Report</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1965"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1966"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2086"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2087"/>
         <source>Deselect</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2278"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2436"/>
         <source>Line %1</source>
         <translation></translation>
     </message>
@@ -551,12 +581,12 @@ Please note that this operation might take a long time, depending on the amount 
 <context>
     <name>DInsightReport</name>
     <message>
-        <location filename="src/dinsightreport.cpp" line="179"/>
+        <location filename="src/dinsightreport.cpp" line="192"/>
         <source>import.xml</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dinsightreport.cpp" line="190"/>
+        <location filename="src/dinsightreport.cpp" line="203"/>
         <source>reports</source>
         <translation></translation>
     </message>
@@ -564,107 +594,127 @@ Please note that this operation might take a long time, depending on the amount 
 <context>
     <name>DInsightReportWindow</name>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="65"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="78"/>
         <source>Report</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="107"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="120"/>
         <source>Export PDF report</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="107"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="120"/>
         <source>report.pdf</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="159"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="204"/>
         <source>Failed to open PDF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="159"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="204"/>
         <source>Failed to open: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="170"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="215"/>
         <source>Failed to render PDF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="170"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="215"/>
         <source>Failed to render: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="197"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="233"/>
+        <source>Failed to open image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="233"/>
+        <source>Failed to open image: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="259"/>
+        <source>Failed to open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="259"/>
+        <source>Failed to open file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="284"/>
         <source>Failed to create ZIP file</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="198"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="285"/>
         <source>Failed to create file: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="217"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="304"/>
         <source>Sensitive Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="217"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="304"/>
         <source>Please note that e-mail is not a secure method for transporting sensitive information, and might not be allowed to use in some organizations. Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="224"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="311"/>
         <source>report-%1.pdf</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="258"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="345"/>
         <source>E-mail application not found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="258"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="345"/>
         <source>E-mail application (%1) not found, please press OK to select location.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="259"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="346"/>
         <source>Select e-mail application</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="259"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="346"/>
         <source>Applications (*.exe)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="266"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="353"/>
         <source>Failed to send e-mail</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="266"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="353"/>
         <source>Failed to send e-mail. You could try to open your e-mail application manually and select: %1 as your attachment.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="285"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="372"/>
         <source>Print Attachments</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="285"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="372"/>
         <source>Should report attachments be included?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightreportwindow.cpp" line="289"/>
+        <location filename="src/gui/dinsightreportwindow.cpp" line="376"/>
         <source>Print Report</source>
         <translation></translation>
     </message>
@@ -677,97 +727,97 @@ Please note that this operation might take a long time, depending on the amount 
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="219"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="222"/>
         <source>Search: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="278"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="281"/>
         <source>Attachments</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="229"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="232"/>
         <source>Select tree items matching the current search criteria</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="232"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="235"/>
         <source>Select</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="239"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="242"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;View advanced search options&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="242"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="245"/>
         <source>+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="260"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="263"/>
         <source>Search Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="275"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="278"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Search in attachments instead of node tree&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="285"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="288"/>
         <source>Case sensitive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="292"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="295"/>
         <source>Include Tree Nodes</source>
         <translation type="unfinished">Inkluder Noder</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="308"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="311"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="389"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="401"/>
         <source>&lt; Previous Page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="399"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="411"/>
         <source>Next Page &gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="412"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="424"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="450"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="462"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="483"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="495"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Create report of selected nodes&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="486"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="498"/>
         <source>Export</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="507"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="519"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Import archival package&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.ui" line="510"/>
+        <location filename="src/gui/dinsightmainwindow.ui" line="522"/>
         <source>Import</source>
         <translation></translation>
     </message>

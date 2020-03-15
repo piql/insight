@@ -11,6 +11,11 @@ set /p CHANGE=If lupdate reports any changes, abort release and run linguist too
 :: Build
 nmake release
 
+pushd src\thirdparty\create_xml
+qmake
+nmake
+popd
+
 set appname=insight
 set app=%appname%.exe
 set targetname=insight
@@ -28,20 +33,39 @@ copy lesmeg.txt %target%\.
 copy %appname%.conf %target%\%targetname%.conf
 copy sphinx\* %target%\.
 copy src\thirdparty\pdf2text\release\pdf2text.exe %target%\.
-copy src\thirdparty\create_xml\release\create_xml.exe %target%\.
-copy release\POPPLER-QT5.DLL %target%\.
-copy release\QT5GUI.DLL %target%\.
-copy release\QT5CORE.DLL %target%\.
-copy release\QT5XML.DLL %target%\.
 copy c:\windows\system32\MSVCP120.DLL %target%\.
 copy c:\windows\system32\MSVCR120.DLL %target%\.
 copy *qm %target%\.
+xcopy /s /i %QTDIR%\plugins\sqldrivers\*dll %target%\sqldrivers
+xcopy /s /i %QTDIR%\plugins\platforms\*dll %target%\platforms
+xcopy /s /i %QTDIR%\plugins\imageformats\*dll %target%\imageformats
+xcopy /s /i %QTDIR%\plugins\styles\*dll %target%\styles
+copy %QTDIR%\bin\qt5printsupport.dll %target%\.
+copy %QTDIR%\bin\qt5widgets.dll %target%\.
+copy %QTDIR%\bin\qt5gui.dll %target%\.
+copy %QTDIR%\bin\qt5sql.dll %target%\.
+copy %QTDIR%\bin\qt5core.dll %target%\.
+copy %QTDIR%\bin\qt5xml.dll %target%\.
+copy "c:/Program Files/MySQL/MySQL Server 5.6/lib/libmysql.dll" %target%\.
+
+:: Poppler
+copy lib\win64\release\* %target%\.
+
+:: 7zip
+copy lib\7zip\* %target%\.
+
+:: SPHINX
+copy lib\sphinx\* %target%\.
+copy src\thirdparty\create_xml\release\create_xml.exe %target%\.
 
 :: FORMATS
 xcopy /s/i formats %target%\formats
 
 :: TESTDATA
 xcopy /s/i testdata %target%\testdata
+
+:: LOGO
+copy src\gui\resources\banner_* %target%\.
 
 set tgz=%target%.tgz
 tar czf %tgz% %target%/*

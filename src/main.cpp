@@ -136,7 +136,7 @@ int  main( int argc, char* argv[] )
     QApplication qtApp( argc, argv );
     qtApp.setOrganizationName( "Piql" );
     qtApp.setApplicationName( "insight" );
-    qtApp.setApplicationVersion( "v1.1.0-rc1" );
+    qtApp.setApplicationVersion( "v1.1.0-rc2" );
 
     QString language = DInsightConfig::Get( "LANGUAGE", "en" );
     QString languageFile = QString( "insight_%1.qm" ).arg( language );

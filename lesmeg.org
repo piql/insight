@@ -127,6 +127,12 @@ legges også loggfiler fra indekseringen og indekserings databasen.
 
 Konfigurasjonsfilen heter /insight.conf/. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen /formats/. Alle filene som slutter på /.conf/ i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
+** Tips
+
+- Kommer vinduet opp veldig lite og har sammentrykte knapper på Windows?
+  Det kan være at du kjører i emulator eller har en skjerm med høy oppløsning. 
+  Prøv med ~insight -platform windows:dpiawareness=0~ for å få riktig størrelse på vinduet. Beskrivelse av andre parametere som tweaker utseendet finnes her: https://doc.qt.io/qt-5/qguiapplication.html#supported-command-line-options
+
 * Ønsker, feil og mangler
 
 - [RA-20181209-01] Innlesing av arkivstruktur til minne, denne topper lett ut ved 8 GB minne ved det største arkivuttrekket som er prøvd. I tillegg medførte antatte feilmeldinger i bakgrunnen til at pcen saknet betraktelig, før den til slutt ikke svarte og trengte hard omstart.
@@ -230,11 +236,24 @@ qmake
 make
 #+END_SRC
 
-Det kan også være nødvendig å bygge MySql driveren:
-#+BEGIN_SRC
-cd $QTDIR/qtbase/src/plugins/sqldrivers/mysql
-make install
-#+END_SRC
+Det kan også være nødvendig å bygge MySql driveren, se her for detaljer: https://doc.qt.io/qt-5/sql-driver.html#qmysql-for-mysql-5-and-higher
+
+** Windows
+Download Poppler: https://anaconda.org/conda-forge/poppler/files
+
+
+*** FreeType
+git clone https://github.com/ubawurinna/freetype-windows-binaries.git
+
+*** Poppler
+xz -d poppler-0.85.0.tar.xz
+tar xf poppler-0.85.0.tar
+tar xzf poppler-data-0.4.9.tar.gz
+git clone git://git.freedesktop.org/git/poppler/test
+cd poppler-0.85.0
+mkdir build
+cd build
+cmake ..
 
 For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:
 create-release-osx.sh

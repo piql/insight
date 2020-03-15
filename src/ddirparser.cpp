@@ -35,6 +35,12 @@
 #include    <QDirIterator>
 #include    <QDateTime>
 
+//  PLATFORM INCLUDES
+//
+#if defined (WIN32)
+#include <ctime>
+#endif
+
 using namespace std;
 
 
@@ -188,9 +194,15 @@ void DDirParser::run()
         char* dateString = (char*)malloc(32);
         time_t time = fileInfo.created().toTime_t();
         // Format: 15.06.2009 20:20:00
+
+#if defined (WIN32)
+		std::tm* tm = localtime(&time);
+		strftime(dateString, 32, "%d.%m.%Y %H:%M:%S", tm);
+#else
         std::tm tm;
         localtime_r(&time, &tm);
         strftime(dateString, 32, "%d.%m.%Y %H:%M:%S", &tm);         
+#endif
 
         if ( it.fileName().back() == '/' )
         {

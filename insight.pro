@@ -39,7 +39,11 @@ win32 {
         PLATFORM              =   W64
     }
 }
+
+
 macx:POPPLER_VER               =  0.84.0
+win32:POPPLER_VER              =  0.83.0
+win32:POPPLER_ROOT             =  c:/dev/
 
 OBJECTS_DIR                    =  obj/$$PLATFORM/$$CURBUILD
 MOC_DIR                        =  obj/$$PLATFORM/$$CURBUILD
@@ -58,19 +62,18 @@ INCLUDEPATH       =   src \
                       src/thirdparty/tools/inc \
                       src/thirdparty/posixtar/inc \
                       $$[QT_INSTALL_PREFIX]/include/QtZlib 
-win32:INCLUDEPATH+=   $$(CV_THIRDPARTY)/w32/poppler-0.57.0/qt5/src
+win32:INCLUDEPATH+=   $$(POPPLER_INCLUDE)
+win32:INCLUDEPATH+=   $$(ZLIB_INCLUDE)
 macx:INCLUDEPATH +=   /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler \
                       /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler/qt5/ \
                       $$(CV_BOOST_INCLUDE)
                       
 DEPENDPATH       +=   $$INCLUDEPATH
 
-win32:contains(QT_ARCH, i386):release:LIBS += \
-                      $$(CV_THIRDPARTY)/w32/poppler-0.57.0/qt5/src/Release/poppler-qt5.lib \
-                      $$(CV_THIRDPARTY)/w32/poppler-0.57.0/Release/poppler.lib
-win32:!contains(QT_ARCH, i386):release:LIBS += \
-                      $$(CV_THIRDPARTY)/w64/poppler-0.57.0/qt5/src/Release/poppler-qt5.lib \
-                      $$(CV_THIRDPARTY)/w64/poppler-0.57.0/Release/poppler.lib
+win32:release:LIBS += \
+                      lib/win64/release/poppler-qt5.lib \
+                      lib/win64/release/poppler.lib \
+					  lib/win64/release/zlib.lib
 
 CV_BOOST_LIBS    =    /Users/ole/dev/cmu_112/trunk/../thirdparty/mac/boost_1_60_0/stage/x64/lib                      
 unix:LIBS       +=    $$CV_BOOST_LIBS/libboost_thread.a \

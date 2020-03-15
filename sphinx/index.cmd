@@ -9,6 +9,10 @@ set INDEX=%REPORTS%sphinx\test1
 set SOURCE_NAME=src_%NAME%
 set INDEX_NAME=%NAME%
 
+echo "REPORTS=%REPORTS%"
+echo "ATTACHMENTS=%ATTACHMENTS%"
+echo "NAME=%NAME%"
+
 mkdir %INDEX%
 
 :: Create sphinx config file in reports folder
