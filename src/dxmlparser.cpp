@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -25,10 +38,13 @@
 #include    <sys/stat.h>
 #include    <fcntl.h>
 #include    <stdio.h>
+#include    <string>
 
 //  PLATFORM INCLUDES
 //
 #if defined (WIN32)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #include    <io.h>
 #else
 #include    <unistd.h>
@@ -39,6 +55,192 @@
 #include    "yxml.h"
 
 using namespace std;
+
+
+class DXmlStream
+{
+public:
+    virtual ~DXmlStream() {}
+    virtual bool open() = 0;
+    virtual ssize_t read(char* buffer, size_t bufferSize) = 0;
+    virtual off_t pos() = 0;
+    virtual size_t size() = 0;
+};
+
+class DFileStream : public DXmlStream
+{
+public:
+    DFileStream(const QString& fileName)
+    {
+        m_FileName = fileName;
+    }
+    ~DFileStream()
+    {
+#if defined (WIN32)
+        _close( m_FileHandle );
+#else
+        close( m_FileHandle );
+#endif
+    }
+
+    bool open()
+    {
+#if defined (WIN32)
+        m_FileHandle = _open( m_FileName.toStdString().c_str(), _O_RDONLY | _O_SEQUENTIAL );
+#else
+        m_FileHandle = ::open( m_FileName.toStdString().c_str(), O_RDONLY );
+#endif
+        return m_FileHandle != -1;
+    }
+
+    off_t pos()
+    {
+#if defined (WIN32)
+        return _telli64(m_FileHandle);
+#else
+        return lseek(m_FileHandle,0,SEEK_CUR);
+#endif
+    }
+
+    size_t size()
+    {
+        size_t s;
+#if defined (WIN32)
+        _lseeki64( m_FileHandle, 0, SEEK_END );
+        s = _telli64( m_FileHandle );
+        _lseeki64( m_FileHandle, 0, SEEK_SET );
+#else
+        s = (size_t)lseek( m_FileHandle, 0, SEEK_END );
+        lseek( m_FileHandle, 0, SEEK_SET );
+#endif
+        return s;
+    }
+
+    ssize_t read(char* buffer, size_t bufferSize)
+    {
+#if defined (WIN32)
+        return _read( m_FileHandle,  buffer, sizeof(buffer));
+#else
+        return ::read( m_FileHandle,  buffer, sizeof(buffer));
+#endif
+    }
+
+private:
+    QString m_FileName;
+    int     m_FileHandle;
+
+};
+
+/****************************************************************************/
+/*! \class RandomStream dxmlparser.cpp
+ *  \ingroup Insight
+ *  \brief Create random stream of XML, for testing
+ */
+
+class DRandomStream : public DXmlStream
+{
+public:
+    DRandomStream(unsigned int maxNodeCount )
+    {
+        m_MaxNodeCount = maxNodeCount;
+        m_NodeCount = 0;
+        m_MaxDepth = 10;
+        m_LastDown = false;
+    }
+
+    bool open()
+    {
+        return true;
+    }
+
+    string getRandomString()
+    {
+
+        int randomLength = rand() % 20 + 1;
+        string rnd;
+        for ( int i = 0; i < randomLength; i++ )
+        {
+            rnd.push_back( 'a' + rand() % 10 );
+        }
+        rnd.push_back('>');
+        rnd.push_back('\0');
+
+        return rnd;
+    }
+
+    ssize_t read(char* buffer, size_t /*bufferSize*/)
+    {
+        buffer[0] = '\0';
+
+        if (m_NodeCount > m_MaxNodeCount && m_Stack.size() == 0)
+        {
+            return 0;
+        }
+
+        if (m_Stack.size() == 0)
+        {
+            m_Stack.push_back("rot>");
+            strcat(buffer, "<");
+            strcat(buffer, m_Stack.back().c_str() );
+            m_NodeCount++;
+        }
+        else if (m_NodeCount > m_MaxNodeCount )
+        {
+            strcat(buffer, "</");
+            strcat(buffer, m_Stack.back().c_str());
+            m_Stack.pop_back();
+        }
+        else
+        {
+            int updown = rand() % 3;
+            if (updown == 0 && m_LastDown != true && m_Stack.size() > 1)
+            {
+                // Up
+                strcat(buffer, "</");
+                strcat(buffer, m_Stack.back().c_str());
+                m_Stack.pop_back();
+                m_LastDown = false;
+            }
+            else if (updown == 1 && m_Stack.size() < m_MaxDepth)
+            {
+                // Down
+                strcat(buffer, "<");
+                m_Stack.push_back(getRandomString());
+                strcat(buffer, m_Stack.back().c_str() );
+                m_NodeCount++;
+                m_LastDown = true;
+            }
+            else
+            {
+                strcat(buffer, "<node>");
+                // Leaf
+                strcat(buffer, "<leaf>");
+                int attributes = rand() % 20 + 1;
+                for (int i = 0; i < attributes; i++)
+                {
+                    strcat(buffer, "<attribute>data</attribute>");
+                }
+                strcat(buffer, "</leaf>");
+
+                strcat(buffer, "</node>");
+                m_NodeCount += 1 + attributes;
+                m_LastDown = false;
+            }
+        }
+
+        return strlen(buffer);
+    }
+
+    off_t pos() { return m_NodeCount; }
+    size_t size() { return m_MaxNodeCount; }
+
+private:
+    unsigned int m_NodeCount;
+    unsigned int m_MaxNodeCount;
+    unsigned int m_MaxDepth;
+    std::vector<std::string> m_Stack;
+    bool m_LastDown;
+};
 
 
 /****************************************************************************/
@@ -98,10 +300,11 @@ public:
 
     // Thread
     DXmlParser*         m_Thread;
-    int                 m_FileHandle;
     DTreeItems*         m_TreeItems;
     DTreeModel*         m_Model;
     DTreeRootItem*      m_RootNode;
+    const DImportFormat*m_ImportFormat;
+    DXmlStream*         m_Stream;
 
     // Stats
     unsigned long long  m_Items;
@@ -117,7 +320,7 @@ public:
  */
 
 DXmlContext::DXmlContext()
-    : m_LastUpdateNode( NULL ),
+    : m_LastUpdateNode( nullptr ),
       m_Items( 0ULL ),
       m_ItemsLastReport( 0ULL )
 {
@@ -145,16 +348,12 @@ void DXmlContext::incItems( DTreeItem* item, bool finalItem )
     }
     else if ( m_Items == m_ItemsLastReport + reportInterval )
     {
-#if defined (WIN32)        
-        m_FilePos = _telli64(m_FileHandle);
-#else
-        m_FilePos = lseek(m_FileHandle,0,SEEK_CUR);
-#endif
+        m_FilePos = m_Stream->pos();
         m_Thread->reportProgress( m_Items, (m_FilePos / (float)m_FileSize) );
         m_ItemsLastReport = m_Items;
     }
 
-    m_LastUpdateNode = item;
+    m_LastUpdateNode = item; // Todo: NOT USED?
 }
 
 
@@ -174,11 +373,11 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
             // Create new node?
             if ( context->m_Name )
             {
-                // If root node is NULL, first element found should be root
-                if ( context->m_RootNode == NULL )
+                // If root node is nullptr, first element found should be root
+                if ( context->m_RootNode == nullptr )
                 {
                     context->m_Model->beginInsert( 0, 1, QModelIndex() );
-                    context->m_RootNode = context->m_Model->createDocumentRoot( context->m_Name );
+                    context->m_RootNode = context->m_Model->createDocumentRoot( context->m_Name, nullptr, context->m_ImportFormat );
                     context->m_CurrentNode = context->m_RootNode;
                     context->m_Model->endInsert();
                     DXmlParser::AddToNodeHashMap( context->m_Name );
@@ -211,7 +410,7 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
             }
             context->m_DataPos = context->m_Data;
             *context->m_DataPos = '\0';
-            context->m_Name = NULL;
+            context->m_Name = nullptr;
             context->m_LastClose = true;
         break;
     case YXML_ATTRSTART:
@@ -268,12 +467,17 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
  *  Constructor.
  */
 
-DXmlParser::DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode )
+DXmlParser::DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode, const DImportFormat* importFormat )
     : m_TreeItems( treeItems ),
       m_Filename( fileName ),
       m_Model( model ),
       m_RootNode( rootNode ),
+      m_ImportFormat( importFormat ),
       m_NodeCount( 0UL )
+{
+}
+
+DXmlParser::~DXmlParser()
 {
 }
 
@@ -286,6 +490,17 @@ DXmlParser::DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeMod
 unsigned long DXmlParser::nodeCount()
 {
     return m_NodeCount;
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  Returns true if XML parsing was successful.
+ */
+
+bool DXmlParser::loadedOK() const
+{
+    return m_LoadedOk;
 }
 
 
@@ -308,66 +523,69 @@ void DXmlParser::run()
     context.m_DataPos = context.m_Data;
     *context.m_DataPos = '\0';
     context.m_LastClose = false;
-    context.m_Name = NULL;
+    context.m_Name = nullptr;
     context.m_Thread = this;
     context.m_FileSize = 0UL;
     context.m_FilePos = 0UL;
-#if defined (WIN32)    
-    context.m_FileHandle = _open( m_Filename.toStdString().c_str(), _O_RDONLY | _O_SEQUENTIAL );
-#else
-    context.m_FileHandle = open( m_Filename.toStdString().c_str(), O_RDONLY );    
-#endif
     context.m_TreeItems = m_TreeItems;
     context.m_Model = m_Model;
     context.m_RootNode = m_RootNode;
+    context.m_ImportFormat = m_ImportFormat;
 
-    if ( context.m_FileHandle == -1 )
+    m_LoadedOk = true;
+
+    DXmlStream* stream;
+    if ( m_Filename.isEmpty())
     {
-        DInsightConfig::log() << "Opening failed, file does not exist: " << m_Filename << endl;
+        stream = new DRandomStream(1000*1000);
+    }
+    else
+    {
+        stream = new DFileStream(m_Filename);
+    }
+    context.m_Stream = stream;
+
+    if ( !stream->open() )
+    {
+        delete stream;
+        DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << endl;
         return;
     }
     
-#if defined (WIN32)    
-    _lseeki64( context.m_FileHandle, 0, SEEK_END );
-    context.m_FileSize = _telli64( context.m_FileHandle );
-    _lseeki64( context.m_FileHandle, 0, SEEK_SET );
-#else
-    context.m_FileSize = lseek( context.m_FileHandle, 0, SEEK_END );
-    lseek( context.m_FileHandle, 0, SEEK_SET );
-#endif
+    context.m_FileSize = stream->size();
     
     char buffer[1024*16];
-#if defined (WIN32)
-    int bytesRead = _read( context.m_FileHandle,  buffer, sizeof(buffer));
-#else
-    int bytesRead = read( context.m_FileHandle,  buffer, sizeof(buffer));
-#endif    
-    while( bytesRead > 0 && !isInterruptionRequested()) 
+
+    int bytesRead = stream->read(buffer, sizeof(buffer));
+
+    while( bytesRead > 0 && !isInterruptionRequested())
     {
         char *b = buffer;
         while ( bytesRead )
         {
-        r = yxml_parse(x, *b);
-        sax_cb(x, r, &context);
+            r = yxml_parse(x, *b);
 
+            if ( r == YXML_ESYN  )
+            {
+                requestInterruption();
+                m_LoadedOk = false;
+                break;
+            }
+
+            sax_cb(x, r, &context);
             b++;
             bytesRead--;
         }
-#if defined (WIN32)
-        bytesRead = _read( context.m_FileHandle,  buffer, sizeof(buffer));
-#else
-        bytesRead = read( context.m_FileHandle,  buffer, sizeof(buffer));
-#endif
+        bytesRead = stream->read(buffer, sizeof(buffer));
     }
 
-#if defined (WIN32)
-    _close( context.m_FileHandle );
-#else
-    close( context.m_FileHandle );
-#endif
     context.incItems( context.m_CurrentNode, !isInterruptionRequested() );
     m_NodeCount = context.m_Items;
     m_RootNode = context.m_RootNode;
+
+    DInsightConfig::Log() << "XML loading complete" << endl;
+
+    delete stream;
 }
 
 
@@ -417,3 +635,9 @@ DTreeRootItem* DXmlParser::root()
 {
     return m_RootNode;
 }
+
+const DImportFormat* DXmlParser::importFormat() const
+{
+    return m_ImportFormat;
+}
+

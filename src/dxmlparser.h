@@ -9,7 +9,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 *****************************************************************************/
 
@@ -63,10 +76,13 @@ public:
     typedef StringHash::const_iterator StringHashIterator;
 
 public:
-    DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode );
+    DXmlParser( DTreeItems* treeItems, const QString& fileName, DTreeModel* model, DTreeRootItem* rootNode, const DImportFormat* importFormat );
+    virtual ~DXmlParser();
 
-    unsigned long   nodeCount();
-    DTreeRootItem*  root();
+    unsigned long         nodeCount();
+    DTreeRootItem*        root();
+    const DImportFormat*  importFormat() const;
+    bool                  loadedOK() const;
 
 signals:
     void       nodesReady( unsigned long count, float progress );    
@@ -78,17 +94,21 @@ public:
     static StringHashIterator NodeHashMapEnd();
 
 private:
-    void       run();
-    void       reportProgress( unsigned long nodeCount, float progress );
+    virtual void run();
 
-private:
-    DTreeItems*     m_TreeItems;
-    QString         m_Filename;
-    DTreeModel*     m_Model;
-    DTreeRootItem*  m_RootNode;
+protected:
+    void         reportProgress( unsigned long nodeCount, float progress );
+
+protected:
+    DTreeItems*           m_TreeItems;
+    QString               m_Filename;
+    DTreeModel*           m_Model;
+    DTreeRootItem*        m_RootNode;
+    const DImportFormat*  m_ImportFormat;
+    bool                  m_LoadedOk;
 
     // Statistics
-    unsigned long   m_NodeCount;
+    unsigned long         m_NodeCount;
 
     friend class DXmlContext;
 };

@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -16,6 +29,7 @@
 #include    "dtreemodel.h"
 #include    "dtreeitem.h"
 #include    "dattachmentindexer.h"
+#include    "dinsightconfig.h"
 
 //  QT INCLUDES
 //
@@ -29,6 +43,7 @@
 #include    <string>
 #include    <cctype>
 #include    <locale>
+#include    <iostream>
 
 //  NAMESPACES
 //
@@ -168,6 +183,38 @@ void DSearchThread::run()
     m_MatchCount = 0;
     if ( searchAttachments )
     {
+        QSqlDatabase db;
+        if ( QSqlDatabase::contains( "insight" ) )
+        {
+            // Database must be created in same thread..
+            QSqlDatabase::removeDatabase("insight");
+        }
+        db = QSqlDatabase::addDatabase( "QMYSQL", "insight" );
+
+        if (!db.isValid())
+        {
+           DInsightConfig::Log() << "Could not create database connection" << endl;
+        }
+        db.setHostName( "127.0.0.1" );
+        //db.setConnectOptions( "CLIENT_INTERACTIVE=TRUE" );
+        db.setPort( 9306 );
+        //db.setUserName("root");
+        //db.setPassword("");
+        //db.setDatabaseName((*it)->databaseName());
+        if (!db.isOpen())
+        {
+           if (!db.open())
+           {
+              DInsightConfig::Log()
+                  << "Failed to open database: "
+                  << db.lastError().text()
+                  << " port: " << db.port()
+                  << endl;
+              m_SearchResult = SEARCH_ABORTED;
+              return;
+            }
+        }
+
         DImportsIterator it = m_Imports->begin();
         DImportsIterator itEnd = m_Imports->end();
         int importIndex = 0;
@@ -176,15 +223,14 @@ void DSearchThread::run()
             if ( (*it)->hasChildren() )
             {
                 QString dbName = (*it)->databaseName();
-                QSqlDatabase db = QSqlDatabase::database( dbName );
-                QString queryString = QString("SELECT\ni\nFROM\n%1\nWHERE\nMATCH('%2');").arg( dbName ).arg(m_SearchString);
+                QString queryString = QString("SELECT i FROM %1 WHERE MATCH('%2');").arg( dbName ).arg(m_SearchString);
                 QSqlQuery query( queryString, db );
                 bool ok = query.exec();
                 if ( !ok )
                 {
                     QString dbError = query.lastError().text();
-                    DInsightConfig::log() << "Search deamon query failed: " << queryString << endl;
-                    DInsightConfig::log() << "Search deamon error: " << dbError << endl;    
+                    DInsightConfig::Log() << "Search deamon query failed: " << queryString << endl;
+                    DInsightConfig::Log() << "Search deamon error: " << dbError << endl;    
                 }
                 else
                 {
@@ -220,7 +266,7 @@ void DSearchThread::run()
         bool startFound = m_CurrentPage == 0;
 
         // Could consider launching one thread per root node here...
-        SearchResult res = SEARCH_UNDEFINED;
+        SearchResult res = SEARCH_NOT_FOUND;
         unsigned int c = m_Model->rootCount();
         for ( unsigned int i = 0; i < c; i++ )
         {
@@ -301,12 +347,12 @@ DSearchThread::SearchResult DSearchThread::searchTree( DTreeItem* node, const ch
                         }
                         value[valueLength] = '\0';
                         
-                        leafMatch = strstr( value, text ) != NULL;
+                        leafMatch = strstr( value, text ) != nullptr;
                         free(value);
                     }
                     else
                     {
-                        leafMatch = strstr( node->m_Text, text ) != NULL;
+                        leafMatch = strstr( node->m_Text, text ) != nullptr;
                     }
 
                     if ( leafMatch )

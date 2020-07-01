@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -14,12 +27,13 @@
 //
 #include    "dimport.h"
 #include    "dxmlparser.h"
+#include    "ddirparser.h"
 #include    "dinsightmainwindow.h"
 #include    "dattachmentparser.h"
 #include    "dattachmentindexer.h"
 #include    "dtreemodel.h"
 #include    "dinsightreport.h"
-
+#include    "dimportformat.h"
 
 //  QT INCLUDES
 //
@@ -31,6 +45,9 @@
 //
 #include    <cassert>
 
+//  STATICS
+//
+static const DImportFormat* g_ImportFormat;
 
 /****************************************************************************/
 /*! \class DImport dimport.h
@@ -46,9 +63,10 @@
 DImport::DImport( DTreeModel* model )
   : m_ImportState( IMPORT_STATE_DONE ),
     m_Model( model ),
-    m_XmlParser( NULL ),
-    m_AttachmentParser( NULL ),
-    m_AttachmentIndexer( NULL )
+    m_RootItem( nullptr ),
+    m_XmlParser( nullptr ),
+    m_AttachmentParser( nullptr ),
+    m_AttachmentIndexer( nullptr )
 {
 }
 
@@ -62,29 +80,68 @@ DImport::~DImport()
 {
 }
 
+
 //----------------------------------------------------------------------------
 /*! 
  *  Loading report XML.
  */
 
-void DImport::loadReport()
+bool DImport::loadReport()
 {
-    m_XmlParser = new DXmlParser( &m_TreeItems, m_FileName, m_Model, m_RootItem );
+    assert( m_XmlParser == nullptr );
+    m_XmlParser = new DXmlParser( &m_TreeItems, m_FileName, m_Model, m_RootItem, GetReportFormat() );
     m_XmlParser->start();
     m_XmlParser->wait();
 
-    m_RootItem = m_XmlParser->root();
+    bool loadOk = m_XmlParser->loadedOK();
+    if ( loadOk )
+    {
+        m_RootItem = m_XmlParser->root();
+    }
 
     delete m_XmlParser;
-    m_XmlParser = NULL;
+    m_XmlParser = nullptr;
+
+    return loadOk;
 }
+
 
 //----------------------------------------------------------------------------
 /*! 
- *  Start loading (parsing) of XML.
+ *  Start loading (parsing) of file.
  */
 
-void DImport::load()
+void DImport::load( const DImportFormat* format )
+{
+    assert( m_XmlParser == nullptr );
+
+    DXmlParser* parser = nullptr;
+    m_RootItem->setImportFormat( format );
+    if ( format->parser() == "xml" )
+    {
+        parser  = new DXmlParser( &m_TreeItems, m_FileName, m_Model, m_RootItem, format );
+    }
+    else if ( format->parser() == "dir" )
+    {
+        QString importRoot = m_ExtractDir;
+        parser  = new DDirParser( &m_TreeItems, importRoot, m_Model, m_RootItem, format );
+    }
+    else
+    {
+        assert(0);
+    }
+
+    
+    load( parser );
+}
+
+
+//----------------------------------------------------------------------------
+/*! 
+ *  Start loading (parsing) of file.
+ */
+
+void DImport::load( DXmlParser* parser )
 {
     m_ImportState = IMPORT_STATE_IMPORTING;
 
@@ -94,21 +151,28 @@ void DImport::load()
     // Connect importer to main window
     connect( this, &DImport::imported, m_Window, &DInsightMainWindow::importFileFinished );
 
-    // Start parsing XML
-    assert( m_XmlParser == NULL );
-    m_XmlParser = new DXmlParser( &m_TreeItems, m_FileName, m_Model, m_RootItem );
+    // Setup parsing
+    assert( m_XmlParser == nullptr );
+    m_XmlParser = parser;
     connect( m_XmlParser, &DXmlParser::nodesReady, m_Window, &DInsightMainWindow::loadXmlProgress );
     connect( m_XmlParser, &DXmlParser::finished, this, &DImport::loadXmlFinished );
 
-    // Start parsing attachments
-    assert( m_AttachmentParser == NULL );
-    m_AttachmentParser = new DAttachmentParser( &m_TreeItems, m_FileNameDir, m_DocumentTypeRegExp );
+    // Setup parsing attachments
+    QString attachmentRootDir = m_FileNameDir;
+    if ( parser->importFormat()->parser() == "dir" )
+    {
+        attachmentRootDir = m_ExtractDir;
+    }
+
+    assert( m_AttachmentParser == nullptr );
+    m_AttachmentParser = new DAttachmentParser( &m_TreeItems, attachmentRootDir, m_DocumentTypeRegExp );
     connect( m_XmlParser, &DXmlParser::nodesReady, m_AttachmentParser, &DAttachmentParser::nodesReady );
     connect( m_AttachmentParser, &DAttachmentParser::finished, this, &DImport::attachmentParserFinished);
 
     m_XmlFinished = false;
     m_AttachmentFinished = false;
 
+    // Start parsing
     m_XmlParser->start();
     m_AttachmentParser->start();
 }
@@ -148,7 +212,7 @@ void DImport::unload()
 
 //----------------------------------------------------------------------------
 /*! 
- *  Index all attachment found for this import.
+ *  Index all attachments found for this import.
  */
 
 void DImport::index()
@@ -162,20 +226,26 @@ void DImport::index()
     {
         m_AttachmentIndexer->wait();
         delete m_AttachmentIndexer;
-        m_AttachmentIndexer = NULL;
+        m_AttachmentIndexer = nullptr;
     }
 
-    assert( m_AttachmentIndexer == NULL );
+    QString attachmentRootDir = m_FileNameDir;
+    if ( m_ExtractDir.length() )
+    {
+        attachmentRootDir = m_ExtractDir;
+    }
+
+    assert( m_AttachmentIndexer == nullptr );
     m_AttachmentIndexer = new DAttachmentIndexer(
-        m_FileNameDir, 
+        attachmentRootDir,
         m_AttachmentParser, 
         m_ReportsDir,  
         attachmentsDir(),
         m_FileName );
-    connect( m_AttachmentIndexer, &DAttachmentIndexer::finished, this, &DImport::indexingFinished);
-    connect( m_AttachmentIndexer, &DAttachmentIndexer::progress, m_Window, &DInsightMainWindow::indexingProgress);
-    connect( m_AttachmentIndexer, &DAttachmentIndexer::indexerStarted, this, &DImport::indexingIndexerStarted);
-    connect( this, &DImport::indexed, m_Window, &DInsightMainWindow::indexingFinished);
+    connect( m_AttachmentIndexer, &DAttachmentIndexer::finished, this, &DImport::indexingFinished );
+    connect( m_AttachmentIndexer, &DAttachmentIndexer::progress, m_Window, &DInsightMainWindow::indexingProgress );
+    connect( m_AttachmentIndexer, &DAttachmentIndexer::indexerStarted, this, &DImport::indexingIndexerStarted );
+    connect( this, &DImport::indexed, m_Window, &DInsightMainWindow::indexingFinished );
 
     // Launch attachment extractor thread
     m_AttachmentIndexer->start();
@@ -189,7 +259,7 @@ void DImport::index()
 
 bool DImport::hasChildren()
 {
-    if ( m_RootItem == NULL )
+    if ( m_RootItem == nullptr )
     {
         return false;
     }
@@ -247,7 +317,7 @@ void DImport::importFinished()
     else
     {
         delete m_AttachmentParser;
-        m_AttachmentParser = NULL;        
+        m_AttachmentParser = nullptr;
 
         // Create dummy node for report
         m_RootItem->updateNode( m_Model->createLeaf( m_RootItem, tr("importCanceled"), tr("Import canceled by user") ) );
@@ -258,15 +328,8 @@ void DImport::importFinished()
         m_TreeItems.clear();
     }
 
-    // Create import report folder
-    QString report = m_ReportsDir;
-    QDir reportsDir;
-    reportsDir.cd( report );
-
-    m_RootItem->updateNode( m_Model->createLeaf( m_RootItem, reportsDirKey(), QDir::toNativeSeparators(report) ) );
-
     delete m_XmlParser;
-    m_XmlParser = NULL;
+    m_XmlParser = nullptr;
 
     bool ok = m_ImportState == IMPORT_STATE_IMPORTING;
     m_ImportState = IMPORT_STATE_DONE;
@@ -276,13 +339,163 @@ void DImport::importFinished()
 
 //----------------------------------------------------------------------------
 /*! 
- *  Slot called when iindexing is finished.
+ *  Slot called when indexing is finished.
  */
 
 void DImport::indexingFinished()
 {
-    emit indexed( m_ImportState == IMPORT_STATE_INDEXING );
+    if ( m_AttachmentIndexer && m_AttachmentIndexer->error() )
+    {
+        emit indexed( DImport::INDEXING_STATE_ERROR );
+    }
+    else if ( m_ImportState == IMPORT_STATE_INDEXING )
+    {
+        emit indexed( DImport::INDEXING_STATE_OK );
+    }
+    else
+    {
+        emit indexed( DImport::INDEXING_STATE_CANCELED );
+    }
     m_ImportState = IMPORT_STATE_DONE;
+}
+
+
+//----------------------------------------------------------------------------
+/*! 
+ *  Create DImport instance from file.
+ */
+
+DImport* DImport::CreateFromFile(
+    const QString& fileName,
+    DTreeModel* model,
+    DInsightMainWindow* window,
+    const DImportFormat* format,
+    DTreeItem* parent,
+    DImport* parentImport )
+{
+    DInsightConfig::Log() << "Importing " << fileName << " parser=" << format->parser() << " has parent=" << (parent != nullptr) << " format=" << format->name() << endl;
+    
+    DImport* import = new DImport( model );
+    import->m_FromReport = false;
+    import->m_ImportState = IMPORT_STATE_IMPORTING;
+    import->m_XmlFinished = false;
+    import->m_AttachmentFinished = false;
+    import->m_Window = window;
+    import->m_FileName = fileName;
+    import->m_FileNameDir = QFileInfo( import->m_FileName ).path();
+    import->m_DocumentTypeRegExp = format->documentTypeRegExp();
+    import->m_ImportFormat = format->name();
+
+    if ( parentImport )
+    {
+        import->m_ReportsDir = DInsightReport::getReportsDir( parentImport->reportsDir() + tr("childimports") + "/" );
+    }
+    else
+    {
+        import->m_ReportsDir = DInsightReport::getReportsDir();
+    }
+
+    QDir reportsDir;
+    if ( !reportsDir.mkpath( import->m_ReportsDir ) )
+    {
+        QMessageBox::warning( window, tr("Directory creation failed"), tr("Failed to create directory '%1'.").arg(import->m_ReportsDir) );
+        delete import;
+        return nullptr;
+    } 
+    
+    // Open file
+    QFile file( import->m_FileName );
+    if ( format->parser() != "random" )
+    {
+        if ( !file.open(QIODevice::ReadOnly) )
+        {
+            QMessageBox::information( window, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileName ), QMessageBox::Ok );
+            delete import;
+            return nullptr;
+        }
+    }
+
+    // Create root node
+    if ( parent == nullptr )
+    {
+        model->beginInsert( 0, 1, QModelIndex() );
+        import->m_RootItem = model->createDocumentRoot( tr("import"), nullptr, format );
+        model->endInsert();
+    }
+    else
+    {
+        model->beginInsert( 0, 1, model->index( parent ) );
+        import->m_RootItem = model->createDocumentRoot( tr("import"), parent, format );
+        model->endInsert();
+    }
+
+    // Add a couple of info nodes for the root node
+    QDateTime dateTime = QDateTime::currentDateTime().toLocalTime();
+    QString importDate = QString( "%1 %2" ).arg( dateTime.date().toString( "dddd dd.MM.yyyy" ) ).arg( dateTime.time().toString() );
+
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importDate"), importDate ) );
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, FileNameKey(), fileName ) );
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("sizeBytes"), QString("%1").arg( file.size() ) ) );
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("fileDate"), QString("%1").arg( QFileInfo(file).birthTime().toString() ) ) );
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importFormat"), format->name() ) );
+    file.close();
+
+    // Create import report folder
+    QString report = import->m_ReportsDir;
+    reportsDir.cd( report );
+
+    import->m_RootItem->updateNode( model->createLeaf( import->m_RootItem, ReportsDirKey(), QDir::toNativeSeparators(report) ) );
+
+    DXmlParser* parser;
+    if ( format->parser() == "xml" )
+    {
+        parser = new DXmlParser( &import->m_TreeItems, import->m_FileName, import->m_Model, import->m_RootItem, format );
+    }
+    else if ( format->parser() == "dir" )
+    {
+        QString extractDir = tr("extract");
+        QDir rootExtractDir( import->m_ReportsDir );
+        if ( !rootExtractDir.mkdir( extractDir ) )
+        {
+            QMessageBox::information(
+                window, tr("Failed to create directory"), tr("Failed to create '%1/%2'.").arg( rootExtractDir.path() ).arg( extractDir ), QMessageBox::Ok );
+            delete import;
+            return nullptr;
+        }
+
+        // Extract to import folder
+        QString extractPath = QDir::toNativeSeparators( QString("%1/%2").arg( rootExtractDir.path() ).arg( extractDir ) );
+        QString extractTool = format->extractTool( import->m_FileName, extractPath );
+
+        int ok = QProcess::execute(extractTool);
+        if ( ok != 0 )
+        {
+            QMessageBox::information(
+                window, tr("Failed to extract"), tr("Failed to extract '%1'.").arg( extractTool ), QMessageBox::Ok );
+            delete import;
+            return nullptr;
+        }
+
+        // Store extract dir in import file
+        import->m_ExtractDir = extractPath;
+        import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("extractFolder"), extractPath ) );
+
+        // Parse temp dir
+        parser = new DDirParser( &import->m_TreeItems, extractPath, import->m_Model, import->m_RootItem, format );
+    }
+    else if ( format->parser() == "random" )
+    {
+        parser = new DXmlParser( &import->m_TreeItems, "", import->m_Model, import->m_RootItem, format );
+    }
+    else
+    {
+        DInsightConfig::Log() << "Unknown parser: " << format->parser() << endl;
+        delete import;
+        return nullptr;
+    }
+    
+    import->load(parser);    
+    return import;
 }
 
 
@@ -291,55 +504,48 @@ void DImport::indexingFinished()
  *  Create DImport instance from XML file.
  */
 
-DImport* DImport::CreateFromXml( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DRegExps &documentTypeRegExp )
+DImport* DImport::CreateFromXml(
+    const QString& fileName,
+    DTreeModel* model,
+    DInsightMainWindow* window,
+    const DImportFormat* format,
+    DTreeItem* parent,
+    DImport* parentImport )
 {
-    DInsightConfig::log() << "Importing " << fileName << endl;
-    
-    DImport* import = new DImport( model );
+    return CreateFromFile( fileName, model, window, format, parent, parentImport );
+}
 
-    import->m_FromReport = false;
-    import->m_ImportState = IMPORT_STATE_IMPORTING;
-    import->m_XmlFinished = false;
-    import->m_AttachmentFinished = false;
-    import->m_Window = window;
-    import->m_FileName = fileName;
-    import->m_FileNameDir = QFileInfo( import->m_FileName ).path();
-    import->m_ReportsDir = DInsightReport::getReportsDir();
-    import->m_DocumentTypeRegExp = documentTypeRegExp;
 
-    QDir reportsDir;
-    if ( !reportsDir.mkpath( import->m_ReportsDir ) )
-    {
-        QMessageBox::warning( window, tr("Directory creation failed"), tr("Failed to create directory '%1'.").arg(import->m_ReportsDir) );
-        delete import;
-        return NULL;
-    } 
-    
-    // Open file
-    QFile file( import->m_FileName );
-    if ( !file.open(QIODevice::ReadOnly) )
-    {
-        QMessageBox::information( window, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileName ), QMessageBox::Ok );
-        return NULL;
-    }
+//----------------------------------------------------------------------------
+/*! 
+ *  Create DImport instance from tar file.
+ */
 
-    // Create root node
-    model->beginInsert( 0, 1, QModelIndex() );
-    import->m_RootItem = model->createDocumentRoot( tr("import") );
-    model->endInsert();
+DImport* DImport::CreateFromTar(
+    const QString& fileName,
+    DTreeModel* model,
+    DInsightMainWindow* window,
+    const DImportFormat* format,
+    DTreeItem* parent,
+    DImport* parentImport )
+{
+    return CreateFromFile( fileName, model, window, format, parent, parentImport );
+}
 
-    // Add a couple of info nodes for the root node
-    QDateTime dateTime = QDateTime::currentDateTime().toLocalTime();
-    QString importDate = QString( "%1 %2" ).arg( dateTime.date().toString( "dddd dd.MM.yyyy" ) ).arg( dateTime.time().toString() );
+//----------------------------------------------------------------------------
+/*!
+ *  Create DImport instance from tar file.
+ */
 
-    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importDate"), importDate ) );
-    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, fileNameKey(), fileName ) );
-    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("sizeBytes"), QString("%1").arg( file.size() ) ) );
-    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("fileDate"), QString("%1").arg( QFileInfo(file).created().toString() ) ) );
-    file.close();
-
-    import->load();    
-    return import;
+DImport* DImport::CreateFromExtract(
+    const QString& fileName,
+    DTreeModel* model,
+    DInsightMainWindow* window,
+    const DImportFormat* format,
+    DTreeItem* parent,
+    DImport* parentImport )
+{
+    return CreateFromFile( fileName, model, window, format, parent, parentImport );
 }
 
 
@@ -348,9 +554,9 @@ DImport* DImport::CreateFromXml( const QString& fileName, DTreeModel* model, DIn
  *  Create DImport instance from XML import report.
  */
 
-DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DRegExps& documentTypeRegExp )
+DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormats* formats )
 {
-    DInsightConfig::log() << "Importing: " << fileName << endl;
+    DInsightConfig::Log() << "Importing: " << fileName << endl;
     
     DImport* import = new DImport( model );
 
@@ -361,11 +567,35 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
     import->m_Window = window;
     import->m_FileName = fileName;
     import->m_FileNameDir = QFileInfo( import->m_FileName ).path();
-    import->m_DocumentTypeRegExp = documentTypeRegExp;
-    import->m_RootItem = NULL;
-    import->loadReport();
+    import->m_RootItem = nullptr;
+    if ( !import->loadReport() )
+    {
+        DInsightConfig::Log() << "Import failed: " << fileName << " XML parsing failed." << endl;
+        delete import;
+        return nullptr;
+    }
 
-    DLeafNode* fileNameLeaf = import->m_RootItem->findLeaf( fileNameKey().toStdString().c_str() );
+    // Find format in report:
+    DLeafNode* fileFormatNode = import->m_RootItem->findLeaf( "importFormat" );
+    const DImportFormat* format = formats->defaultFormat();
+    if ( fileFormatNode )
+    {
+        import->m_ImportFormat = fileFormatNode->m_Value;
+        format = formats->find( import->m_ImportFormat );
+        if ( format == nullptr )
+        {
+            DInsightConfig::Log() << "Warning: Format not found: " << fileFormatNode->m_Value << endl;
+            format = formats->defaultFormat();
+        }
+        else
+        {
+            DInsightConfig::Log() << "Using format: " << fileFormatNode->m_Value << endl;
+        }
+    }
+    
+    import->m_DocumentTypeRegExp = format->documentTypeRegExp();
+    
+    DLeafNode* fileNameLeaf = import->m_RootItem->findLeaf( FileNameKey().toStdString().c_str() );
     if ( fileNameLeaf )
     {
         import->m_FileName = QString( fileNameLeaf->m_Value );
@@ -373,21 +603,31 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
     }
     else
     {
-        DInsightConfig::log() << "Import failed: " << fileName << " missing key: " << fileNameKey() << endl;
+        DInsightConfig::Log() << "Import failed: " << fileName << " missing key: " << FileNameKey() << endl;
         delete import;
-        return NULL;
+        return nullptr;
     }
 
-    DLeafNode* reportDirLeaf = import->m_RootItem->findLeaf( reportsDirKey().toStdString().c_str() );
+    DLeafNode* reportDirLeaf = import->m_RootItem->findLeaf( ReportsDirKey().toStdString().c_str() );
     if ( reportDirLeaf )
     {
         import->m_ReportsDir = QString( reportDirLeaf->m_Value );
     }
     else
     {
-        DInsightConfig::log() << "Import failed: " << fileName << " missing key: " << reportsDirKey() << endl;
+        DInsightConfig::Log() << "Import failed: " << fileName << " missing key: " << ReportsDirKey() << endl;
         delete import;
-        return NULL;
+        return nullptr;
+    }
+
+    DLeafNode* extractDirLeaf = import->m_RootItem->findLeaf( ExtractDirKey().toStdString().c_str() );
+    if ( extractDirLeaf )
+    {
+        import->m_ExtractDir = QString( extractDirLeaf->m_Value );
+    }
+    else
+    {
+        // Not all formats have an extract dir
     }
 
     return import;
@@ -439,9 +679,20 @@ QString DImport::fileNameRoot()
 
 
 //----------------------------------------------------------------------------
+/*!
+ *  Return import format name, as found in the format config file.
+ */
+
+QString DImport::formatName()
+{
+    return m_ImportFormat;
+}
+
+
+//----------------------------------------------------------------------------
 /*! 
  *  Return database name. The database name is used to query the search demon 
- *  when saerching through attachments.
+ *  when searching through attachments.
  */
 
 QString DImport::databaseName()
@@ -481,6 +732,17 @@ QString DImport::attachmentsDir()
 QString DImport::searchConfig()
 {
     return reportsDir() + QString( "sphinx_index.conf" );
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *
+ */
+
+QString DImport::extractDir()
+{
+    return m_ExtractDir;
 }
 
 
@@ -540,7 +802,7 @@ DAttachment* DImport::getAttachment( int index )
         return m_AttachmentParser->attachments().at( index );
     }
 
-    return NULL;
+    return nullptr;
 }
 
 
@@ -596,7 +858,7 @@ void DImport::indexingIndexerStarted()
  *  Return node name for file name.
  */
 
-QString DImport::fileNameKey()
+QString DImport::FileNameKey()
 {
     return tr("importFileName");
 }
@@ -607,7 +869,29 @@ QString DImport::fileNameKey()
  *  Return node name for reports dir.
  */
 
-QString DImport::reportsDirKey()
+QString DImport::ReportsDirKey()
 {
     return tr("reportsFolder");
+}
+
+//----------------------------------------------------------------------------
+/*!
+ *  Return node name for extract dir. This is where import formats that are
+ *  containers (TAR, ZIP, etc) are extracted during import.
+ */
+
+QString DImport::ExtractDirKey()
+{
+    return tr("extractFolder");
+}
+
+
+void DImport::SetReportFormat( const DImportFormat* importFormat )
+{
+    g_ImportFormat = importFormat;
+}
+
+const DImportFormat* DImport::GetReportFormat()
+{
+    return g_ImportFormat;
 }

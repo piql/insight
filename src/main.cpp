@@ -4,7 +4,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 *****************************************************************************/
 
@@ -13,6 +26,8 @@
 #include    "gui/dinsightmainwindow.h"
 #include    "dinsightconfig.h"
 #include    "drunguard.h"
+#include    "dimportformat.h"
+#include    "dosxtools.h"
 
 //  QT INCLUDES
 //
@@ -20,6 +35,8 @@
 #include    <QTranslator>
 #include    <QSettings>
 #include    <QMessageBox>
+#include    <QDir>
+#include    <QSqlDatabase>
 
 //  PLATFORM INCLUDES
 //
@@ -29,14 +46,14 @@
 #endif
 
 #if defined WIN32
-HANDLE ghJob = NULL;
+HANDLE ghJob = nullptr;
 #endif
 
 /****************************************************************************/
-/*! \defgroup Insight NOARK-5 inspection tool
+/*! \defgroup Insight AIP inspection tool
  *  \ingroup ClientTools
  *
- *  Load NOARK-5 archives. Search for data and create reports.
+ *  Load AIP archives. Search for data and create reports.
  */
 
 
@@ -61,12 +78,12 @@ LONG WINAPI unhandledExceptionFilter( _In_ struct _EXCEPTION_POINTERS *pep )
 
 
     HANDLE hFile = CreateFileA( "insight.dmp", GENERIC_READ | GENERIC_WRITE, 
-    0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
+    0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr );
 
     HMODULE h = ::LoadLibrary(L"DbgHelp.dll");
     PDUMPFN pFn = (PDUMPFN)GetProcAddress(h, "MiniDumpWriteDump");
 
-    if( ( hFile != NULL ) && ( hFile != INVALID_HANDLE_VALUE ) ) 
+    if( ( hFile != nullptr ) && ( hFile != INVALID_HANDLE_VALUE ) )
     {
         // Create the minidump 
 
@@ -99,8 +116,8 @@ int  main( int argc, char* argv[] )
 
     // Code to make sure child processes created byt his application is killed 
     // when the application terminates (or crashes)
-    ghJob = CreateJobObject( NULL, NULL); // GLOBAL
-    if( ghJob == NULL)
+    ghJob = CreateJobObject( nullptr, nullptr); // GLOBAL
+    if( ghJob == nullptr)
     {
     }
     else
@@ -120,21 +137,25 @@ int  main( int argc, char* argv[] )
     qtApp.setOrganizationName( "Piql" );
     qtApp.setOrganizationDomain("piql.com");
     qtApp.setApplicationName( "insight" );
-    qtApp.setApplicationVersion( "v1.0.0-rc1" );
+    qtApp.setApplicationVersion( "v1.1.0-rc2" );
 
-    QString language = DInsightConfig::get( "LANGUAGE", "en" );
-    QString languageFile = QString("insight_%1").arg( language );
+    QString language = DInsightConfig::Get( "LANGUAGE", "en" );
+    QString languageFile = QString( "insight_%1.qm" ).arg( language );
+    languageFile = DOsXTools::GetBundleResource( languageFile.toStdString() ).c_str();
+
+    DInsightConfig::Log() << QSqlDatabase::drivers() << endl;
+    DInsightConfig::Log() << QCoreApplication::libraryPaths() << endl;
 
     // Localization support
     QTranslator translator;
-    translator.load( languageFile );
-    /*
+    bool ok = translator.load( languageFile );
     if ( !ok )
     {
-        QMessageBox::warning( NULL, "Failed to load translation file", QString("Failed to load translation file: %1.").arg( languageFile ) );
+        QMessageBox::warning(
+            nullptr, "Failed to load translation file",
+            QString( "Failed to load translation file: %1" ).arg( languageFile ) );
         return 1;
     }
-    */
 
     qtApp.installTranslator(&translator);
 
@@ -142,14 +163,44 @@ int  main( int argc, char* argv[] )
     if ( !guard.tryToRun() )
     {
         QMessageBox::warning( 
-            NULL, "Application already started", 
-            QString( "Only one instance of the application can run at the same time.") );
+            nullptr, "Application already started",
+            QString( "Only one instance of the application can run at the same time." ) );
         return 1;
     }
 
+    // Load the import formats
+    DImportFormats formats;
+    if ( !DImportFormats::Load( formats, "./formats" ) )
+    {
+        QMessageBox::warning( 
+            nullptr, "Load error",
+            QString( "Failed to load import formats." ) );
+        return 1;
+    }
+
+    // Default format must exist
+    if ( !formats.defaultFormat() )
+    {
+        QMessageBox::warning( 
+            nullptr, "Missing format",
+            QString( "The format ./formats/default.conf must exist." ) );
+        return 1;
+    }
+
+    // Import report format must exist
+    const DImportFormat* reportFormat = formats.find( "Report" );
+    if ( !reportFormat )
+    {
+        QMessageBox::warning(
+            nullptr, "Missing import report format",
+            QString( "The format ./formats/report.conf must exist." ) );
+        return 1;
+    }
+    DImport::SetReportFormat( reportFormat );
+
     // Start GUI
-    DInsightMainWindow window;
-    window.setWindowTitle( DInsightConfig::get( "WINDOW_TITLE", "KDRS Innsyn" ) );
+    DInsightMainWindow window( &formats );
+    window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
     window.show();
     return qtApp.exec();
 }

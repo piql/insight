@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -32,8 +45,8 @@
  *  Constructor.
  */
 
-DAttachmentParser::DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DRegExps& attachmentTypeRegExp )
-    : m_MaxNodeCount( 0 ),
+DAttachmentParser::DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DLeafMatchers& attachmentTypeRegExp )
+    : m_MaxNodeCount( treeItems->size() ),
       m_FinalNodeReached( false ),
       m_TreeItems( treeItems ),
       m_RootDir( rootDir ),
@@ -166,13 +179,13 @@ bool DAttachmentParser::AttachmentExists( const QString& fileName, const QString
 void DAttachmentParser::run()
 {
     unsigned int count = 0;
-    DTreeItemsIterator currentNode;
+    DTreeItemsIterator currentNode = m_TreeItems->end();
     while ( !isInterruptionRequested() )
     {
         {
             QMutexLocker lock( &m_Mutex );
 
-            if ( count == m_MaxNodeCount )    
+            if ( count == m_MaxNodeCount || currentNode ==  m_TreeItems->end() )
             {
                 if ( m_FinalNodeReached )
                 {
@@ -187,19 +200,23 @@ void DAttachmentParser::run()
                     }
                 }        
 
-
                 if ( count == 0 )
                 {
                     currentNode = m_TreeItems->begin();
                 }
             } 
+
+            if ( currentNode == m_TreeItems->end() )
+            {
+                continue;
+            }
         }
 
         DLeafNodesIterator it = (*currentNode)->m_Nodes.begin();
         while ( it != (*currentNode)->m_Nodes.end() )
         {
             // Attachment?
-            if ( isAttachmentNode( (*it)->m_Key ) )
+            if ( isAttachmentNode( (*it)->m_Key, (*it)->m_Value ) )
             {
                 DAttachment* attachment = new DAttachment;
                 attachment->m_FileName = (*it)->m_Value;
@@ -232,15 +249,26 @@ void DAttachmentParser::run()
  *  Return true if current node points to an attachment.
  */
 
-bool DAttachmentParser::isAttachmentNode( const char* text )
+bool DAttachmentParser::isAttachmentNode( const char* text, const char* content )
 {
     QString key( text );
+    QString value( content );
 
-    foreach( const QRegularExpression& regExp, m_AttachmentTypeRegExp )
+    foreach( const DLeafMatcher& matcher, m_AttachmentTypeRegExp )
     {
-        if ( regExp.match( key ).hasMatch() )
+        if ( matcher.m_LeafMatch.match( key ).hasMatch() )
         {
-            return true;
+            if ( matcher.m_ContentMatch.pattern().length() != 0 )
+            {
+                if ( matcher.m_ContentMatch.match( value ).hasMatch() )
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 

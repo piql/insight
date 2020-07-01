@@ -9,13 +9,27 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 *****************************************************************************/
 
 //  PROJECT INCLUDES
 //
 #include    "dtreeitem.h"
+#include    "dregexp.h"
 
 //  QT INCLUDES
 //
@@ -30,6 +44,7 @@
 //
 class DTreeItem;
 class DTreeRootItem;
+class DImportFormat;
 
 //============================================================================
 // CLASS: DLeafNode
@@ -92,7 +107,13 @@ public:
     void setChecked( bool checked );
     bool hasChildren() const;
     DLeafNode* findLeaf( const char* key );
-    DTreeRootItem* findRootItem();
+    DTreeItem* findChild( const char* text );
+    const DTreeRootItem* findRootItem() const;
+    QString              findRootPath() const;
+    const DImportFormat* format() const;
+    const DRegExps&      nodeRegExp() const;
+    const DRegExps&      labelRegExp() const;
+
 
 private:
     int  rowSlow();
@@ -115,13 +136,13 @@ public:
 };
 
 //============================================================================
-// CLASS: DTreeItem
+// CLASS: DTreeRootItem
 
 class DTreeRootItem : public DTreeItem
 {
 private:
-    DTreeRootItem( DTreeItem* parent, const QString& text );
-    DTreeRootItem( DTreeItem* parent, const char* text );
+    DTreeRootItem( DTreeItem* parent, const QString& text, const DImportFormat* format );
+    DTreeRootItem( DTreeItem* parent, const char* text, const DImportFormat* format );
     virtual ~DTreeRootItem();
 
     friend class DTreeModel;
@@ -130,7 +151,12 @@ public:
     virtual void        addNode( DLeafNode* node );
     void                updateNode( DLeafNode* node );
     void                removeNode( const QString& key );
-    void                deleteChildren();    
+    void                deleteChildren();
+    const DRegExps&     nodeRegExp() const;
+    const DRegExps&     labelRegExp() const;
+    const DImportFormat* format() const;
+    bool                isToplevelRoot();
+    void                setImportFormat( const DImportFormat* format );
 
 private:
     DTreeItem*          createItem( DTreeItem* parent, const char* text );
@@ -148,6 +174,7 @@ private:
     DLeafNode*          m_CurrentLeafNodeBlockPos;
     std::vector<void*>  m_LeafNodeBlocks;
 
+    const DImportFormat* m_Format;
 };
 
 #endif // DTREEITEM_H

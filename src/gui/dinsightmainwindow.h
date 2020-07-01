@@ -9,7 +9,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 *****************************************************************************/
 
@@ -44,7 +57,7 @@ class DSearchThread;
 class DTableSearchResultCell;
 class QProcess;
 class DInsightMainWindow;
-
+class DImportFormats;
 
 //============================================================================
 // CLASS: DInsightMainWindow
@@ -53,15 +66,16 @@ class DInsightMainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    DInsightMainWindow();
+    DInsightMainWindow( DImportFormats* formats );
     virtual ~DInsightMainWindow();
 
 public:
     static void    ReplaceString( QString& key, const DRegExps& regExps );
+    static QString GetTreeItemLabel(DTreeItem *item);
 
 public slots:
     void importFileFinished( bool ok );
-    void indexingFinished( bool ok );
+    void indexingFinished( DImport::DIndexingState state );
     void indexingProgress( float progress );
     void indexingIndexerStated();
     void loadXmlProgress( unsigned long /*count*/, float progress );
@@ -79,6 +93,7 @@ private slots:
     void viewDocumentClicked();
     void deleteFolderClicked();
     void importDocumentClicked();
+    void checksumClicked();
     void searchEditChanged( const QString & text );
     void dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &);
     void loadMenuClicked( bool checked );
@@ -108,7 +123,10 @@ private:
 private:
 
     void    updateInfo( Node* parent );
-    void    importFile( const QString& fileName );
+    void    importFile(
+                const QString& fileName,
+                const QString& importFormatName,
+                DTreeItem* parent = nullptr );
     void    enumerateProjects( const QString& rootDir );
     void    cancelImport();
     void    cancelIndexer();
@@ -125,40 +143,38 @@ private:
                 bool replaceLabels=true );
     int     treeNodeCount( bool onlyChecked );
     int     treeNodeCountRecursive( Node* parent, bool onlyChecked );
-    bool    isNode( const QString& key, DRegExps& regExps );
-    bool    isDocumentNode( const QString& key );
-    bool    isFolderNode( const QString& key );
-    bool    isDeleteNode( const QString& key );
-    bool    isImportNode( const QString& key );
+    bool    isNode( const QString& key, const DRegExps& regExps );
+    bool    isNode( const QString& key, const QString& value, const DLeafMatchers& matchers );
+    bool    isDocumentNode( const DImportFormat* format, const QString& key, const QString& value );
+    bool    isFolderNode( const DImportFormat* format, const QString& key );
+    bool    isDeleteNode( const DImportFormat* format, const QString& key );
+    bool    isImportNode( const DImportFormat* format, const QString& key, const QString& value );
+    bool    isChecksumNode( const DImportFormat* format, const QString& key );
+    bool    isChecksumSourceNode( const DImportFormat* format, const QString& key );
     void    startSearch();
     void    cancelSearchThread();
     void    cancelSearch();
     void    cancelIndexerThread();
     void    cancelSearchDeamon();
-    QString getInfoViewLabel( const char* key );
+    QString getInfoViewLabel( const DImportFormat* format, const char* key );
     QString getTreeItemMatchString( DTreeItem* item, const QString& searchText );
     QString getAttachmentMatchString( const QString& attacmentTextFileName );
     QString getHighlighMatchString( const QString& searchText, const QString& key, const QString& text, bool &match );
     void    addSearchResult( const QString& location, const QString& matchString, const QModelIndex& matchingIndex );
-    DImport*findImport( DTreeItem* item );
-    QString createCombinedSeachConfigFile();
+    DImport*findImport( const DTreeItem* item );
+    QString createCombinedSearchConfigFile();
     void    startSearchDeamon();
     void    setupUiForImport();
     void    importDocumentClicked( const QString& document, QModelIndex& index );
     void    deleteImportFolder( const QString& document, QModelIndex& index );
     void    getNodesToExcludeFromSearch( DXmlParser::StringHash& nodesToExclude );
     void    treeNodeSelectionCountChanged();
+    void    makeAbsolute( QString& filename, const QModelIndex& index );
+
     
 private:
     Ui::IngestToolMainWindow    m_Ui;
-    DRegExps                    m_TreeViewLabelRegExp;
-    DRegExps                    m_TreeViewNodeRegExp;
-    DRegExps                    m_InfoViewLabelRegExp;
-    DRegExps                    m_DocumentTypeRegExp;
-    DRegExps                    m_FolderTypeRegExp;
-    DRegExps                    m_DeleteTypeRegExp;
-    DRegExps                    m_ImportTypeRegExp;
-    QStringList                 m_NodeStatisticsXQuery;
+    QGridLayout*                m_InfoView;
     unsigned int                m_SearchResultMax;
 
     DImports                    m_Imports;
@@ -169,6 +185,7 @@ private:
     QProgressBar*               m_ProgressBar;
     QLabel*                     m_ProgressBarInfo;
     QProcess*                   m_SearchDeamonProcess;
+    DImportFormats*             m_ImportFormats;
 };
 
 
@@ -194,7 +211,7 @@ class DTableSearchResultDelegate : public QStyledItemDelegate
     Q_OBJECT
 
 public:
-    explicit DTableSearchResultDelegate(QObject *parent = 0);
+    explicit DTableSearchResultDelegate(QObject *parent = nullptr);
 
 protected:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;

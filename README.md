@@ -1,56 +1,99 @@
+<div id="table-of-contents">
+<h2>Innhold</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Introduksjon</a></li>
+<li><a href="#sec-2">2. Systemkrav</a>
+<ul>
+<li><a href="#sec-2-1">2.1. OS-X / Linux</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. Installasjon</a></li>
+<li><a href="#sec-4">4. Bruk</a></li>
+<li><a href="#sec-5">5. Sphinx indeksering og søkemotor</a></li>
+<li><a href="#sec-6">6. Rapporter</a></li>
+<li><a href="#sec-7">7. Loggfiler</a></li>
+<li><a href="#sec-8">8. Konfigurasjon</a>
+<ul>
+<li><a href="#sec-8-1">8.1. Tips</a></li>
+</ul>
+</li>
+<li><a href="#sec-9">9. Ønsker, feil og mangler</a></li>
+<li><a href="#sec-10">10. Hvordan rapportere feil</a></li>
+<li><a href="#sec-11">11. Historikk</a>
+<ul>
+<li><a href="#sec-11-1">11.1. innsyn-v1.1.0-beta2</a>
+<ul>
+<li><a href="#sec-11-1-1">11.1.1. Feilrettinger</a></li>
+</ul>
+</li>
+<li><a href="#sec-11-2">11.2. innsyn-v1.1.0-beta1</a>
+<ul>
+<li><a href="#sec-11-2-1">11.2.1. Nye funksjoner</a></li>
+<li><a href="#sec-11-2-2">11.2.2. Feilrettinger</a></li>
+</ul>
+</li>
+<li><a href="#sec-11-3">11.3. 2018.06.01 innsyn-v1.0.0</a></li>
+<li><a href="#sec-11-4">11.4. 2018.04.13 innsyn-v1.0.0-rc1</a></li>
+<li><a href="#sec-11-5">11.5. 2018.02.05 innsyn-v1.0.0-beta2</a></li>
+<li><a href="#sec-11-6">11.6. 2018.01.18 innsyn-v1.0.0-beta1</a></li>
+</ul>
+</li>
+<li><a href="#sec-12">12. Utvikling</a>
+<ul>
+<li><a href="#sec-12-1">12.1. Windows</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 
-# Innhold
-
-1.  [Introduksjon](#org608a883)
-2.  [Systemkrav](#orge0b3f75)
-3.  [Installasjon](#orgb0f98b4)
-4.  [Bruk](#orgbada60c)
-5.  [Rapporter](#orgc00fd57)
-6.  [Loggfiler](#org2ba8e19)
-7.  [Konfigurasjonsfil](#orgeaf835c)
-8.  [Ønsker, feil og mangler](#org9a35a9c)
-9.  [Hvordan rapportere feil](#org83eac9f)
-10. [Historikk](#org7b9de2e)
-    1.  [2018.06.01 innsyn-v1.0.0](#orged6794c)
-    2.  [2018.04.13 innsyn-v1.0.0-rc1](#orge6c7468)
-    3.  [2018.02.05 innsyn-v1.0.0-beta2](#org76a4f05)
-    4.  [2018.01.18 innsyn-v1.0.0-beta1](#org759ec1b)
 
 
+# Introduksjon<a id="sec-1" name="sec-1"></a>
 
-<a id="org608a883"></a>
+Innsyn er en applikasjon som opprinnelig ble utviklet for Kommunenes Digitale Ressursjsentral (KDRS) for å støtte innsyn i NOARK-5 uttrekk. Applikasjonen har senere blitt utvidet til å støtte flere typer uttrekksformat.
 
-# Introduksjon
+Applikasjonen validerer ikke importformatene utover å sjekke at vedleggene finnes. Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til filformat spesifike nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen. Dette betyr at applikasjonen kan tilpasses til å støtte flere typer XML baserte format ved å kun endre konfigurasjonsfilene.
 
-KDRS Innsyn er en applikasjon for å åpne og søke i NOARK-5 uttrekk. Applikasjonen validerer ikke uttrekkene utover å sjekke at vedleggene finnes.  Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til NOARK-5 nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen.
+Innsyn kommer med støtte for disse filformatene:
+-   NOARK-5: XML basert arkivformat brukt av stat og kommune i Norge.
+-   EPJ avleveringsliste: XML basert dokumentasjonsformat brukt ved avlevering av pasientjournaler, fysiske eller elektroniske, til Norsk Helsearkiv.
+-   EPJ pakkeliste: XML basert dokumentasjonsformat brukt ved avlevering av elektronsike pasientjournaler til Norsk Helsearkiv.
+-   TAR: Filformat for som pakker mange filer sammen til en fil og bevarer filinformasjon (filnavn, dato, rettigheter). Innsyn støtter ikke utpakking av enkle tar filer, men viser strukturen.
 
+# Systemkrav<a id="sec-2" name="sec-2"></a>
 
-<a id="orge0b3f75"></a>
+Applikasjonen er testet på Windows 10 64bit.
 
-# Systemkrav
+## OS-X / Linux<a id="sec-2-1" name="sec-2-1"></a>
 
-Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
+Indekseringsverktøyet Sphinx må ligge i søkestien. Installeres enklest med Homebrew:
 
+    osx$ brew install sphinx
+    centos-redhat$ sudo yum install sphinx
 
-<a id="orgb0f98b4"></a>
+Sjekk at det ligger i pathen med:
 
-# Installasjon
+    datamaskin$ indexer 
+    Sphinx 2.2.11-id64-release (95ae9a6)
+    Copyright (c) 2001-2016, Andrew Aksyonoff
+    Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
-1.  Pakk ut *innsyn-v1.0.0.zip*.
+# Installasjon<a id="sec-3" name="sec-3"></a>
+
+1.  Pakk ut *innsyn-v1.1.0.zip*.
 2.  Indeksering av vedlegg kan bruke en del plass, rediger derfor eventuelt
     *REPORTS\_DIR* i *insight.conf* til å peke på en katalog med mye ledig
     diskplass.
 3.  Språk i brukergrensesnittet kan settes ved å endre *LANGUAGE* i 
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
-
-<a id="orgbada60c"></a>
-
-# Bruk
+# Bruk<a id="sec-4" name="sec-4"></a>
 
 ![img](./screenshot.png)
 
-1.  Kjør *insight.exe* fra katalogen *innsyn-v1.0.0*.
+1.  Kjør *insight.exe* (mac/linux: insight) fra katalogen *innsyn-v1.1.0*.
 2.  Brukergrensesnittet har fire hovedelementer:
     1.  **Nodetre**: Viser alle elementene i uttrekket i en trestrukture etter en import. 
         Hver node i treet tilsvarer en XML knagg. Nodetreet viser også tidligere 
@@ -87,40 +130,56 @@ Applikasjonen er testet på Windows 10 64bit og Windows 7 64bit.
         i node treet. Rapporten kan lagres til disk eller sendes som vedlegg på
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
+# Sphinx indeksering og søkemotor<a id="sec-5" name="sec-5"></a>
 
-<a id="orgc00fd57"></a>
+For effektive fulltekstsøk mot dokumentene uttrekket refererer brukes Sphinx søkemotor. Først konverteres alle dokumentene til tekst, så bygger Sphinx en indeks som muliggjør raske søk.
 
-# Rapporter
+Når Innsyn kjører og man har lastet og indeksert ett uttrekk, kan man kjøre SQL spørringer direkte om indeksen hvis man har MySql (versjon 5.6) klient installert:
+
+    mysql -h0 -P9306
+    MySQL [(none)]> show tables;
+    +------------+-------+
+    | Index      | Type  |
+    +------------+-------+
+    | INDEX_NAME | local |
+    +------------+-------+
+    1 row in set (0.00 sec)
+    
+    MySQL [(none)]> select i from INDEX_NAME where match('Oslo');
+
+Se Sphinx manualen for mer informasjon.
+
+# Rapporter<a id="sec-6" name="sec-6"></a>
 
 Etter import genereres en PDF-rapport i rapport katalogen, bestemt av
 *REPORTS\_DIR* i *insight.conf*. Rapportene legges i en katalogstruktur på
-formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
+formatet: *REPORTS\_DIR\\\\åååå\\MM\\DD\\TTMMSS\\\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
+# Loggfiler<a id="sec-7" name="sec-7"></a>
 
-<a id="org2ba8e19"></a>
+-   **innsyn-v1.1.0\insight.log**: Applikasjonslogg.
+-   **innsyn-v1.1.0\insight.dmp**: Genereres hvis applikasjonen krasjer.
+-   **REPORTS\_DIR\\YYYY\\MM\\DD\\TTMMSS\\attachments.log**: Logg over konvertering av vedlegg til søkbare tekstfiler.
+-   **REPORTS\_DIR\\YYYY\\MM\\DD\\TTMMSS\\indexer.log**: Logg fra indekserings applikasjonen som genererer indekserings databasen.
+-   **REPORTS\_DIR\\YYYY\\MM\\DD\\TTMMSS\\sphinx\\test1\\searchd.log**: Logg fra søkemotoren.
 
-# Loggfiler
+# Konfigurasjon<a id="sec-8" name="sec-8"></a>
 
--   **innsyn-v1.0.0\insight.log**: Applikasjonslogg.
--   **innsyn-v1.0.0\insight.dmp**: Genereres hvis applikasjonen krasjer.
--   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\attachments.log**: Logg over konvertering av vedlegg til søkbare tekstfiler.
--   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\indexer.log**: Logg fra indekserings applikasjonen som genererer indekserings databasen.
--   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
+Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen *formats*. Alle filene som slutter på *.conf* i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
+## Tips<a id="sec-8-1" name="sec-8-1"></a>
 
-<a id="orgeaf835c"></a>
+-   Kommer vinduet opp veldig lite og har sammentrykte knapper på Windows?
+    Det kan være at du kjører i emulator eller har en skjerm med høy oppløsning. 
+    Prøv med `insight -platform windows:dpiawareness=0` for å få riktig størrelse på vinduet. Beskrivelse av andre parametere som tweaker utseendet finnes her: <https://doc.qt.io/qt-5/qguiapplication.html#supported-command-line-options>
 
-# Konfigurasjonsfil
+# Ønsker, feil og mangler<a id="sec-9" name="sec-9"></a>
 
-Konfigurasjonsfilen heter *insight.conf*. Alle nøkler er dokumentert i konfigurasjonsfilen. Ved endring må
-applikasjonen restartes.
-
-
-<a id="org9a35a9c"></a>
-
-# Ønsker, feil og mangler
-
+-   [RA-20181209-01] Innlesing av arkivstruktur til minne, denne topper lett ut ved 8 GB minne ved det største arkivuttrekket som er prøvd. I tillegg medførte antatte feilmeldinger i bakgrunnen til at pcen saknet betraktelig, før den til slutt ikke svarte og trengte hard omstart.
+-   [RA-20181209-02] Programmet mangler klar tilbakemelding om når en handling er ferdig, kan fint stå lang tid på 100% og jobbe.
+-   [RA-20181209-03] Det er en grunn til at uttrekksleverandører lager mapper med maks 5000 filer per mappe: FAT-partisjoner har et tak på 65,534 filer per mappe, mens NTFS har et tak på 4,29 milliarder. En idé til vedleggs-mappen.
+-   [RA-20181209-04] For det andre arkivuttrekket ble vedlegg-filen dumpet lenge etter indeksering var ferdig, tyder på at oppgaven ble forsøkt utført i minne. Pga. flertråds-løsningen er dette forståelig, men lite ønsket (stort minneforbruk).
 -   [IKAMR-20180515-01] Du burde kanskje hatt en boks med informasjon eller på en eller annen måte oversiktlig vist hvilke uttrekk du faktisk har åpen no som kan søkes i?
 -   [IKAMR-20180515-02] Det samme gjelder treff i søk, hvordan vet jeg hvilken av uttrekkene søket fant sine treff i?
 -   [IKAMR-20180514-01] Etter å ha lukket uttrekk: Her står "Import ble avbrutt av brukeren", mener programmet at jeg har avbrutt fordi jeg klikket LUKK?
@@ -143,30 +202,39 @@ applikasjonen restartes.
 -   Får ikke advarsel hvis indeksering starter og det er igjen lite plass
     på disken.
 
-
-<a id="org83eac9f"></a>
-
-# Hvordan rapportere feil
+# Hvordan rapportere feil<a id="sec-10" name="sec-10"></a>
 
 ole.liabo@piql.com  
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
+# Historikk<a id="sec-11" name="sec-11"></a>
 
-<a id="org7b9de2e"></a>
+## innsyn-v1.1.0-beta2<a id="sec-11-1" name="sec-11-1"></a>
 
-# Historikk
+### Feilrettinger<a id="sec-11-1-1" name="sec-11-1-1"></a>
 
+-   Installasjon for Windows.
 
-<a id="orged6794c"></a>
+## innsyn-v1.1.0-beta1<a id="sec-11-2" name="sec-11-2"></a>
 
-## 2018.06.01 innsyn-v1.0.0
+### Nye funksjoner<a id="sec-11-2-1" name="sec-11-2-1"></a>
+
+-   Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.
+-   Støtte for import av TAR filer og andre pakkeformater. Filen pakkes ut under rapport mappen og indekseres.
+-   Støtte for import av dokumenter som refereres fra hoveddokumentet. Det importerte dokumentet lastes inn og blir en del av nodetreet.
+-   Støtte for sjekksumvalidering av filer referert fra node treet.
+-   Støtte for å endre XML-løv noder basert på både node navnet og innholdet i noden.
+
+### Feilrettinger<a id="sec-11-2-2" name="sec-11-2-2"></a>
+
+-   Oppsett av Sphinx indexer og søkemotor på Linux / OS-X.
+-   Melding etter konvertering av vedlegg. Får beskjed både om at konvertering feilet og at vedlegg er tomme.
+
+## 2018.06.01 innsyn-v1.0.0<a id="sec-11-3" name="sec-11-3"></a>
 
 -   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
-
-<a id="orge6c7468"></a>
-
-## 2018.04.13 innsyn-v1.0.0-rc1
+## 2018.04.13 innsyn-v1.0.0-rc1<a id="sec-11-4" name="sec-11-4"></a>
 
 -   [IKAVA-20180122-03] Inkluder dokumentnavn i nodetree visningen.
 -   [IKARO-20180223-02] Bør kunne slette ved å høyreklikke på root node i treet.
@@ -186,10 +254,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   [IKAMR-20180120-12] Krasj ved import.
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
-
-<a id="org76a4f05"></a>
-
-## 2018.02.05 innsyn-v1.0.0-beta2
+## 2018.02.05 innsyn-v1.0.0-beta2<a id="sec-11-5" name="sec-11-5"></a>
 
 Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 
@@ -208,10 +273,25 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 -   [PIQL-20180122-02] Generere filen insight.dmp ved programkrasj.
 -   [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
-
-<a id="org759ec1b"></a>
-
-## 2018.01.18 innsyn-v1.0.0-beta1
+## 2018.01.18 innsyn-v1.0.0-beta1<a id="sec-11-6" name="sec-11-6"></a>
 
 Første versjon levert til beta test.
 
+# Utvikling<a id="sec-12" name="sec-12"></a>
+
+Programmet er laget ved hjelp av Qt rammeverket. Er dette installert kan man bygge med:
+
+    (cd src/thirdparty ; unzip quazip-0.7.3.zip)
+    ./update-translations.sh
+    qmake
+    make
+
+Det kan også være nødvendig å bygge MySql driveren, se her for detaljer: <https://doc.qt.io/qt-5/sql-driver.html#qmysql-for-mysql-5-and-higher>
+
+For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:
+create-release-osx.sh
+create-release.cmd
+
+## Windows<a id="sec-12-1" name="sec-12-1"></a>
+
+Her må man bygge poppler manuelt.

@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -87,7 +100,9 @@ void DPdf2Txt::run()
     }
     else
     {
-        emptyFile = QString( file.readAll() ).trimmed().length() != 0;
+        QString fileContent =  QString( file.readAll() );
+        QString fileContentTrimmed = fileContent.trimmed();
+        emptyFile = fileContentTrimmed.length() == 0;
     }
     
     
@@ -206,7 +221,7 @@ void DAttachmentIndexer::run()
 {
     // Run conversion tool on attachments
     QString defaultPdfTool = "pdf2text -enc UTF-8 %INFILE% %OUTFILE%";
-    QString pdfToolOriginal = DInsightConfig::get( "PDF_TO_TEXT_TOOL", defaultPdfTool );
+    QString pdfToolOriginal = DInsightConfig::Get( "PDF_TO_TEXT_TOOL", defaultPdfTool );
 
     DAttachments& attachments = m_AttachmentParser->attachments();
     DAttachmentIndexes& attachmentsFound = m_AttachmentParser->attachmentsFound();
@@ -246,6 +261,10 @@ void DAttachmentIndexer::run()
             // QThreadPool takes ownership and deletes 'textRunner' automatically
             QThreadPool::globalInstance()->start( textRunner );
         }
+        else
+        {
+             *m_ConvertLog << tr("Skipping convert for file") << ": " << attachment << endl;
+        }
 
         if (isInterruptionRequested())
         {
@@ -273,7 +292,7 @@ void DAttachmentIndexer::run()
     
     // Next step is to launch indexer...
     QString defaultIndexerTool = "index.cmd %REPORTS_DIR% %ATTACHMENT_DIR% %NAME%";
-    QString indexerTool = DInsightConfig::get( "INDEXER_TOOL", defaultIndexerTool );
+    QString indexerTool = DInsightConfig::Get( "INDEXER_TOOL", defaultIndexerTool );
     QProcess indexerExe;
 
     indexerTool = indexerTool.replace( "%REPORTS_DIR%", QDir::toNativeSeparators( m_ReportFolder ) );
@@ -413,7 +432,7 @@ void DAttachmentIndexer::toolFinished( QProcess* toolExe, bool emptyFile, const 
         m_ConvertOK.push_back( index );
     }
 
-    if ( emptyFile )
+    if ( emptyFile && toolExe->error() != QProcess::FailedToStart)
     {
         *m_ConvertLog << attachment << ": " << tr("Convert result is empty (has no text)") << endl;
         m_AttachmentsEmpty.push_back( attachment );

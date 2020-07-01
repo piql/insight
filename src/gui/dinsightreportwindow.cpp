@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -22,7 +35,7 @@
 
 //  POPPLER INCLUDES
 //
-#include    <poppler-qt5.h>
+#include    <qt5/poppler-qt5.h>
 
 //  QT INCLUDES
 //
@@ -153,30 +166,104 @@ bool DInsightReportWindow::printAttachments( QPrinter& printer )
     foreach( QString attachment, m_Attachments )
     {        
         QPainter painter( &printer );
-        Poppler::Document * pdfDoc = Poppler::Document::load( attachment );
-        if ( !pdfDoc )
-        {
-            QMessageBox::warning( this, tr( "Failed to open PDF" ), tr( "Failed to open: %1" ).arg( attachment ) );
-            return false; 
-        }
 
-        for ( int p = 0; p < pdfDoc->numPages(); p++ )
+        if ( attachment.endsWith(".pdf", Qt::CaseSensitivity::CaseInsensitive) )
         {
-            Poppler::Page* page = pdfDoc->page( p );
-                
-            QImage image = page->renderToImage();
-            if ( image.isNull() )
+            if ( !printPdfAttachment( painter, printer, attachment ) )
             {
-                QMessageBox::warning( this, tr( "Failed to render PDF" ), tr( "Failed to render: %1" ).arg( attachment ) );
-                return false; 
+                return false;
             }
-            painter.drawImage( 0, 0, image );
-            printer.newPage();
-            delete page;
         }
-
-        delete pdfDoc;
+        else if ( attachment.endsWith(".tif", Qt::CaseSensitivity::CaseInsensitive) ||
+                  attachment.endsWith(".tiff", Qt::CaseSensitivity::CaseInsensitive) ||
+                  attachment.endsWith(".jpg", Qt::CaseSensitivity::CaseInsensitive) ||
+                  attachment.endsWith(".jpeg", Qt::CaseSensitivity::CaseInsensitive) )
+        {
+            if ( !printImageAttachment( painter, printer, attachment ) )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if ( !printTextAttachment( painter, printer, attachment ) )
+            {
+                return false;
+            }
+        }
     }
+
+    return true;
+}
+
+bool DInsightReportWindow::printPdfAttachment( QPainter& painter, QPrinter& printer, const QString& attachment )
+{
+    Poppler::Document * pdfDoc = Poppler::Document::load( attachment );
+    if ( !pdfDoc )
+    {
+        QMessageBox::warning( this, tr( "Failed to open PDF" ), tr( "Failed to open: %1" ).arg( attachment ) );
+        return false;
+    }
+
+    for ( int p = 0; p < pdfDoc->numPages(); p++ )
+    {
+        Poppler::Page* page = pdfDoc->page( p );
+
+        QImage image = page->renderToImage();
+        if ( image.isNull() )
+        {
+            QMessageBox::warning( this, tr( "Failed to render PDF" ), tr( "Failed to render: %1" ).arg( attachment ) );
+            return false;
+        }
+        painter.drawImage( 0, 0, image );
+        printer.newPage();
+        delete page;
+    }
+
+    delete pdfDoc;
+    return true;
+}
+
+
+bool DInsightReportWindow::printImageAttachment( QPainter& painter, QPrinter& printer, const QString& attachment )
+{
+    QImage image( attachment );
+    if ( image.isNull() )
+    {
+        QMessageBox::warning( this, tr( "Failed to open image" ), tr( "Failed to open image: %1" ).arg( attachment ) );
+        return false;
+    }
+
+    double xscale = printer.pageRect().width() / double(image.width());
+    double yscale = printer.pageRect().height() / double(image.height());
+
+    double scale = qMin(xscale, yscale);
+    painter.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
+                      printer.paperRect().y() + printer.pageRect().height() / 2);
+    painter.scale(scale, scale);
+    painter.translate(-image.width() / 2, -image.height() / 2); // note uses the form width/height! use pix.h/w if random image
+    //painter.drawPixmap(0, 0, pix);
+
+    painter.drawImage( 0, 0, image );
+    printer.newPage();
+
+    return true;
+}
+
+
+bool DInsightReportWindow::printTextAttachment( QPainter& /*painter*/, QPrinter& printer, const QString& attachment )
+{
+    QFile data(attachment);
+    if ( !data.open(QFile::ReadOnly) )
+    {
+        QMessageBox::warning( this, tr( "Failed to open file" ), tr( "Failed to open file: %1" ).arg( attachment ) );
+        return false;
+    }
+
+    QTextStream out( &data );
+    QTextDocument doc( out.readAll() );
+    doc.setPageSize( printer.pageRect().size() ); // This is necessary if you want to hide the page number
+    doc.print( &printer );
 
     return true;
 }
@@ -197,7 +284,7 @@ bool DInsightReportWindow::createAttachmentArchive( const QString& fileName, con
         QString title = tr( "Failed to create ZIP file");
         QString message = tr( "Failed to create file: %1" ).arg( fileName );    
 
-        DInsightConfig::log() << message << endl;
+        DInsightConfig::Log() << message << endl;
         QMessageBox::warning( this, title, message );
         return false;
     }
@@ -248,8 +335,8 @@ void DInsightReportWindow::emailButtonClicked()
     //QDesktopServices::openUrl( url );
 
     // Alternative 2
-    QString emailApp = DInsightConfig::get( "EMAIL_APPLICATION", "c:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE" );
-    QString emailArg = DInsightConfig::get( "EMAIL_ARGUMENTS", "/c ipm.note /m 'mailto:johndoe@domain.com&subject=Report' /a %ATTACHMENT_FILENAME%" );
+    QString emailApp = DInsightConfig::Get( "EMAIL_APPLICATION", "c:\\Program Files (x86)\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE" );
+    QString emailArg = DInsightConfig::Get( "EMAIL_ARGUMENTS", "/c ipm.note /m 'mailto:johndoe@domain.com&subject=Report' /a %ATTACHMENT_FILENAME%" );
     emailArg = emailArg.replace( "%ATTACHMENT_FILENAME%", attachment );
     QString command = "\"" + emailApp + "\"  " + emailArg;
 
@@ -267,7 +354,7 @@ void DInsightReportWindow::emailButtonClicked()
             }
             else
             {
-                DInsightConfig::set( "EMAIL_APPLICATION", emailApp );
+                DInsightConfig::Set( "EMAIL_APPLICATION", emailApp );
             }
         }
     }
@@ -287,14 +374,14 @@ void DInsightReportWindow::printButtonClicked()
     QPrinter printer;
     QPrintDialog dialog( &printer, this );
     dialog.setWindowTitle( tr("Print Report") );
-    if ( dialog.exec() != QDialog::Accepted ) 
+    if ( dialog.exec() != QDialog::Accepted )
     {
         return;
     }
 
-    printReport( printer );
+    bool printOK = printReport( printer );
 
-    if ( includeAttachments == QMessageBox::Yes )
+    if ( printOK && includeAttachments == QMessageBox::Yes )
     {
         printAttachments( printer );
     }

@@ -6,7 +6,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 ***************************************************************************/
 
@@ -16,6 +29,7 @@
 #include    "dtreeitem.h"
 #include    "dinsightmainwindow.h"
 #include    "dxmlparser.h"
+#include    "dimportformat.h"
 
 //  QT INCLUDES
 //
@@ -33,13 +47,10 @@
  *  Constructor.
  */
 
-DTreeModel::DTreeModel( 
-    const DRegExps& nodeRegExp, 
-    const DRegExps& labelRegExp )
-  : m_NodeRegExp( nodeRegExp ),
-    m_LabelRegExp( labelRegExp )
+DTreeModel::DTreeModel( const DImportFormats* formats )
+    : m_ImportFormats( formats )
 {
-    m_Root = new DTreeItem( NULL, "hidden root" );
+    m_Root = new DTreeItem( nullptr, "hidden root" );
 }
 
 
@@ -141,7 +152,7 @@ QModelIndex DTreeModel::parent(const QModelIndex &child) const
     DTreeItem *childItem = static_cast<DTreeItem*>(child.internalPointer());
     DTreeItem *parentItem = childItem->m_Parent;
 
-    if (parentItem == m_Root || parentItem == NULL)
+    if (parentItem == m_Root || parentItem == nullptr)
     {
         return QModelIndex();
     }
@@ -207,66 +218,9 @@ QVariant DTreeModel::data(const QModelIndex &index, int role /*= Qt::DisplayRole
     }
     else if (role == Qt::DisplayRole)
     {
-        static QRegularExpression getVariables("%(.*?)%");
-        static QString nodeVariable( "%node%" );
         DTreeItem *item = static_cast<DTreeItem*>(index.internalPointer());
 
-        QString nodeName = QString( item->m_Text );
-        
-        QString label;
-        bool foundLabelMatch = false;
-        for ( int i = 0; i < m_LabelRegExp.length(); i += 2 )
-        {
-            QRegularExpressionMatch match = m_LabelRegExp.at(i).match( nodeName );
-            if ( match.hasMatch() )
-            {
-                label = m_LabelRegExp.at(i+1).pattern();
-    
-                // extract all varable names
-                QRegularExpressionMatchIterator it = getVariables.globalMatch( label );
-                while ( it.hasNext() ) 
-                {                
-                    QRegularExpressionMatch match = it.next();
-                    QString word = match.captured(1); 
-
-                    if ( word == "node" )
-                    {
-                        DInsightMainWindow::ReplaceString( nodeName, m_NodeRegExp );
-                        label.replace( nodeVariable, nodeName );
-                    }
-                    else
-                    {
-                        // Search in nodes
-                        DLeafNodesIterator nodeIt = item->m_Nodes.begin();
-                        bool nodeFound = false;
-                        while ( nodeIt != item->m_Nodes.end() )
-                        {
-                            if ( QString((*nodeIt)->m_Key) == word )
-                            {
-                                label.replace( QString("%%1%").arg( word ), (*nodeIt)->m_Value );
-                                nodeFound = true;
-                                break;
-                            }
-                            nodeIt++;
-                        }
-
-                        if ( !nodeFound )
-                        {
-                            label = item->m_Text; // Default to text from XML if not found
-                        }
-                    }
-                    
-                }
-                foundLabelMatch = true;
-                break;    
-            }
-        }
-
-        if ( !foundLabelMatch )
-        {
-            label = nodeName;
-            DInsightMainWindow::ReplaceString( label, m_NodeRegExp );
-        }
+        QString label = DInsightMainWindow::GetTreeItemLabel(item);
 
         return QVariant( label );
     }
@@ -293,22 +247,32 @@ DTreeItem* DTreeModel::documentRoot( unsigned int index )
  *  up allocation.
  */
 
-DTreeRootItem* DTreeModel::createDocumentRoot( const QString& fileName )
+DTreeRootItem* DTreeModel::createDocumentRoot( const QString& fileName, DTreeItem* parent, const DImportFormat* format )
 {
-    DTreeRootItem* docRoot = new DTreeRootItem( m_Root, strdup( fileName.toStdString().c_str() ) );
+    if ( parent == nullptr )
+    {
+        parent = m_Root;
+    }
+
+    DTreeRootItem* docRoot = new DTreeRootItem( parent, strdup( fileName.toStdString().c_str() ), format );
     return docRoot;
 }
 
 
 //----------------------------------------------------------------------------
 /*! 
- *  Delete root item.
+ *  Delete item.
  */
 
 void DTreeModel::deleteDocumentRoot( DTreeItem* root, bool onlyChildren )
 {
-    DTreeItem::DChildrenIterator it = m_Root->m_Children.begin();
-    DTreeItem::DChildrenIterator itEnd = m_Root->m_Children.end();
+    // TODO: Deletes only children of top level root
+    //DTreeItem::DChildrenIterator it = m_Root->m_Children.begin();
+    //DTreeItem::DChildrenIterator itEnd = m_Root->m_Children.end();
+    DTreeItem* parent = root->m_Parent;
+    DTreeItem::DChildrenIterator it = parent->m_Children.begin();
+    DTreeItem::DChildrenIterator itEnd = parent->m_Children.end();
+    
     int row = 0;
     while ( it != itEnd )
     {
@@ -328,7 +292,7 @@ void DTreeModel::deleteDocumentRoot( DTreeItem* root, bool onlyChildren )
             {
                 beginRemoveRows( QModelIndex(), row, row );
                 delete *it;
-                m_Root->m_Children.erase( it );
+                parent->m_Children.erase( it );
                 endRemoveRows();
             }
 
@@ -348,6 +312,21 @@ void DTreeModel::deleteDocumentRoot( DTreeItem* root, bool onlyChildren )
 unsigned int DTreeModel::rootCount()
 {
     return (unsigned int)m_Root->m_Children.size();
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  Return first root
+ */
+
+DTreeItem* DTreeModel::firstDocumentRoot()
+{
+    if (rootCount() == 0)
+    {
+        return nullptr;
+    }
+    return m_Root->m_Children[0];
 }
 
 

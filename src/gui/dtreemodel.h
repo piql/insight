@@ -9,7 +9,20 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 *****************************************************************************/
 
@@ -28,6 +41,8 @@ class DTreeItem;
 class QTreeView;
 class DLeafNode;
 class DTreeRootItem;
+class DImportFormat;
+class DImportFormats;
 
 //============================================================================
 // CLASS: DTreeModel
@@ -38,7 +53,7 @@ class DTreeModel : public QAbstractItemModel
 
 public:
 
-    explicit DTreeModel(const DRegExps& nodeRegExp, const DRegExps& labelRegExp);
+    explicit DTreeModel( const DImportFormats* formats );
     virtual ~DTreeModel();
 
     virtual QModelIndex     index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
@@ -50,10 +65,12 @@ public:
     virtual bool            setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
     virtual bool            hasChildren(const QModelIndex &parent = QModelIndex()) const;
 
-    DTreeRootItem*          createDocumentRoot( const QString& fileName );
+    DTreeRootItem*          createDocumentRoot( const QString& fileName, DTreeItem* parent, const DImportFormat* format );
+
     void                    deleteDocumentRoot( DTreeItem* root, bool onlyChildren );
     unsigned int            rootCount();
     DTreeItem*              documentRoot( unsigned int index );
+    DTreeItem*              firstDocumentRoot();
     void                    setVisible( QTreeView* view, DTreeItem* node, bool show );
 
     DTreeItem*              createItem( DTreeRootItem* root, DTreeItem* parent, const char* text );
@@ -67,8 +84,7 @@ public:
 
 private:
     DTreeItem* m_Root;
-    DRegExps   m_NodeRegExp;
-    DRegExps   m_LabelRegExp;
+    const DImportFormats* m_ImportFormats;
     friend class DXmlContext;
 };
 

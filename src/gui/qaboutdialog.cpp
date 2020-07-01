@@ -13,7 +13,20 @@
 **  Restrictions:   -
 **  ToDo:           -
 **
-**  Copyright (c) 2010 Piql. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 **  This file is part of the "Base" application.
 **
@@ -61,12 +74,25 @@
  * \code
  * QString infoText;
  * infoText += "Version: " + QCoreApplication::applicationVersion() + "<br />";
- * infoText += "Copyright Piql 2010";
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * infoText += "<p>Support: <a href=\"mailto:support@cinevation.net\">support@conevation.net</a></p>";
  * infoText += "<p><a href=\"www.cinevation.net\">www.cinevation.net</a></p>";
  * \endcode
  */
-QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoText, const QString& bitmapFilename, QWidget* parent /*=NULL*/ )
+QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoText, const QString& bitmapFilename, QWidget* parent /*=nullptr*/ )
 : QDialog(parent)
 {
     // Create user interface
@@ -108,7 +134,7 @@ QAboutDialog::QAboutDialog(const QString& applicationName, const QString& infoTe
  * infoText += "<p><a href=\"www.cinevation.net\">www.cinevation.net</a></p>";
  * \endcode
  */
-QAboutDialog::QAboutDialog(const QString& applicationName, const QString& bitmapFilename, QWidget* parent /*=NULL*/ )
+QAboutDialog::QAboutDialog(const QString& applicationName, const QString& bitmapFilename, QWidget* parent /*=nullptr*/ )
 : QDialog(parent)
 {
     // Create user interface

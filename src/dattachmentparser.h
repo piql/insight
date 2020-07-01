@@ -9,13 +9,27 @@
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2017 Piql AS. All rights reserved.
+**  Copyright (c) 2020 Piql AS.
+**  
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  the Free Software Foundation; either version 3 of the License, or
+**  any later version.
+**  
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+**  
+**  You should have received a copy of the GNU General Public License
+**  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 **
 *****************************************************************************/
 
 //  PROJECT INCLUDES
 //
 #include    "dregexp.h"
+#include    "dleafmatcher.h"
 #include    "dtreeitem.h"
 
 //  QT INCLUDES
@@ -60,7 +74,7 @@ class DAttachmentParser : public QThread
     Q_OBJECT
 public:
 
-    DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DRegExps& attachmentTypeRegExp );
+    DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DLeafMatchers& attachmentTypeRegExp );
    ~DAttachmentParser();
 
     DAttachments&       attachments();
@@ -77,7 +91,7 @@ public slots:
 
 private:
     void                run();
-    bool                isAttachmentNode( const char* text );
+    bool                isAttachmentNode(  const char* text, const char* content );
 
 private:
     unsigned int        m_MaxNodeCount;
@@ -88,7 +102,7 @@ private:
     DAttachments        m_Attachments;
     DAttachmentIndexes  m_AttachmentsFound;
     DAttachmentIndexes  m_AttachmentsNotFound;
-    DRegExps            m_AttachmentTypeRegExp;
+    DLeafMatchers       m_AttachmentTypeRegExp;
     QMutex              m_Mutex;
     QWaitCondition      m_Wait;
     qint64              m_AttachmentsSizeBytes;
