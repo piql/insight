@@ -47,26 +47,27 @@
 //===================================
 
 DInsightConfig::DInsightConfig( const QString& fileName )
-    : m_FileName( fileName )
+    : m_FileName( fileName ),
+      m_Settings( m_FileName, QSettings::IniFormat )
 {
+    m_Settings.setIniCodec( "UTF-8" );
 }
-
 
 QString  DInsightConfig::get( const QString& key, const QString& def /*= ""*/ )
 {
-    return QSettings( m_FileName, QSettings::IniFormat ).value( key, def ).toString();
+    return m_Settings.value( key, def ).toString();
 }
 
 
 int DInsightConfig::getInt( const QString& key, int def /*= -1*/ )
 {
-    return QSettings( m_FileName, QSettings::IniFormat ).value( key, def ).toInt();
+    return m_Settings.value( key, def ).toInt();
 }
 
 
 bool DInsightConfig::getBool( const QString& key, bool def /*= false*/ )
 {
-    return QSettings( m_FileName, QSettings::IniFormat ).value( key, def ).toBool();
+    return m_Settings.value( key, def ).toBool();
 }
 
 

@@ -70,6 +70,7 @@
 //  SYSTEM INCLUDES
 //
 #include    <cassert>
+#include    <algorithm>
 
 //  PLATFORM INCLUDES
 //
@@ -205,10 +206,15 @@ DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
 
     // Info view layout
     //m_Ui.infoView->setRowWrapPolicy( QFormLayout::WrapLongRows );
-    m_Ui.infoView->setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
-    m_Ui.infoView->setFormAlignment( Qt::AlignHCenter | Qt::AlignTop );
-    m_Ui.infoView->setLabelAlignment( Qt::AlignRight );
-    m_Ui.infoView->setVerticalSpacing(3);
+    //m_Ui.infoView->setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
+    //m_Ui.infoView->setFormAlignment( Qt::AlignHCenter | Qt::AlignTop );
+    //m_Ui.infoView->setLabelAlignment( Qt::AlignRight );
+    //m_Ui.infoView->setVerticalSpacing( 3 );
+
+    m_InfoView = new QGridLayout(m_Ui.infoViewScrollAreaWidget);
+    m_Ui.infoViewScrollAreaWidget->setLayout(m_InfoView);
+    m_InfoView->setVerticalSpacing(3);
+    m_InfoView->setColumnStretch(1,1);
 
     // Tree view layout
     m_Ui.treeView->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -235,7 +241,6 @@ DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
 
     m_StatusBar->addWidget( frame );
     m_StatusBar->show();
-
 
     m_Ui.exportButton->setEnabled( false );
     m_Ui.searchResult->setVisible( false );
@@ -304,18 +309,25 @@ void DInsightMainWindow::importButtonClicked()
         //tr("NOARK-5 (arkivstruktur.xml);;NOARK-5 (arkivuttrekk.xml);;AIPs (*.xml)")
         foreach (const DImportFormat& format, *m_ImportFormats )
         {
+            QString filter;
             foreach( const DRegExp& pattern, format.patterns() )
             {
-                if ( filters.length() )
+                if ( filter.length() )
                 {
-                    filters += ";;";
+                    filter += " ";
                 }
-                filters += QString("%1 (%2)").arg(format.name()).arg(pattern.pattern());
+                filter += QString( "%1" ).arg( pattern.pattern() );
             }
+
+            if ( filters.length() )
+            {
+                filters += ";;";
+            }
+            filters += QString( "%1 (%2)" ).arg( format.name() ).arg( filter );
         }
         
         QString selectedFilter;
-        QString fileName = QPersistantFileDialog::getOpenFileName( "import", this, tr("Select files to import"), ".", filters, &selectedFilter );
+        QString fileName = QPersistantFileDialog::getOpenFileName( "import", this, tr("Select files to import"), ".", filters, &selectedFilter, QFileDialog::DontUseNativeDialog );
         if ( !fileName.length() )
         {
             return;
@@ -777,7 +789,48 @@ void DInsightMainWindow::ReplaceString( QString& key, const DRegExps& regExps )
     }
 }
 
+class text_edit : public QTextEdit {
+    using super = QTextEdit;
+public:
+    explicit text_edit( QWidget *parent = nullptr )
+        : super( parent )
+    {
+        setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+        setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+        setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    }
 
+    virtual QSize sizeHint() const override
+    {
+        QSize s( document()->size().toSize() );
+
+        /*
+         * Make sure width have 'usable' values.
+         */
+        s.rwidth() = max( 100, s.width() );
+
+        //document()->setPageSize(s);  
+
+        return(s);
+    }
+protected:
+    virtual void resizeEvent( QResizeEvent *event ) override
+    {
+ 
+
+        /*
+         * If the widget has been resized then the size hint will
+         * also have changed.  Call updateGeometry to make sure
+         * any layouts are notified of the change.
+         */
+        updateGeometry();
+        super::resizeEvent( event );
+
+        setMinimumHeight( document()->size().height() );
+        setMaximumHeight( document()->size().height() );
+
+    }
+};
 //----------------------------------------------------------------------------
 /*! 
  *  Update info view. Also highlights content based on search string in search
@@ -796,7 +849,7 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
     }
     QWidget* firstMatchingWidget = nullptr;
 
-    clearLayout( m_Ui.infoView );
+    clearLayout( m_InfoView );
 
     if ( !parentNode )
     {
@@ -806,6 +859,7 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
     DLeafNodes::const_iterator leaf = parentNode->m_Nodes.begin();
     const DImportFormat* format = parentNode->format();
         
+    int row = 0;
     for ( ; leaf != parentNode->m_Nodes.end(); leaf++ )
     {
         int matchPos = (*leaf)->match( search );
@@ -824,13 +878,9 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
             QHBoxLayout* hBox = new QHBoxLayout;
             hBox->setSpacing(3);
 
-            QTextEdit* edit = new QTextEdit( (*leaf)->m_Value );
-            int height = 20; // m_Ui.searchEdit->height();
-            edit->setFixedHeight( height + edit->height() - edit->viewport()->height() + 1 );
-            edit->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-            edit->setLineWrapMode(QTextEdit::NoWrap);
-            edit->setToolTip((*leaf)->m_Value);
-            
+            QTextEdit* edit = new text_edit;
+            edit->setText( (*leaf)->m_Value );
+            edit->setToolTip( (*leaf)->m_Value );
 
             if ( matchingLeaf )
             {
@@ -843,6 +893,7 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
                     firstMatchingWidget = edit;
                 }
             }
+
             edit->setReadOnly( true );
             hBox->addWidget( edit );
             if ( isDocumentNode( format, key, value ) || isFolderNode( format, key ) )
@@ -850,8 +901,6 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
                 QPushButton* button = new QPushButton( tr( "View" ) );
                 button->setProperty( "doc", (*leaf)->m_Value );
                 button->setProperty( "node", m_Model->index( parentNode ) );
-                //button->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) ); 
-                //button->setMinimumSize( button->fontMetrics().size( Qt::TextSingleLine,  button->text() ) + QSize(10,0) );
                 hBox->addWidget( button );
                 QObject::connect( button, SIGNAL(clicked()), this, SLOT( viewDocumentClicked() ));
             }
@@ -860,8 +909,6 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
                 QPushButton* button = new QPushButton( tr( "Delete" ) );
                 button->setProperty( "doc", (*leaf)->m_Value );
                 button->setProperty( "node", m_Model->index( parentNode ) );
-                //button->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) ); 
-                //button->setMinimumSize( button->fontMetrics().size( Qt::TextSingleLine,  button->text() ) + QSize(10,0) );
                 hBox->addWidget( button );
                 QObject::connect( button, SIGNAL(clicked()), this, SLOT( deleteFolderClicked() ));
             }
@@ -870,9 +917,6 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
                 QPushButton* button = new QPushButton( parentNode->hasChildren() ? tr( "Unload" ) : tr( "Load" ) );
                 button->setProperty( "doc", (*leaf)->m_Value );
                 button->setProperty( "node", m_Model->index( parentNode ) );
-                //button->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) ); 
-                //button->setMinimumSize( button->fontMetrics().size( Qt::TextSingleLine,  button->text() ) + QSize(10,0) );
-                //button->setFixedSize(button->size());
                 hBox->addWidget( button );
                 QObject::connect( button, SIGNAL(clicked()), this, SLOT( importDocumentClicked() ));
             }
@@ -895,8 +939,6 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
                     button->setProperty( "doc", sourceFile );
                     button->setProperty( "checksum", (*leaf)->m_Value );
                     button->setProperty( "node", m_Model->index( parentNode ) );
-                    //button->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) ); 
-                    //button->setMinimumSize( button->fontMetrics().size( Qt::TextSingleLine,  button->text() ) + QSize(10,0) );
                     hBox->addWidget( button );
                     QObject::connect( button, SIGNAL(clicked()), this, SLOT( checksumClicked() ));
                 }
@@ -908,7 +950,8 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
 
         if ( layout == nullptr )
         {
-            QTextEdit* edit = new QTextEdit( (*leaf)->m_Value );
+            QTextEdit* edit = new text_edit;
+            edit->setText( (*leaf)->m_Value );
             if ( matchingLeaf )
             {
                 QTextCursor cursor = edit->textCursor();
@@ -922,22 +965,21 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
                 }
             }
             edit->setReadOnly( true );
-
-            //int height = m_Ui.searchEdit->height();
-            //edit->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding );
-            //edit->setMinimumSize( 50, height + edit->height() - edit->viewport()->height() + 1 );
-            int height = 20; // m_Ui.searchEdit->height();
-            edit->setFixedHeight( height + edit->height() - edit->viewport()->height() + 1 );
-            edit->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-            edit->setLineWrapMode(QTextEdit::NoWrap);
             edit->setToolTip((*leaf)->m_Value);
-            m_Ui.infoView->addRow( key, edit );
+
+            m_InfoView->addWidget(new QLabel(key), row, 0);
+            m_InfoView->addWidget(edit, row, 1);
         }
         else
         {
-            m_Ui.infoView->addRow( key, layout );
+            m_InfoView->addWidget(new QLabel(key), row, 0);
+            m_InfoView->addLayout(layout, row, 1);
         }
+
+        row++;
     }
+    QSpacerItem* verticalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
+    m_InfoView->addItem( verticalSpacer, row, 0, 1,1,Qt::AlignTop );
 }
 
 

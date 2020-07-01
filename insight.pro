@@ -13,6 +13,7 @@ CONFIG           +=   qt debug_and_release
 CONFIG           +=   lrelease 
 macx:CONFIG      +=   app_bundle
 TARGET            =   insight
+DESTDIR           =   ./innsyn-v1.1.0
 
 ##  SUPPORT DEBUG AND RELEASE BUILDS  ##
 !debug_and_release|build_pass {

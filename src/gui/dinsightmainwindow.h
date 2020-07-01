@@ -174,6 +174,7 @@ private:
     
 private:
     Ui::IngestToolMainWindow    m_Ui;
+    QGridLayout*                m_InfoView;
     unsigned int                m_SearchResultMax;
 
     DImports                    m_Imports;

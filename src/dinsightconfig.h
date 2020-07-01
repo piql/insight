@@ -37,6 +37,7 @@
 #include   <QObject>
 #include   <QVector>
 #include   <QDebug>
+#include   <QSettings>
 
 //  FORWARD DECLARATIONS
 //
@@ -70,11 +71,12 @@ public:
     static QString       GetLocalizedKey( const QString& key );
     static DRegExps      StringToRegExps( const QString& key );
     static DLeafMatchers StringToLeafMatchers( const QString& key );
-
-    static QDebug&  Log();
+    static QDebug&       Log();
+private:
 
 private:
     QString         m_FileName;
+    QSettings       m_Settings;
 };
 
 

@@ -187,7 +187,7 @@ int  main( int argc, char* argv[] )
     }
 
     // Import report format must exist
-    const DImportFormat* reportFormat = formats.find( "report" );
+    const DImportFormat* reportFormat = formats.find( "Report" );
     if ( !reportFormat )
     {
         QMessageBox::warning(
