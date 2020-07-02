@@ -4,6 +4,11 @@
     @goto :eof
 )
 
+@if "%QTDIR%" EQU "" (
+    @echo Missing QTDIR environment variable 
+    @goto :eof
+) 
+
 :: Translate
 lupdate insight.pro
 set /p CHANGE=If lupdate reports any changes, abort release and run linguist tool.
@@ -42,7 +47,7 @@ copy %QTDIR%\bin\qt5gui.dll %target%\.
 copy %QTDIR%\bin\qt5sql.dll %target%\.
 copy %QTDIR%\bin\qt5core.dll %target%\.
 copy %QTDIR%\bin\qt5xml.dll %target%\.
-copy "c:/Program Files/MySQL/MySQL Server 5.6/lib/libmysql.dll" %target%\.
+copy "c:\Program Files\MySQL\MySQL Server 5.6\lib\libmysql.dll" %target%\.
 
 xcopy /s /i %QTDIR%\plugins\sqldrivers\*dll %target%\sqldrivers
 xcopy /s /i %QTDIR%\plugins\platforms\*dll %target%\platforms

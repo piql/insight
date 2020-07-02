@@ -168,6 +168,11 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 
 * Historikk
 
+** 01.07.2020 innsyn-v1.1.0
+*** Feilrettinger
+ - Opptegning av info nodeinformasjon: Vise all tekst for noder, og likt mellomrom mellom alle noder.
+ - Lese inn konfig filer som UTF-8 på Windows.
+
 ** innsyn-v1.1.0-beta2
 *** Feilrettinger
  - Installasjon for Windows.
