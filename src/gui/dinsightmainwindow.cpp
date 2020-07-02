@@ -812,7 +812,7 @@ public:
         /*
          * Make sure width have 'usable' values.
          */
-        s.rwidth() = max( 100, s.width() );
+        s.rwidth() =  100 > s.width() ? 100 : s.rwidth();
 
         //document()->setPageSize(s);  
 

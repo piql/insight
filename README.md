@@ -1,72 +1,61 @@
-<div id="table-of-contents">
-<h2>Innhold</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#sec-1">1. Introduksjon</a></li>
-<li><a href="#sec-2">2. Systemkrav</a>
-<ul>
-<li><a href="#sec-2-1">2.1. OS-X / Linux</a></li>
-</ul>
-</li>
-<li><a href="#sec-3">3. Installasjon</a></li>
-<li><a href="#sec-4">4. Bruk</a></li>
-<li><a href="#sec-5">5. Sphinx indeksering og søkemotor</a></li>
-<li><a href="#sec-6">6. Rapporter</a></li>
-<li><a href="#sec-7">7. Loggfiler</a></li>
-<li><a href="#sec-8">8. Konfigurasjon</a>
-<ul>
-<li><a href="#sec-8-1">8.1. Tips</a></li>
-</ul>
-</li>
-<li><a href="#sec-9">9. Ønsker, feil og mangler</a></li>
-<li><a href="#sec-10">10. Hvordan rapportere feil</a></li>
-<li><a href="#sec-11">11. Historikk</a>
-<ul>
-<li><a href="#sec-11-1">11.1. innsyn-v1.1.0-beta2</a>
-<ul>
-<li><a href="#sec-11-1-1">11.1.1. Feilrettinger</a></li>
-</ul>
-</li>
-<li><a href="#sec-11-2">11.2. innsyn-v1.1.0-beta1</a>
-<ul>
-<li><a href="#sec-11-2-1">11.2.1. Nye funksjoner</a></li>
-<li><a href="#sec-11-2-2">11.2.2. Feilrettinger</a></li>
-</ul>
-</li>
-<li><a href="#sec-11-3">11.3. 2018.06.01 innsyn-v1.0.0</a></li>
-<li><a href="#sec-11-4">11.4. 2018.04.13 innsyn-v1.0.0-rc1</a></li>
-<li><a href="#sec-11-5">11.5. 2018.02.05 innsyn-v1.0.0-beta2</a></li>
-<li><a href="#sec-11-6">11.6. 2018.01.18 innsyn-v1.0.0-beta1</a></li>
-</ul>
-</li>
-<li><a href="#sec-12">12. Utvikling</a>
-<ul>
-<li><a href="#sec-12-1">12.1. Windows</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
+
+# Innhold
+
+1.  [Introduksjon](#orga31e87f)
+2.  [Systemkrav](#org473ccc5)
+    1.  [OS-X / Linux](#org625d85c)
+3.  [Installasjon](#org8f1c94e)
+4.  [Bruk](#org949bfe6)
+5.  [Sphinx indeksering og søkemotor](#orge573c19)
+6.  [Rapporter](#org9f99e5d)
+7.  [Loggfiler](#org7ee99df)
+8.  [Konfigurasjon](#orge653b11)
+    1.  [Tips](#org26693be)
+9.  [Ønsker, feil og mangler](#orga9ec45a)
+10. [Hvordan rapportere feil](#orgae68f38)
+11. [Historikk](#org30fcfd1)
+    1.  [01.07.2020 innsyn-v1.1.0](#org1180d61)
+        1.  [Feilrettinger](#org8d0d6d3)
+    2.  [innsyn-v1.1.0-beta2](#orge3c3fe2)
+        1.  [Feilrettinger](#orgd0e31fc)
+    3.  [innsyn-v1.1.0-beta1](#orgfae7fd5)
+        1.  [Nye funksjoner](#org986cb80)
+        2.  [Feilrettinger](#org0d2f328)
+    4.  [2018.06.01 innsyn-v1.0.0](#orga61a0e6)
+    5.  [2018.04.13 innsyn-v1.0.0-rc1](#orgfdac7cc)
+    6.  [2018.02.05 innsyn-v1.0.0-beta2](#orgbfc430a)
+    7.  [2018.01.18 innsyn-v1.0.0-beta1](#org5d3366c)
+12. [Utvikling](#orgc335b64)
+    1.  [Windows](#org7936fdc)
 
 
 
-# Introduksjon<a id="sec-1" name="sec-1"></a>
+<a id="orga31e87f"></a>
+
+# Introduksjon
 
 Innsyn er en applikasjon som opprinnelig ble utviklet for Kommunenes Digitale Ressursjsentral (KDRS) for å støtte innsyn i NOARK-5 uttrekk. Applikasjonen har senere blitt utvidet til å støtte flere typer uttrekksformat.
 
 Applikasjonen validerer ikke importformatene utover å sjekke at vedleggene finnes. Applikasjonen er datadrevet så langt det er mulig, dvs den har ikke innebygde referanser til filformat spesifike nøkkelord eller XML knagger. Istedenfor kontrolleres utsendet ved hjelp av innstillinger i konfigurasjonsfilen. Dette betyr at applikasjonen kan tilpasses til å støtte flere typer XML baserte format ved å kun endre konfigurasjonsfilene.
 
 Innsyn kommer med støtte for disse filformatene:
+
 -   NOARK-5: XML basert arkivformat brukt av stat og kommune i Norge.
 -   EPJ avleveringsliste: XML basert dokumentasjonsformat brukt ved avlevering av pasientjournaler, fysiske eller elektroniske, til Norsk Helsearkiv.
 -   EPJ pakkeliste: XML basert dokumentasjonsformat brukt ved avlevering av elektronsike pasientjournaler til Norsk Helsearkiv.
 -   TAR: Filformat for som pakker mange filer sammen til en fil og bevarer filinformasjon (filnavn, dato, rettigheter). Innsyn støtter ikke utpakking av enkle tar filer, men viser strukturen.
 
-# Systemkrav<a id="sec-2" name="sec-2"></a>
+
+<a id="org473ccc5"></a>
+
+# Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit.
 
-## OS-X / Linux<a id="sec-2-1" name="sec-2-1"></a>
+
+<a id="org625d85c"></a>
+
+## OS-X / Linux
 
 Indekseringsverktøyet Sphinx må ligge i søkestien. Installeres enklest med Homebrew:
 
@@ -80,7 +69,10 @@ Sjekk at det ligger i pathen med:
     Copyright (c) 2001-2016, Andrew Aksyonoff
     Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
-# Installasjon<a id="sec-3" name="sec-3"></a>
+
+<a id="org8f1c94e"></a>
+
+# Installasjon
 
 1.  Pakk ut *innsyn-v1.1.0.zip*.
 2.  Indeksering av vedlegg kan bruke en del plass, rediger derfor eventuelt
@@ -89,7 +81,10 @@ Sjekk at det ligger i pathen med:
 3.  Språk i brukergrensesnittet kan settes ved å endre *LANGUAGE* i 
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
-# Bruk<a id="sec-4" name="sec-4"></a>
+
+<a id="org949bfe6"></a>
+
+# Bruk
 
 ![img](./screenshot.png)
 
@@ -130,7 +125,10 @@ Sjekk at det ligger i pathen med:
         i node treet. Rapporten kan lagres til disk eller sendes som vedlegg på
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
-# Sphinx indeksering og søkemotor<a id="sec-5" name="sec-5"></a>
+
+<a id="orge573c19"></a>
+
+# Sphinx indeksering og søkemotor
 
 For effektive fulltekstsøk mot dokumentene uttrekket refererer brukes Sphinx søkemotor. Først konverteres alle dokumentene til tekst, så bygger Sphinx en indeks som muliggjør raske søk.
 
@@ -149,32 +147,47 @@ Når Innsyn kjører og man har lastet og indeksert ett uttrekk, kan man kjøre S
 
 Se Sphinx manualen for mer informasjon.
 
-# Rapporter<a id="sec-6" name="sec-6"></a>
+
+<a id="org9f99e5d"></a>
+
+# Rapporter
 
 Etter import genereres en PDF-rapport i rapport katalogen, bestemt av
 *REPORTS\_DIR* i *insight.conf*. Rapportene legges i en katalogstruktur på
-formatet: *REPORTS\_DIR\\\\åååå\\MM\\DD\\TTMMSS\\\\*.  I rapport katalogen
+formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
-# Loggfiler<a id="sec-7" name="sec-7"></a>
+
+<a id="org7ee99df"></a>
+
+# Loggfiler
 
 -   **innsyn-v1.1.0\insight.log**: Applikasjonslogg.
 -   **innsyn-v1.1.0\insight.dmp**: Genereres hvis applikasjonen krasjer.
--   **REPORTS\_DIR\\YYYY\\MM\\DD\\TTMMSS\\attachments.log**: Logg over konvertering av vedlegg til søkbare tekstfiler.
--   **REPORTS\_DIR\\YYYY\\MM\\DD\\TTMMSS\\indexer.log**: Logg fra indekserings applikasjonen som genererer indekserings databasen.
--   **REPORTS\_DIR\\YYYY\\MM\\DD\\TTMMSS\\sphinx\\test1\\searchd.log**: Logg fra søkemotoren.
+-   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\attachments.log**: Logg over konvertering av vedlegg til søkbare tekstfiler.
+-   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\indexer.log**: Logg fra indekserings applikasjonen som genererer indekserings databasen.
+-   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
 
-# Konfigurasjon<a id="sec-8" name="sec-8"></a>
+
+<a id="orge653b11"></a>
+
+# Konfigurasjon
 
 Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen *formats*. Alle filene som slutter på *.conf* i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
-## Tips<a id="sec-8-1" name="sec-8-1"></a>
+
+<a id="org26693be"></a>
+
+## Tips
 
 -   Kommer vinduet opp veldig lite og har sammentrykte knapper på Windows?
     Det kan være at du kjører i emulator eller har en skjerm med høy oppløsning. 
     Prøv med `insight -platform windows:dpiawareness=0` for å få riktig størrelse på vinduet. Beskrivelse av andre parametere som tweaker utseendet finnes her: <https://doc.qt.io/qt-5/qguiapplication.html#supported-command-line-options>
 
-# Ønsker, feil og mangler<a id="sec-9" name="sec-9"></a>
+
+<a id="orga9ec45a"></a>
+
+# Ønsker, feil og mangler
 
 -   [RA-20181209-01] Innlesing av arkivstruktur til minne, denne topper lett ut ved 8 GB minne ved det største arkivuttrekket som er prøvd. I tillegg medførte antatte feilmeldinger i bakgrunnen til at pcen saknet betraktelig, før den til slutt ikke svarte og trengte hard omstart.
 -   [RA-20181209-02] Programmet mangler klar tilbakemelding om når en handling er ferdig, kan fint stå lang tid på 100% og jobbe.
@@ -202,22 +215,53 @@ Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på
 -   Får ikke advarsel hvis indeksering starter og det er igjen lite plass
     på disken.
 
-# Hvordan rapportere feil<a id="sec-10" name="sec-10"></a>
+
+<a id="orgae68f38"></a>
+
+# Hvordan rapportere feil
 
 ole.liabo@piql.com  
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
-# Historikk<a id="sec-11" name="sec-11"></a>
 
-## innsyn-v1.1.0-beta2<a id="sec-11-1" name="sec-11-1"></a>
+<a id="org30fcfd1"></a>
 
-### Feilrettinger<a id="sec-11-1-1" name="sec-11-1-1"></a>
+# Historikk
+
+
+<a id="org1180d61"></a>
+
+## 01.07.2020 innsyn-v1.1.0
+
+
+<a id="org8d0d6d3"></a>
+
+### Feilrettinger
+
+-   Opptegning av info nodeinformasjon: Vise all tekst for noder, og likt mellomrom mellom alle noder.
+-   Lese inn konfig filer som UTF-8 på Windows.
+
+
+<a id="orge3c3fe2"></a>
+
+## innsyn-v1.1.0-beta2
+
+
+<a id="orgd0e31fc"></a>
+
+### Feilrettinger
 
 -   Installasjon for Windows.
 
-## innsyn-v1.1.0-beta1<a id="sec-11-2" name="sec-11-2"></a>
 
-### Nye funksjoner<a id="sec-11-2-1" name="sec-11-2-1"></a>
+<a id="orgfae7fd5"></a>
+
+## innsyn-v1.1.0-beta1
+
+
+<a id="org986cb80"></a>
+
+### Nye funksjoner
 
 -   Støtte for å definere nye XML importformat i egen konfigurasjonsfil. Dette gjør det mulig å styre hvordan hvert enkelt format skal presenteres i node treet og i informasjonspanelet.
 -   Støtte for import av TAR filer og andre pakkeformater. Filen pakkes ut under rapport mappen og indekseres.
@@ -225,16 +269,25 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Støtte for sjekksumvalidering av filer referert fra node treet.
 -   Støtte for å endre XML-løv noder basert på både node navnet og innholdet i noden.
 
-### Feilrettinger<a id="sec-11-2-2" name="sec-11-2-2"></a>
+
+<a id="org0d2f328"></a>
+
+### Feilrettinger
 
 -   Oppsett av Sphinx indexer og søkemotor på Linux / OS-X.
 -   Melding etter konvertering av vedlegg. Får beskjed både om at konvertering feilet og at vedlegg er tomme.
 
-## 2018.06.01 innsyn-v1.0.0<a id="sec-11-3" name="sec-11-3"></a>
 
--   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn si vurker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
+<a id="orga61a0e6"></a>
 
-## 2018.04.13 innsyn-v1.0.0-rc1<a id="sec-11-4" name="sec-11-4"></a>
+## 2018.06.01 innsyn-v1.0.0
+
+-   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn så virker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
+
+
+<a id="orgfdac7cc"></a>
+
+## 2018.04.13 innsyn-v1.0.0-rc1
 
 -   [IKAVA-20180122-03] Inkluder dokumentnavn i nodetree visningen.
 -   [IKARO-20180223-02] Bør kunne slette ved å høyreklikke på root node i treet.
@@ -254,7 +307,10 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   [IKAMR-20180120-12] Krasj ved import.
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
-## 2018.02.05 innsyn-v1.0.0-beta2<a id="sec-11-5" name="sec-11-5"></a>
+
+<a id="orgbfc430a"></a>
+
+## 2018.02.05 innsyn-v1.0.0-beta2
 
 Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 
@@ -273,11 +329,17 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 -   [PIQL-20180122-02] Generere filen insight.dmp ved programkrasj.
 -   [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
-## 2018.01.18 innsyn-v1.0.0-beta1<a id="sec-11-6" name="sec-11-6"></a>
+
+<a id="org5d3366c"></a>
+
+## 2018.01.18 innsyn-v1.0.0-beta1
 
 Første versjon levert til beta test.
 
-# Utvikling<a id="sec-12" name="sec-12"></a>
+
+<a id="orgc335b64"></a>
+
+# Utvikling
 
 Programmet er laget ved hjelp av Qt rammeverket. Er dette installert kan man bygge med:
 
@@ -292,6 +354,10 @@ For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:
 create-release-osx.sh
 create-release.cmd
 
-## Windows<a id="sec-12-1" name="sec-12-1"></a>
 
-Her må man bygge poppler manuelt.
+<a id="org7936fdc"></a>
+
+## Windows
+
+Her må man bygge poppler manuelt. 
+
