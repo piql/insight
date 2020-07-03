@@ -40,6 +40,7 @@
 #include    <QDir>
 #include    <QDateTime>
 #include    <QMessageBox>
+#include    <QtGlobal>
 
 //  SYSTEM INCLUDES
 //
@@ -436,7 +437,12 @@ DImport* DImport::CreateFromFile(
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importDate"), importDate ) );
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, FileNameKey(), fileName ) );
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("sizeBytes"), QString("%1").arg( file.size() ) ) );
+   
+#if QT_VERSION >= 0x051000 // birthTime()
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("fileDate"), QString("%1").arg( QFileInfo(file).birthTime().toString() ) ) );
+#else
+    import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("fileDate"), QString("%1").arg( QFileInfo(file).lastModified().toString() ) ) );
+#endif
     import->m_RootItem->addNode( model->createLeaf( import->m_RootItem, tr("importFormat"), format->name() ) );
     file.close();
 

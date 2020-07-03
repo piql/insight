@@ -252,6 +252,7 @@ bool DImportFormats::Load( DImportFormats& formats, const QString& dirName )
         DImportFormat format;
         if ( DImportFormat::Load(format, file.absoluteFilePath()) )
         {
+            DInsightConfig::Log() << "Format name: " << format.name() << endl;
             if ( format.name() != "default" )
             {
                 formats.push_back(format);

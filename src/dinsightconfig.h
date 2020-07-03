@@ -73,6 +73,8 @@ public:
     static DLeafMatchers StringToLeafMatchers( const QString& key );
     static QDebug&       Log();
 private:
+    DInsightConfig();
+    static DInsightConfig& AppConfig();
 
 private:
     QString         m_FileName;

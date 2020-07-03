@@ -251,6 +251,13 @@ For å lage installasjons pakker kan man bruke noen av de vedlagte skriptene:
 create-release-osx.sh
 create-release.cmd
 
+** Ubuntu
+
+sudo apt install libpoppler*
+sudo apt install libboost-all-dev
+sudo apt install libquazip5-dev
+sudo apt install qttools5-dev-tools
+
 ** Windows
 Her må man bygge poppler manuelt. 
 

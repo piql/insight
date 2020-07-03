@@ -204,7 +204,7 @@ void DDirParser::run()
         strftime(dateString, 32, "%d.%m.%Y %H:%M:%S", &tm);         
 #endif
 
-        if ( it.fileName().back() == '/' )
+        if ( it.fileName().at(it.fileName().length()-1) == '/' )
         {
             currentNode->addNode( m_Model->createLeaf( m_RootNode, dirName, fileString ) );
         }

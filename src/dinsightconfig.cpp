@@ -48,8 +48,18 @@
 
 DInsightConfig::DInsightConfig( const QString& fileName )
     : m_FileName( fileName ),
+      m_Settings( m_FileName, QSettings::IniFormat )
+{
 #ifdef _WIN32
-    m_Settings( m_FileName, QSettings::IniFormat )
+    m_Settings.setIniCodec( "UTF-8" );
+#endif // _WIN32
+}
+
+
+DInsightConfig::DInsightConfig()
+  : m_FileName( DefaultFileName() ),
+#ifdef _WIN32
+    m_Settings( DefaultFileName(), QSettings::IniFormat )
 #else
     m_Settings( QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName() )
 #endif
@@ -94,6 +104,12 @@ QString DInsightConfig::getLocalizedKey( const QString& key )
     return key + "_" + get( "LANGUAGE", "EN" );
 }
 
+DInsightConfig& DInsightConfig::AppConfig()
+{
+    static DInsightConfig conf;
+    return conf;
+}
+
 //----------------------------------------------------------------------------
 /*! 
  *  Get config file value.
@@ -101,8 +117,7 @@ QString DInsightConfig::getLocalizedKey( const QString& key )
 
 QString DInsightConfig::Get( const QString& key, const QString& def /*= ""*/ )
 {
-    DInsightConfig conf( DefaultFileName() );
-    return conf.get( key, def );
+  return AppConfig().get( key, def );
 }
 
 
@@ -113,8 +128,7 @@ QString DInsightConfig::Get( const QString& key, const QString& def /*= ""*/ )
 
 int DInsightConfig::GetInt( const QString& key, int def /*= -1*/ )
 {
-    DInsightConfig conf( DefaultFileName() );
-    return conf.getInt( key, def );
+    return AppConfig().getInt( key, def );
 }
 
 
@@ -125,8 +139,7 @@ int DInsightConfig::GetInt( const QString& key, int def /*= -1*/ )
 
 bool DInsightConfig::GetBool( const QString& key, bool def /*= false*/ )
 {
-    DInsightConfig conf( DefaultFileName() );
-    return conf.getBool( key, def );
+    return AppConfig().getBool( key, def );
 }
 
 
@@ -137,8 +150,7 @@ bool DInsightConfig::GetBool( const QString& key, bool def /*= false*/ )
 
 DRegExps DInsightConfig::GetRegExps( const QString& key, const QString& def /*= ""*/ )
 {
-    DInsightConfig conf( DefaultFileName() );
-    return conf.getRegExps( key, def );
+    return AppConfig().getRegExps( key, def );
 }
 
 
@@ -149,8 +161,7 @@ DRegExps DInsightConfig::GetRegExps( const QString& key, const QString& def /*= 
 
 DLeafMatchers DInsightConfig::GetLeafMatchers( const QString& key, const QString& def /*= ""*/ )
 {
-    DInsightConfig conf( DefaultFileName() );
-    return conf.getLeafMatchers( key, def );
+    return AppConfig().getLeafMatchers( key, def );
 }
 
 
@@ -161,8 +172,7 @@ DLeafMatchers DInsightConfig::GetLeafMatchers( const QString& key, const QString
 
 QString DInsightConfig::GetLocalizedKey( const QString& key )
 {
-    DInsightConfig conf( DefaultFileName() );
-    return conf.getLocalizedKey( key );
+    return AppConfig().getLocalizedKey( key );
 }
 
 

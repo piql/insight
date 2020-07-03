@@ -72,121 +72,122 @@
 <context>
     <name>DImport</name>
     <message>
-        <location filename="src/gui/dimport.cpp" line="312"/>
+        <location filename="src/gui/dimport.cpp" line="313"/>
         <source>nodeCount</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="313"/>
-        <location filename="src/gui/dimport.cpp" line="723"/>
+        <location filename="src/gui/dimport.cpp" line="314"/>
+        <location filename="src/gui/dimport.cpp" line="729"/>
         <source>attachments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="314"/>
+        <location filename="src/gui/dimport.cpp" line="315"/>
         <source>attachmentsNotFound</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="315"/>
-        <location filename="src/gui/dimport.cpp" line="323"/>
+        <location filename="src/gui/dimport.cpp" line="316"/>
+        <location filename="src/gui/dimport.cpp" line="324"/>
         <source>importCanceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="323"/>
+        <location filename="src/gui/dimport.cpp" line="324"/>
         <source>Import canceled by user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="391"/>
+        <location filename="src/gui/dimport.cpp" line="392"/>
         <source>childimports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="401"/>
+        <location filename="src/gui/dimport.cpp" line="402"/>
         <source>Directory creation failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="401"/>
+        <location filename="src/gui/dimport.cpp" line="402"/>
         <source>Failed to create directory &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="412"/>
+        <location filename="src/gui/dimport.cpp" line="413"/>
         <source>Failed to open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="412"/>
+        <location filename="src/gui/dimport.cpp" line="413"/>
         <source>Failed to open &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="422"/>
-        <location filename="src/gui/dimport.cpp" line="428"/>
+        <location filename="src/gui/dimport.cpp" line="423"/>
+        <location filename="src/gui/dimport.cpp" line="429"/>
         <source>import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="436"/>
+        <location filename="src/gui/dimport.cpp" line="437"/>
         <source>importDate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="438"/>
+        <location filename="src/gui/dimport.cpp" line="439"/>
         <source>sizeBytes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="439"/>
+        <location filename="src/gui/dimport.cpp" line="442"/>
+        <location filename="src/gui/dimport.cpp" line="444"/>
         <source>fileDate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="440"/>
+        <location filename="src/gui/dimport.cpp" line="446"/>
         <source>importFormat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="456"/>
+        <location filename="src/gui/dimport.cpp" line="462"/>
         <source>extract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="461"/>
+        <location filename="src/gui/dimport.cpp" line="467"/>
         <source>Failed to create directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="461"/>
+        <location filename="src/gui/dimport.cpp" line="467"/>
         <source>Failed to create &apos;%1/%2&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="474"/>
+        <location filename="src/gui/dimport.cpp" line="480"/>
         <source>Failed to extract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="474"/>
+        <location filename="src/gui/dimport.cpp" line="480"/>
         <source>Failed to extract &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="481"/>
-        <location filename="src/gui/dimport.cpp" line="885"/>
+        <location filename="src/gui/dimport.cpp" line="487"/>
+        <location filename="src/gui/dimport.cpp" line="891"/>
         <source>extractFolder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="863"/>
+        <location filename="src/gui/dimport.cpp" line="869"/>
         <source>importFileName</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="874"/>
+        <location filename="src/gui/dimport.cpp" line="880"/>
         <source>reportsFolder</source>
         <translation type="unfinished"></translation>
     </message>

@@ -68,7 +68,7 @@ win32:INCLUDEPATH+=   $$(ZLIB_INCLUDE)
 macx:INCLUDEPATH +=   /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler \
                       /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler/qt5/ \
                       $$(CV_BOOST_INCLUDE)
-                      
+unix:!macx:INCLUDEPATH += /usr/include/poppler
 DEPENDPATH       +=   $$INCLUDEPATH
 
 win32:release:LIBS += \
@@ -76,15 +76,15 @@ win32:release:LIBS += \
                       lib/win64/release/poppler.lib \
 					  lib/win64/release/zlib.lib
 
-CV_BOOST_LIBS    =    /Users/ole/dev/cmu_112/trunk/../thirdparty/mac/boost_1_60_0/stage/x64/lib                      
-unix:LIBS       +=    $$CV_BOOST_LIBS/libboost_thread.a \
-                      $$CV_BOOST_LIBS/libboost_date_time.a \
-                      $$CV_BOOST_LIBS/libboost_regex.a \
-                      $$CV_BOOST_LIBS/libboost_system.a \
-                      $$CV_BOOST_LIBS/libboost_chrono.a
    
 # Library dependency checking
 PRE_TARGETDEPS   +=   $$LIBS
+
+unix:LIBS       +=    -lboost_thread \
+                      -lboost_date_time \
+                      -lboost_regex \
+                      -lboost_system \
+                      -lboost_chrono
 
 macx:LIBS        +=   -L/usr/local/Cellar/poppler/$$POPPLER_VER/lib -lpoppler -lpoppler-qt5
 macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz
