@@ -79,8 +79,13 @@ win32:release:LIBS += \
    
 # Library dependency checking
 PRE_TARGETDEPS   +=   $$LIBS
-
-unix:LIBS       +=    -lboost_thread \
+macx:LIBS +=          -L/usr/local/lib \
+                      -lboost_thread-mt \
+                      -lboost_date_time \
+                      -lboost_regex \
+                      -lboost_system \
+                      -lboost_chrono
+unix:!macx:LIBS +=    -lboost_thread \
                       -lboost_date_time \
                       -lboost_regex \
                       -lboost_system \
@@ -91,7 +96,7 @@ macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz
 
 # Tested on Debian GNU/Linux using distribution
 # libraries (libpoppler-qt5-dev and libquazip5-dev)
-unix {
+unix:!macx {
 INCLUDEPATH      +=   /usr/include/quazip5 /usr/include/poppler/qt5
 LIBS             +=   -lquazip5 -lz -lpoppler -lpoppler-qt5
 target.path       =   /usr/bin
