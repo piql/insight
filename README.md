@@ -1,37 +1,41 @@
 
 # Innhold
 
-1.  [Introduksjon](#orgb552269)
-2.  [Systemkrav](#orgb2bff80)
-    1.  [OS-X / Linux](#org5267dec)
-3.  [Installasjon](#orgbf3ca7e)
-4.  [Bruk](#orge7c4911)
-5.  [Sphinx indeksering og søkemotor](#org26f54d9)
-6.  [Rapporter](#orgbe0665b)
-7.  [Loggfiler](#org9f51148)
-8.  [Konfigurasjon](#orge3f57f0)
-    1.  [Tips](#org838a3b3)
-9.  [Ønsker, feil og mangler](#orgb954aa7)
-10. [Hvordan rapportere feil](#org2b5254b)
-11. [Historikk](#org407b62e)
-    1.  [01.07.2020 innsyn-v1.1.0](#orga0881a0)
-        1.  [Feilrettinger](#org0845d21)
-    2.  [innsyn-v1.1.0-beta2](#org38bccb2)
-        1.  [Feilrettinger](#org06f5fd1)
-    3.  [innsyn-v1.1.0-beta1](#org2ef42e5)
-        1.  [Nye funksjoner](#org6093bff)
-        2.  [Feilrettinger](#org8f0f3df)
-    4.  [2018.06.01 innsyn-v1.0.0](#orgd0434f1)
-    5.  [2018.04.13 innsyn-v1.0.0-rc1](#org1c3c3e6)
-    6.  [2018.02.05 innsyn-v1.0.0-beta2](#org2ddaace)
-    7.  [2018.01.18 innsyn-v1.0.0-beta1](#org909a1c6)
-12. [Utvikling](#orgf8b24b9)
-    1.  [Ubuntu](#orga8ec3eb)
-    2.  [Windows](#orgaa67195)
+1.  [Introduksjon](#orgb08de37)
+2.  [Systemkrav](#orgd6f4c13)
+    1.  [OS-X / Linux](#orge0e4791)
+3.  [Installasjon](#org3ba1e3a)
+4.  [Bruk](#orgca6bb96)
+5.  [Sphinx indeksering og søkemotor](#orga2ea3e2)
+6.  [Rapporter](#org580ceb5)
+7.  [Journaler](#orgeaeeead)
+    1.  [Generering av PDF journaler med OCR](#orgc7f36e1)
+8.  [Loggfiler](#orgb057092)
+9.  [Konfigurasjon](#orga6c3ccd)
+    1.  [Tips](#orgda63c78)
+10. [Ønsker, feil og mangler](#orga545d20)
+11. [Hvordan rapportere feil](#orga005c29)
+12. [Historikk](#org5257e0d)
+    1.  [innsyn-v1.2.0-beta1](#org3d2dd28)
+        1.  [Nye funksjoner](#orge2077f0)
+    2.  [01.07.2020 innsyn-v1.1.0](#org32bb6f3)
+        1.  [Feilrettinger](#org753c1dc)
+    3.  [innsyn-v1.1.0-beta2](#org83201e8)
+        1.  [Feilrettinger](#org0f72561)
+    4.  [innsyn-v1.1.0-beta1](#orgb23408e)
+        1.  [Nye funksjoner](#orgf87f345)
+        2.  [Feilrettinger](#orga6e94a1)
+    5.  [2018.06.01 innsyn-v1.0.0](#org61c126b)
+    6.  [2018.04.13 innsyn-v1.0.0-rc1](#org0e41ff0)
+    7.  [2018.02.05 innsyn-v1.0.0-beta2](#org0a19c58)
+    8.  [2018.01.18 innsyn-v1.0.0-beta1](#orgad2d064)
+13. [Utvikling](#orgace29a1)
+    1.  [Ubuntu](#orgef4f2df)
+    2.  [Windows](#org094e555)
 
 
 
-<a id="orgb552269"></a>
+<a id="orgb08de37"></a>
 
 # Introduksjon
 
@@ -47,14 +51,14 @@ Innsyn kommer med støtte for disse filformatene:
 -   TAR: Filformat for som pakker mange filer sammen til en fil og bevarer filinformasjon (filnavn, dato, rettigheter). Innsyn støtter ikke utpakking av enkle tar filer, men viser strukturen.
 
 
-<a id="orgb2bff80"></a>
+<a id="orgd6f4c13"></a>
 
 # Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit.
 
 
-<a id="org5267dec"></a>
+<a id="orge0e4791"></a>
 
 ## OS-X / Linux
 
@@ -71,11 +75,11 @@ Sjekk at det ligger i pathen med:
     Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
 
-<a id="orgbf3ca7e"></a>
+<a id="org3ba1e3a"></a>
 
 # Installasjon
 
-1.  Pakk ut *innsyn-v1.1.0.zip*.
+1.  Pakk ut *innsyn-v1.2.0.zip*.
 2.  Indeksering av vedlegg kan bruke en del plass, rediger derfor eventuelt
     *REPORTS\_DIR* i *insight.conf* til å peke på en katalog med mye ledig
     diskplass.
@@ -83,13 +87,13 @@ Sjekk at det ligger i pathen med:
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
 
-<a id="orge7c4911"></a>
+<a id="orgca6bb96"></a>
 
 # Bruk
 
 ![img](./screenshot.png)
 
-1.  Kjør *insight.exe* (mac/linux: insight) fra katalogen *innsyn-v1.1.0*.
+1.  Kjør *insight.exe* (mac/linux: insight) fra katalogen *innsyn-v1.2.0*.
 2.  Brukergrensesnittet har fire hovedelementer:
     1.  **Nodetre**: Viser alle elementene i uttrekket i en trestrukture etter en import. 
         Hver node i treet tilsvarer en XML knagg. Nodetreet viser også tidligere 
@@ -127,7 +131,7 @@ Sjekk at det ligger i pathen med:
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
 
-<a id="org26f54d9"></a>
+<a id="orga2ea3e2"></a>
 
 # Sphinx indeksering og søkemotor
 
@@ -149,7 +153,7 @@ Når Innsyn kjører og man har lastet og indeksert ett uttrekk, kan man kjøre S
 Se Sphinx manualen for mer informasjon.
 
 
-<a id="orgbe0665b"></a>
+<a id="org580ceb5"></a>
 
 # Rapporter
 
@@ -159,25 +163,48 @@ formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
 
-<a id="org9f51148"></a>
+<a id="orgeaeeead"></a>
+
+# Journaler
+
+![img](./journal.png)
+
+For noen XML strukturer kan det være en 1 til mange relasjon mellom en node i XMLen og filer i arkivpakken. Et eksempel på dette er Norsk Helsearkiv arkivpakker der avlxml filen kan referere til flere digitaliserte sider og tilhørende OCR metadata.
+Denne sammenhengen kan defineres i format filen med nøkkelen *INFO\_VIEW\_JOURNAL\_TYPE\_REGEXP*. Noder som treffer denne nøkkelen vi få en **Journal** knapp nederst i nodeinformasjon visningen.
+Journal visningsmoduset lar brukerene velge ut enkeltsider i journalen som skal eksporteres. 
+
+
+<a id="orgc7f36e1"></a>
+
+## Generering av PDF journaler med OCR
+
+Journaler støtter visning og eksport av journaler som en *søkbar-PDF*, der hver side består av det digitaliserte bildet (feks en JPG) og den gjenskapte teksten (OCR) som et usynlig lag.
+Støttet OCR format er ALTO og HOCR. For mer informasjon se scriptet *pdf\create-pdf.cmd*. For å generere PDFer kreves det at flere verktøy er installert og tilgjengelig i søkestien:
+
+-   python: For kjøring av [HocrConverter.py](https://github.com/piql/HocrConverter) som genererer søkbare PDFer.
+-   [pdftk](http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/): Slår sammen flere enkeltstående PDF sider til en PDF.
+-   [alto\_\_hocr.xsl](https://github.com/filak/hOCR-to-ALTO): XSLT skjema for ALTO til hOCR konvertering
+
+
+<a id="orgb057092"></a>
 
 # Loggfiler
 
--   **innsyn-v1.1.0\insight.log**: Applikasjonslogg.
--   **innsyn-v1.1.0\insight.dmp**: Genereres hvis applikasjonen krasjer.
+-   **innsyn-v1.2.0\insight.log**: Applikasjonslogg.
+-   **innsyn-v1.2.0\insight.dmp**: Genereres hvis applikasjonen krasjer.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\attachments.log**: Logg over konvertering av vedlegg til søkbare tekstfiler.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\indexer.log**: Logg fra indekserings applikasjonen som genererer indekserings databasen.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
 
 
-<a id="orge3f57f0"></a>
+<a id="orga6c3ccd"></a>
 
 # Konfigurasjon
 
 Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen *formats*. Alle filene som slutter på *.conf* i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
 
-<a id="org838a3b3"></a>
+<a id="orgda63c78"></a>
 
 ## Tips
 
@@ -186,7 +213,7 @@ Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på
     Prøv med `insight -platform windows:dpiawareness=0` for å få riktig størrelse på vinduet. Beskrivelse av andre parametere som tweaker utseendet finnes her: <https://doc.qt.io/qt-5/qguiapplication.html#supported-command-line-options>
 
 
-<a id="orgb954aa7"></a>
+<a id="orga545d20"></a>
 
 # Ønsker, feil og mangler
 
@@ -217,7 +244,7 @@ Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på
     på disken.
 
 
-<a id="org2b5254b"></a>
+<a id="orga005c29"></a>
 
 # Hvordan rapportere feil
 
@@ -225,17 +252,30 @@ ole.liabo@piql.com
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
 
-<a id="org407b62e"></a>
+<a id="org5257e0d"></a>
 
 # Historikk
 
 
-<a id="orga0881a0"></a>
+<a id="org3d2dd28"></a>
+
+## innsyn-v1.2.0-beta1
+
+
+<a id="orge2077f0"></a>
+
+### Nye funksjoner
+
+-   Støtte for standard ut mappe ved eksport, settes med konfigurasjonsvariablen *FIXED\_REPORT\_EXPORT\_FOLDER*.
+-   Søtte for journaler
+
+
+<a id="org32bb6f3"></a>
 
 ## 01.07.2020 innsyn-v1.1.0
 
 
-<a id="org0845d21"></a>
+<a id="org753c1dc"></a>
 
 ### Feilrettinger
 
@@ -243,24 +283,24 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Lese inn konfig filer som UTF-8 på Windows.
 
 
-<a id="org38bccb2"></a>
+<a id="org83201e8"></a>
 
 ## innsyn-v1.1.0-beta2
 
 
-<a id="org06f5fd1"></a>
+<a id="org0f72561"></a>
 
 ### Feilrettinger
 
 -   Installasjon for Windows.
 
 
-<a id="org2ef42e5"></a>
+<a id="orgb23408e"></a>
 
 ## innsyn-v1.1.0-beta1
 
 
-<a id="org6093bff"></a>
+<a id="orgf87f345"></a>
 
 ### Nye funksjoner
 
@@ -271,7 +311,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Støtte for å endre XML-løv noder basert på både node navnet og innholdet i noden.
 
 
-<a id="org8f0f3df"></a>
+<a id="orga6e94a1"></a>
 
 ### Feilrettinger
 
@@ -279,14 +319,14 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Melding etter konvertering av vedlegg. Får beskjed både om at konvertering feilet og at vedlegg er tomme.
 
 
-<a id="orgd0434f1"></a>
+<a id="org61c126b"></a>
 
 ## 2018.06.01 innsyn-v1.0.0
 
 -   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn så virker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 
-<a id="org1c3c3e6"></a>
+<a id="org0e41ff0"></a>
 
 ## 2018.04.13 innsyn-v1.0.0-rc1
 
@@ -309,7 +349,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
 
-<a id="org2ddaace"></a>
+<a id="org0a19c58"></a>
 
 ## 2018.02.05 innsyn-v1.0.0-beta2
 
@@ -331,14 +371,14 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 -   [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
 
-<a id="org909a1c6"></a>
+<a id="orgad2d064"></a>
 
 ## 2018.01.18 innsyn-v1.0.0-beta1
 
 Første versjon levert til beta test.
 
 
-<a id="orgf8b24b9"></a>
+<a id="orgace29a1"></a>
 
 # Utvikling
 
@@ -356,7 +396,7 @@ create-release-osx.sh
 create-release.cmd
 
 
-<a id="orga8ec3eb"></a>
+<a id="orgef4f2df"></a>
 
 ## Ubuntu
 
@@ -366,7 +406,7 @@ sudo apt install libquazip5-dev
 sudo apt install qttools5-dev-tools
 
 
-<a id="orgaa67195"></a>
+<a id="org094e555"></a>
 
 ## Windows
 
