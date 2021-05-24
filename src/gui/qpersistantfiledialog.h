@@ -86,7 +86,12 @@ public:
         const QString & uniqueID,
         QWidget * parent = 0, 
         const QString & caption = QString(), 
-        const QString & dir = QString() ); 
+        const QString & dir = QString() );
+    static QString getFixedRootSaveFileName(
+        QWidget * parent,
+        const QString & caption,
+        const QString & fileName,
+        const QString & rootDir );
 };
 
 //----------------------------------------------------------------------------

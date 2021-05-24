@@ -52,26 +52,29 @@
  *  Constructor.
  */
 
-DFixedFolderDialog::DFixedFolderDialog( const QString& rootFolder, const QString& title )
+DFixedFolderDialog::DFixedFolderDialog( const QString& rootFolder, const QString& fileName, const QString& title )
   : m_RootFolder( rootFolder )
 {
     m_Ui.setupUi( this );
-
+    m_Ui.lineEdit->setText( fileName );
 
     // Root exists?
     QDir root( m_RootFolder );
     if ( !root.exists() )
     {
-        root.mkdir( m_RootFolder );
+        root.mkpath ( root.absoluteFilePath( m_RootFolder ) );
     }
 
-    QFileSystemModel model;
-    model.setRootPath( rootFolder );
-    model.setOption( QFileSystemModel::DontUseCustomDirectoryIcons );
+    QString r = root.absolutePath();
 
-    m_Ui.treeView->setModel( &model );
-    if ( !m_RootFolder.isEmpty() ) {
-        const QModelIndex rootIndex = model.index( QDir::cleanPath( m_RootFolder ) );
+    QFileSystemModel* model = new QFileSystemModel();
+    model->setRootPath( r );
+    model->setOption( QFileSystemModel::DontUseCustomDirectoryIcons );
+    model->setFilter( QDir::AllDirs | QDir::NoDot | QDir::NoDotDot | QDir::Files );
+
+    m_Ui.treeView->setModel( model );
+    if ( !r.isEmpty() ) {
+        const QModelIndex rootIndex = model->index( QDir::cleanPath( r ) );
         if ( rootIndex.isValid() )
             m_Ui.treeView->setRootIndex( rootIndex );
     }
@@ -80,20 +83,13 @@ DFixedFolderDialog::DFixedFolderDialog( const QString& rootFolder, const QString
     m_Ui.treeView->setAnimated( false );
     m_Ui.treeView->setIndentation( 20 );
     m_Ui.treeView->setSortingEnabled( true );
-    const QSize availableSize = m_Ui.treeView->screen()->availableGeometry().size();
-    m_Ui.treeView->resize( availableSize / 2 );
-    m_Ui.treeView->setColumnWidth( 0, m_Ui.treeView->width() / 3 );
-
-    // Make it flickable on touchscreens
-    //QScroller::grabGesture( &tree, QScroller::TouchGesture );
-
-    //tree.setWindowTitle( caption );
 
     // Set window title
     setWindowTitle( title );
 
     // Signals and slots. The GUI components emits signals that are handled by the slots.
     connect( m_Ui.buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+    connect( m_Ui.treeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &DFixedFolderDialog::selectionChanged);
 }
 
 
@@ -108,6 +104,28 @@ DFixedFolderDialog::~DFixedFolderDialog()
 
 QString DFixedFolderDialog::fileName()
 {
-    //m_Ui.treeView->sel
-    return QString();
+    QDir root( m_RootFolder );
+
+    return root.absoluteFilePath( m_Ui.lineEdit->text() );
 }
+
+void DFixedFolderDialog::selectionChanged( const QItemSelection& selected, const QItemSelection& )
+{
+    QModelIndexList list = m_Ui.treeView->selectionModel()->selectedIndexes();
+    
+    if (list.size()) 
+    {   
+        QModelIndex index = list.first();
+        QVariant data = m_Ui.treeView->model()->data( index );
+        QString text = data.toString();
+        /*
+        QFileInfo oldFile(m_Ui.lineEdit->text());
+        QDir newDir(text);
+        QFileInfo newFile(newDir.path());
+        newFile.setFile(newDir, oldFile.fileName());
+        
+        QDir root(m_RootFolder);
+          */
+        m_Ui.lineEdit->setText( text );
+    }
+ }

@@ -28,6 +28,7 @@
 #include    "ddirparser.h"
 #include    "dtreeitem.h"
 #include    "dtreemodel.h"
+#include    "dimportformat.h"
 
 //  QT INCLUDES
 //
@@ -83,11 +84,11 @@ void DDirParser::incItems( DTreeItem* item, bool finalItem )
     const unsigned long reportInterval = 1;
     if ( finalItem )
     {
-        reportProgress( m_Items, 1.0f );
+        reportProgress( (unsigned long)m_Items, 1.0f );
     }
     else if ( m_Items == m_ItemsLastReport + reportInterval )
     {
-        reportProgress( m_Items, m_MaxItems );
+        reportProgress( (unsigned long)m_Items, m_MaxItems );
         m_ItemsLastReport = m_Items;
     }
 }
@@ -215,9 +216,28 @@ void DDirParser::run()
         
         currentNode->addNode( m_Model->createLeaf( m_RootNode, sizeName, sizeString ) );
         currentNode->addNode( m_Model->createLeaf( m_RootNode, dateName, dateString ) );
+
+        // Auto load?
+        DLeafNodesConstIterator it = currentNode->m_Nodes.cbegin();
+        DLeafNodesConstIterator itEnd = currentNode->m_Nodes.cend();
+        const DLeafMatchers& autoLoad = importFormat()->autoImportRegExp();
+        for ( ; it != itEnd; it++ )
+        {
+            if (DLeafMatcher::IsMatch(autoLoad, (*it)->m_Key, (*it)->m_Value ))
+            {
+                DPendingImport pendingImport;
+                pendingImport.m_Document = (*it)->m_Value;
+                pendingImport.m_Root = currentNode;
+                m_PendingImports.push_back( pendingImport );
+            }    
+        } 
+
         incItems( currentNode, false );
         m_NodeCount++;
     }
 
-    incItems( currentNode, !isInterruptionRequested() );   
+    incItems( currentNode, !isInterruptionRequested() );
+
+
+       
 }

@@ -116,7 +116,7 @@ public:
         return s;
     }
 
-    ssize_t read(char* buffer, size_t bufferSize)
+    ssize_t read(char* buffer, size_t /*bufferSize*/)
     {
 #if defined (WIN32)
         return _read( m_FileHandle,  buffer, sizeof(buffer));
@@ -501,6 +501,18 @@ unsigned long DXmlParser::nodeCount()
 bool DXmlParser::loadedOK() const
 {
     return m_LoadedOk;
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  Pending imports are a list of documents refered by the importer that should
+ *  be auto loaded.
+ */
+
+const DPendingImports& DXmlParser::pendingImports() const
+{
+    return m_PendingImports;
 }
 
 

@@ -33,6 +33,7 @@
 #include    "dtreeitem.h"
 #include    "dimport.h"
 #include    "dxmlparser.h"
+#include    "dattachmentparser.h"
 
 //  QT INCLUDES
 //
@@ -94,6 +95,7 @@ private slots:
     void deleteFolderClicked();
     void importDocumentClicked();
     void checksumClicked();
+    void journalClicked();
     void searchEditChanged( const QString & text );
     void dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &);
     void loadMenuClicked( bool checked );
@@ -138,13 +140,13 @@ private:
                 Node* parent, DInsightReport& report, 
                 int level, 
                 int maxLevel, 
-                QStringList& attachments, 
+                QStringList& attachments,
+                DJournals& journals,
                 bool onlyChecked=true,
                 bool replaceLabels=true );
     int     treeNodeCount( bool onlyChecked );
     int     treeNodeCountRecursive( Node* parent, bool onlyChecked );
     bool    isNode( const QString& key, const DRegExps& regExps );
-    bool    isNode( const QString& key, const QString& value, const DLeafMatchers& matchers );
     bool    isDocumentNode( const DImportFormat* format, const QString& key, const QString& value );
     bool    isFolderNode( const DImportFormat* format, const QString& key );
     bool    isDeleteNode( const DImportFormat* format, const QString& key );
@@ -166,10 +168,12 @@ private:
     void    startSearchDeamon();
     void    setupUiForImport();
     void    importDocumentClicked( const QString& document, QModelIndex& index );
+    void    importDocument( const QString& document, DTreeItem* item );
     void    deleteImportFolder( const QString& document, QModelIndex& index );
     void    getNodesToExcludeFromSearch( DXmlParser::StringHash& nodesToExclude );
     void    treeNodeSelectionCountChanged();
     void    makeAbsolute( QString& filename, const QModelIndex& index );
+    void    makeAbsolute( QString& filename, DTreeItem* item );
 
     
 private:
@@ -179,6 +183,7 @@ private:
 
     DImports                    m_Imports;
     DImport*                    m_CurrentImport;
+    DPendingImports             m_PendingImports;
     DTreeModel*                 m_Model;
     DSearchThread*              m_SearchThread;
     QStatusBar*                 m_StatusBar;

@@ -39,6 +39,7 @@
 #include    "qpersistantfiledialog.h"
 #include    "qaboutdialog.h"
 #include    "dimportformat.h"
+#include    "dinsightjournalwindow.h"
 
 //  QT INCLUDES
 //
@@ -646,19 +647,21 @@ void DInsightMainWindow::importFileFinished( bool ok )
         }
         else
         {
+            // TODO: This does not handle multiple child imports?
             pdfFileName = tr("child") + "-" + tr("import.pdf");
             xmlFileName = tr("child") + "-" + DInsightReport::getXmlReportName();
         }
         
-        // Create import report - PDF
+        // Create import report - PDF format
         QStringList attachmentsIgnore;
+        DJournals journalsIgnore;
         DInsightReport importReportPdf;
-        createReport( tr("Import Report"), import->root(), importReportPdf, 0, 0, attachmentsIgnore, false );
+        createReport( tr("Import Report"), import->root(), importReportPdf, 0, 0, attachmentsIgnore, journalsIgnore, false );
         importReportPdf.save( report + pdfFileName );
 
-        // Create import report - XML
+        // Create import report - XML format
         DInsightReport importReportXml( DInsightReport::REPORT_FORMAT_XML );
-        createReport( "", import->root(), importReportXml, 0, 0, attachmentsIgnore, false, false );
+        createReport( "", import->root(), importReportXml, 0, 0, attachmentsIgnore, journalsIgnore, false, false );
         importReportXml.save( report + xmlFileName );
     }
 
@@ -774,7 +777,7 @@ static void clearLayout( QLayout *layout )
 
 //----------------------------------------------------------------------------
 /*! 
- *  Use regular expression search / repalce to update content of key.
+ *  Use regular expression search / replace to update content of key.
  */
 
 void DInsightMainWindow::ReplaceString( QString& key, const DRegExps& regExps )
@@ -983,6 +986,17 @@ void DInsightMainWindow::updateInfo( Node* parentNode )
 
         row++;
     }
+
+    // Journal node?
+    if ( parentNode->m_Journal )
+    {
+        QPushButton* button = new QPushButton( tr( "Journal" ) );
+        button->setProperty( "node", m_Model->index( parentNode ) );
+        m_InfoView->addWidget( button,row,1 );
+        QObject::connect( button, SIGNAL( clicked() ), this, SLOT( journalClicked() ) );
+        row++;
+    }
+
     QSpacerItem* verticalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
     m_InfoView->addItem( verticalSpacer, row, 0, 1,1,Qt::AlignTop );
 }
@@ -1080,9 +1094,14 @@ void DInsightMainWindow::contextMenuTreeItem( const QPoint& /*pos*/ )
 
 void DInsightMainWindow::makeAbsolute( QString& filename, const QModelIndex& index )
 {
+    DTreeItem* item = (DTreeItem*)index.internalPointer();
+    makeAbsolute( filename, item );
+}
+
+void DInsightMainWindow::makeAbsolute( QString& filename, DTreeItem* item )
+{
     if ( !QFile::exists( filename ) )
     {
-        DTreeItem* item = (DTreeItem*)index.internalPointer();
         const DTreeRootItem* root = item->findRootItem();
         const DImportFormat* format = root->format();
         DImport* import = findImport( root );
@@ -1322,6 +1341,23 @@ void DInsightMainWindow::checksumClicked()
 
 
 //----------------------------------------------------------------------------
+/*!
+ *  Slot called when Journal button is clicked for an journal node.
+ */
+
+void DInsightMainWindow::journalClicked()
+{
+    QPushButton* sender = (QPushButton*)QObject::sender();
+    QModelIndex index = sender->property( "node" ).toModelIndex();
+    DTreeItem* item = (DTreeItem*)index.internalPointer();
+
+    DInsightJournalWindow journalWindow( item->m_Journal, this->findImport(item->findRootItem()) );
+    
+    journalWindow.exec();
+}
+
+
+//----------------------------------------------------------------------------
 /*! 
  *  Import AIP button clicked.
  */
@@ -1357,48 +1393,52 @@ void DInsightMainWindow::importDocumentClicked( const QString& document, QModelI
     }
     else
     {
-        // Import file
-        DImport* import = findImport( item );
-
-        if ( import )
-        {        
-            DInsightConfig::Log() << "Re-importing: " << import->fileName() << endl;
-            QFileInfo info( import->fileName() );
-            if ( !info.exists() )
-            {
-                DInsightConfig::Log() << "Opening failed, file does not exist: " << import->fileName() << endl;
-                QMessageBox::information( this, tr("Failed to open file"), tr("Failed to open '%1'.").arg( import->fileName() ), QMessageBox::Ok );
-                return;
-            }
-
-            const DImportFormat* format = m_ImportFormats->find(import->formatName());
-            if ( format == nullptr )
-            {
-                DInsightConfig::Log() << "Import format not found: " << import->formatName() << endl;
-                QMessageBox::information( this, tr("Format not found"), tr("Import format not found: '%1'.").arg( import->formatName() ), QMessageBox::Ok );
-                return;
-            }
-
-            m_CurrentImport = import;
-        
-            setupUiForImport();
-
-            import->setFromReport( true );
-            import->load( format );
-        }
-        else
-        {
-            QString absDocument = document;
-            makeAbsolute( absDocument, index );
-
-            const DImportFormat* importFormat = m_ImportFormats->findMatching(absDocument);
-
-            DInsightConfig::Log() << "Importing doc: " << absDocument << endl;
-            importFile( absDocument, importFormat->name(), item );
-        }
+        importDocument( document, item );
     }
 }
 
+void DInsightMainWindow::importDocument( const QString& document, DTreeItem* item )
+{
+    // Import file
+    DImport* import = findImport( item );
+
+    if ( import )
+    {
+        DInsightConfig::Log() << "Re-importing: " << import->fileName() << endl;
+        QFileInfo info( import->fileName() );
+        if ( !info.exists() )
+        {
+            DInsightConfig::Log() << "Opening failed, file does not exist: " << import->fileName() << endl;
+            QMessageBox::information( this, tr( "Failed to open file" ), tr( "Failed to open '%1'." ).arg( import->fileName() ), QMessageBox::Ok );
+            return;
+        }
+
+        const DImportFormat* format = m_ImportFormats->find( import->formatName() );
+        if ( format == nullptr )
+        {
+            DInsightConfig::Log() << "Import format not found: " << import->formatName() << endl;
+            QMessageBox::information( this, tr( "Format not found" ), tr( "Import format not found: '%1'." ).arg( import->formatName() ), QMessageBox::Ok );
+            return;
+        }
+
+        m_CurrentImport = import;
+
+        setupUiForImport();
+
+        import->setFromReport( true );
+        import->load( format );
+    }
+    else
+    {
+        QString absDocument = document;
+        makeAbsolute( absDocument, item );
+
+        const DImportFormat* importFormat = m_ImportFormats->findMatching( absDocument );
+
+        DInsightConfig::Log() << "Importing doc: " << absDocument << endl;
+        importFile( absDocument, importFormat->name(), item );
+    }
+}
 
 //----------------------------------------------------------------------------
 /*! 
@@ -1805,7 +1845,16 @@ void DInsightMainWindow::indexingFinished( DImport::DIndexingState state )
     m_StatusBar->showMessage( message );
     m_ProgressBar->setVisible( false );
     m_ProgressBarInfo->setVisible( false );
+
+    const DPendingImports& pendingImports = m_CurrentImport->pendingImports();
+    m_PendingImports.append( pendingImports );
     m_CurrentImport = nullptr;
+    if ( m_PendingImports.size() )
+    {
+        DPendingImport pendingImport = m_PendingImports.first(); 
+        m_PendingImports.pop_front();
+        importDocument( pendingImport.m_Document, pendingImport.m_Root );
+    }
 
     startSearchDeamon();
 }
@@ -2070,6 +2119,7 @@ void DInsightMainWindow::exportButtonClicked()
 {
     DInsightReport report;
     QStringList existingAttachmentsFullPath;
+    DJournals journals;
 
     // Could take some time:
     {
@@ -2089,7 +2139,7 @@ void DInsightMainWindow::exportButtonClicked()
             if ( treeNodeCountRecursive( (*it)->root(), true ) )
             {
                 QStringList attachments;
-                createReport( tr("Export Report"), (*it)->root(), report, 0, INT_MAX, attachments );
+                createReport( tr("Export Report"), (*it)->root(), report, 0, INT_MAX, attachments, journals );
 
                 QString attachmentRoot = (*it)->fileNameRoot();
                 if ( (*it)->root()->format()->parser() == "dir" )
@@ -2118,7 +2168,7 @@ void DInsightMainWindow::exportButtonClicked()
     }
 
     // Display export dialog with report 
-    DInsightReportWindow reportDialog( report, existingAttachmentsFullPath );
+    DInsightReportWindow reportDialog( report, existingAttachmentsFullPath, journals );
     reportDialog.exec();
 }
 
@@ -2170,7 +2220,8 @@ void DInsightMainWindow::createReport(
     DInsightReport& report, 
     int level, 
     int maxLevel, 
-    QStringList& attachments, 
+    QStringList& attachments,
+    DJournals& journals, 
     bool onlyChecked /*=true*/,
     bool replaceLabels /*=true*/ )
 {
@@ -2212,6 +2263,29 @@ void DInsightMainWindow::createReport(
             
             ++it;
         }
+
+        // Journal node?
+        if (parent->m_Journal)
+        {
+            if (parent->m_Journal->hasCheckedPages())
+            {
+                report.addHeader( tr("Journal sider"), level );
+                report.startTable( level );
+                int page = 1;
+                foreach(const DJournalPage& p, parent->m_Journal->m_Pages)
+                {
+                    if (p.m_Checked)
+                    {
+                        report.addRow( tr("Page %1").arg(page), p.m_PageFileName );
+                    }
+                    page++;
+                }
+                report.endTable( level );
+
+                journals.push_back(parent->m_Journal);
+            }
+        }
+
         report.endTable( level );
     }
 
@@ -2221,7 +2295,7 @@ void DInsightMainWindow::createReport(
         DTreeItem::DChildrenIterator it = parent->m_Children.begin();
         while ( it != parent->m_Children.end() )
         {
-            createReport( QString(), *it, report, level + 1, maxLevel, attachments, onlyChecked );
+            createReport( QString(), *it, report, level + 1, maxLevel, attachments, journals, onlyChecked );
 
             ++it;
         }
@@ -2292,42 +2366,13 @@ bool DInsightMainWindow::isNode( const QString& key, const DRegExps& regExps )
 }
 
 //----------------------------------------------------------------------------
-/*!
- *  Return true if key matches one of the leaf matchers.
- */
-
-bool DInsightMainWindow::isNode( const QString& key, const QString& value, const DLeafMatchers& matchers )
-{
-    foreach( const DLeafMatcher& matcher, matchers )
-    {
-        if ( matcher.m_LeafMatch.match( key ).hasMatch() )
-        {
-            if ( matcher.m_ContentMatch.pattern().length() != 0 )
-            {
-                if ( matcher.m_ContentMatch.match( value ).hasMatch() )
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-
-//----------------------------------------------------------------------------
 /*! 
  *  Return true is this is a document node.
  */
 
 bool DInsightMainWindow::isDocumentNode( const DImportFormat* format, const QString& key, const QString& value )
 {
-    return isNode( key, value, format->documentTypeRegExp() );
+    return DLeafMatcher::IsMatch( format->documentTypeRegExp(), key, value );
 }
 
 
@@ -2360,7 +2405,7 @@ bool DInsightMainWindow::isDeleteNode( const DImportFormat* format, const QStrin
 
 bool DInsightMainWindow::isImportNode( const DImportFormat* format, const QString& key, const QString& value )
 {
-    return isNode( key, value, format->importTypeRegExp() );
+    return DLeafMatcher::IsMatch( format->importTypeRegExp(), key, value );
 }
 
 

@@ -166,7 +166,7 @@ void DImport::load( DXmlParser* parser )
     }
 
     assert( m_AttachmentParser == nullptr );
-    m_AttachmentParser = new DAttachmentParser( &m_TreeItems, attachmentRootDir, m_DocumentTypeRegExp );
+    m_AttachmentParser = new DAttachmentParser( &m_TreeItems, attachmentRootDir, m_DocumentTypeRegExp, m_JournalMatchers );
     connect( m_XmlParser, &DXmlParser::nodesReady, m_AttachmentParser, &DAttachmentParser::nodesReady );
     connect( m_AttachmentParser, &DAttachmentParser::finished, this, &DImport::attachmentParserFinished);
 
@@ -329,6 +329,10 @@ void DImport::importFinished()
         m_TreeItems.clear();
     }
 
+    if (m_XmlParser)
+    {
+        m_PendingImports = m_XmlParser->pendingImports();
+    }
     delete m_XmlParser;
     m_XmlParser = nullptr;
 
@@ -386,6 +390,7 @@ DImport* DImport::CreateFromFile(
     import->m_FileNameDir = QFileInfo( import->m_FileName ).path();
     import->m_DocumentTypeRegExp = format->documentTypeRegExp();
     import->m_ImportFormat = format->name();
+    import->m_JournalMatchers = format->journalMatchers();
 
     if ( parentImport )
     {
@@ -614,10 +619,10 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
         return nullptr;
     }
 
-    DLeafNode* reportDirLeaf = import->m_RootItem->findLeaf( ReportsDirKey().toStdString().c_str() );
-    if ( reportDirLeaf )
+    DLeafNode* reportsDirLeaf = import->m_RootItem->findLeaf( ReportsDirKey().toStdString().c_str() );
+    if ( reportsDirLeaf )
     {
-        import->m_ReportsDir = QString( reportDirLeaf->m_Value );
+        import->m_ReportsDir = QString( reportsDirLeaf->m_Value );
     }
     else
     {
@@ -848,6 +853,10 @@ qint64 DImport::attachmentsSizeInBytes()
     return 0LL;
 }
 
+const DPendingImports& DImport::pendingImports()
+{
+    return m_PendingImports;
+}
 
 //----------------------------------------------------------------------------
 /*! 

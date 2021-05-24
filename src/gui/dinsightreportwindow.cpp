@@ -69,7 +69,10 @@
  *  Constructor.
  */
 
-DInsightReportWindow::DInsightReportWindow( DInsightReport& report, QStringList& attachments )
+DInsightReportWindow::DInsightReportWindow( 
+    DInsightReport& report, 
+    QStringList& attachments,
+    DJournals& journals )
   : m_Report( report )
 {
     m_Ui.setupUi( this );    
@@ -85,6 +88,7 @@ DInsightReportWindow::DInsightReportWindow( DInsightReport& report, QStringList&
 
     m_Ui.reportView->setHtml( m_Report.text() );
     m_Attachments = attachments;
+    m_Journals = journals;
 }
 
 
@@ -117,10 +121,21 @@ void DInsightReportWindow::okButtonClicked()
 void DInsightReportWindow::saveButtonClicked()
 {
     // Get filename
-    QString fileName = QPersistantFileDialog::getSaveFileName( "savereport", this, tr("Export PDF report"), tr("report.pdf"), "*.pdf");
-    if ( QFileInfo(fileName).suffix().isEmpty() ) 
-    { 
-        fileName.append(".pdf"); 
+    QString fileName;
+
+    QString fixedFolder = DInsightConfig::Get("FIXED_REPORT_EXPORT_FOLDER");
+    if ( fixedFolder.length() )
+    {
+        fileName = QPersistantFileDialog::getFixedRootSaveFileName(this, tr("Export PDF report"), tr( "report.pdf" ), fixedFolder );
+    }
+    else
+    {
+        fileName = QPersistantFileDialog::getSaveFileName( "savereport", this, tr("Export PDF report"), tr("report.pdf"), "*.pdf");
+    }
+
+    if ( QFileInfo( fileName ).suffix().isEmpty() )
+    {
+        fileName.append( ".pdf" );
     }
 
     createPdfReport( fileName );
@@ -308,7 +323,7 @@ void DInsightReportWindow::emailButtonClicked()
     }
 
     QDir dir( QDir::temp() );
-    QString fileName = QDir::toNativeSeparators( dir.absoluteFilePath( tr("report-%1.pdf").arg( QDateTime::currentDateTime().toString("yyyy-MM-dd") ) ) );
+    QString fileName = QDir::toNativeSeparators( dir.absoluteFilePath( tr("report-%1.pdf").arg( DInsightConfig::FileNameDatePart() ) ) );
     if ( !createPdfReport( fileName ) )
     {
         return;

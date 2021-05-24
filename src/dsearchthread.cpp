@@ -339,9 +339,9 @@ DSearchThread::SearchResult DSearchThread::searchTree( DTreeItem* node, const ch
                 {
                     if ( m_SearchModes & SEARCH_MODE_CASE_INSENSITIVE )
                     {
-                        int valueLength = strlen(leaf->m_Value);
+                        size_t valueLength = strlen(leaf->m_Value);
                         char* value = (char*)malloc(valueLength+1);
-                        for ( int i = 0; i < valueLength; i++ )
+                        for ( size_t i = 0; i < valueLength; i++ )
                         {
                             value[i] = std::tolower(leaf->m_Value[i], std::locale());
                         }

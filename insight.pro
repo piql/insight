@@ -13,7 +13,7 @@ CONFIG           +=   qt debug_and_release
 CONFIG           +=   lrelease 
 macx:CONFIG      +=   app_bundle
 TARGET            =   insight
-DESTDIR           =   ./innsyn-v1.1.0
+DESTDIR           =   ./innsyn-v1.2.0
 
 ##  SUPPORT DEBUG AND RELEASE BUILDS  ##
 !debug_and_release|build_pass {
@@ -120,22 +120,26 @@ TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \
                       
 GUI_SOURCES       =   src/gui/dinsightmainwindow.cpp \
                       src/gui/dinsightreportwindow.cpp \
+                      src/gui/dinsightjournalwindow.cpp \
                       src/gui/dtreeview.cpp \
                       src/gui/dtreeitem.cpp \
                       src/gui/dtreemodel.cpp \
                       src/gui/dimport.cpp \
                       src/gui/dwaitcursor.cpp \
                       src/gui/qpersistantfiledialog.cpp \
-                      src/gui/qaboutdialog.cpp
+                      src/gui/qaboutdialog.cpp \
+                      src/gui/dfixedfolderdialog.cpp
 GUI_HEADERS       =   src/gui/dinsightmainwindow.h \
                       src/gui/dinsightreportwindow.h \
+                      src/gui/dinsightjournalwindow.h \
                       src/gui/dtreeview.h \
                       src/gui/dtreeitem.h \
                       src/gui/dtreemodel.h \
                       src/gui/dimport.h \
                       src/gui/dwaitcursor.h \
                       src/gui/qpersistantfiledialog.h \
-                      src/gui/qaboutdialog.h
+                      src/gui/qaboutdialog.h  \
+                      src/gui/dfixedfolderdialog.h
 
 ZIP_HEADERS       =   src/thirdparty/quazip-0.7.3/quazip/crypt.h \
                       src/thirdparty/quazip-0.7.3/quazip/ioapi.h \
@@ -169,7 +173,9 @@ ZIP_SOURCES       =   src/thirdparty/quazip-0.7.3/quazip/unzip.c \
                       src/thirdparty/quazip-0.7.3/quazip/quazipnewinfo.cpp
 
 FORMS             =   src/gui/dinsightmainwindow.ui \
+                      src/gui/dinsightjournalwindow.ui \
                       src/gui/dinsightreportwindow.ui \
+                      src/gui/fixedfolderdialog.ui \
                       src/gui/qaboutdialog.ui
 
 RESOURCES         =   resources.qrc
@@ -189,6 +195,7 @@ SOURCES          +=   src/main.cpp \
                       src/dimportformat.cpp \
                       src/dosxtools.cpp \
                       src/dleafmatcher.cpp \
+                      src/djournalmatcher.cpp \
                       $$GUI_SOURCES \
                       $$ZIP_SOURCES \
                       $$POSIXTAR_SOURCES
@@ -202,8 +209,10 @@ HEADERS          +=   src/drunguard.h \
                       src/dinsightconfig.h \
                       src/dinsightreport.h \
                       src/dimportformat.h \
+                      src/dpendingimport.h \
                       src/dosxtools.h \
                       src/dleafmatcher.h \
+                      src/djournalmatcher.h \
                       $$GUI_HEADERS \
                       $$ZIP_HEADERS \
                       $$TOOLS_INCLUDES \

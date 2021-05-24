@@ -35,6 +35,7 @@
 //  PROJECT INCLUDES
 //
 #include "qpersistantfiledialog.h"
+#include "dfixedfolderdialog.h"
 
 //  SYSTEM INCLUDES
 //
@@ -42,6 +43,9 @@
 //  QT INCLUDES
 //
 #include <QSettings>
+#include <QFileSystemModel>
+#include <QTreeView>
+#include <QScreen>
 
 //  NAMESPACE
 //
@@ -179,4 +183,30 @@ QString QPersistantFileDialog::getExistingDirectory (
 
     // Return result
     return dirName;
+}
+
+//----------------------------------------------------------------------------
+/*!
+ *  Get a filename below a fixed root. Users are not allowed to navigate up from
+ *  the fixed root. This is to simplify the user interface so users by accident 
+ *  save files outside output folder.
+ */
+
+QString QPersistantFileDialog::getFixedRootSaveFileName(
+    QWidget * parent,
+    const QString & caption,
+    const QString & fileName,
+    const QString & rootDir )
+{
+    DFixedFolderDialog dialog(rootDir, fileName, caption);
+    
+    //tree.show();
+
+    // Return result
+    if ( dialog.exec() == QDialog::Accepted ) 
+    {
+        return dialog.fileName();
+    }
+
+    return QString();
 }

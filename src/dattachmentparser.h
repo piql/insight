@@ -30,6 +30,7 @@
 //
 #include    "dregexp.h"
 #include    "dleafmatcher.h"
+#include    "djournalmatcher.h"
 #include    "dtreeitem.h"
 
 //  QT INCLUDES
@@ -56,6 +57,38 @@ public:
 typedef unsigned int DAttachmentIndex;
 
 //============================================================================
+// CLASS: DJournalPage
+
+class DJournalPage
+{
+public:
+    DJournalPage();
+
+    QString m_PageFileName;
+    QString m_OcrFileName;
+    bool    m_Checked;
+};
+
+typedef std::vector<DJournalPage> DJournalPages;
+
+//============================================================================
+// CLASS: DJournal
+
+class DJournal
+{
+public:
+    DTreeItem*    m_TreeItem;
+    DJournalPages m_Pages;
+
+    bool hasCheckedPages() const;
+};
+
+//============================================================================
+// CLASS: DJournals
+
+typedef std::vector<DJournal*> DJournals;
+
+//============================================================================
 // CLASS: DAttachments
 
 typedef std::vector<DAttachment*> DAttachments;
@@ -74,13 +107,18 @@ class DAttachmentParser : public QThread
     Q_OBJECT
 public:
 
-    DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DLeafMatchers& attachmentTypeRegExp );
+    DAttachmentParser( 
+        DTreeItems* treeItems, 
+        const QString& rootDir, 
+        const DLeafMatchers& attachmentTypeRegExp,
+        const DJournalMatchers& journalMatchers );
    ~DAttachmentParser();
 
     DAttachments&       attachments();
     DAttachmentIndexes& attachmentsFound();
     DAttachmentIndexes& attachmentsNotFound();
     qint64              attachmentsSizeInBytes();
+    DJournals&          journals();
 
 public:
     static QString      AttachmentPath( const QString& fileName, const QString& documentRoot );
@@ -92,9 +130,10 @@ public slots:
 private:
     void                run();
     bool                isAttachmentNode(  const char* text, const char* content );
+    DJournalMatcher*    isJournalNode( const char* text );
 
 private:
-    unsigned int        m_MaxNodeCount;
+    size_t              m_MaxNodeCount;
     bool                m_FinalNodeReached;
 
     DTreeItems*         m_TreeItems;
@@ -106,6 +145,8 @@ private:
     QMutex              m_Mutex;
     QWaitCondition      m_Wait;
     qint64              m_AttachmentsSizeBytes;
+    DJournals           m_Journals;
+    DJournalMatchers    m_JournalMatchers;
 };
 
 

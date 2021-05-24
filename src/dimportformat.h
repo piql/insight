@@ -30,6 +30,7 @@
 //
 #include "dregexp.h"
 #include "dleafmatcher.h"
+#include "djournalmatcher.h"
 
 //  QT INCLUDES
 //
@@ -56,13 +57,16 @@ public:
     const DRegExps &            treeViewNodeRegExp() const;
     const DRegExps &            infoViewLabelRegExp() const;
     const DLeafMatchers &       documentTypeRegExp() const;
+    const DJournalMatchers &    journalMatchers() const;
     const DRegExps &            folderTypeRegExp() const;
     const DRegExps &            deleteTypeRegExp() const;
     const DLeafMatchers &       importTypeRegExp() const;
+    const DLeafMatchers &       autoImportRegExp() const;
     const DRegExps &            checksumTypeRegExp() const;
     const DRegExps &            checksumSourceTypeRegExp() const;
     QString                     extractTool( const QString& fileName, const QString& destination ) const;
     QString                     fileIdTool( const QString& fileName ) const;
+    QString                     convertToPdfTool( const QString& filesFile, const QString& out, const QString& temp ) const;
 
     
 public:
@@ -81,13 +85,16 @@ private:
     DRegExps                    m_TreeViewNodeRegExp;
     DRegExps                    m_InfoViewLabelRegExp;
     DLeafMatchers               m_DocumentTypeRegExp;
+    DJournalMatchers            m_JournalMatchers;
     DRegExps                    m_FolderTypeRegExp;
     DRegExps                    m_DeleteTypeRegExp;
     DLeafMatchers               m_ImportTypeRegExp;
+    DLeafMatchers               m_AutoImportRegExp;
     DRegExps                    m_ChecksumTypeRegExp;
     DRegExps                    m_ChecksumSourceTypeRegExp;
     DRegExps                    m_ExtractTool;
     QString                     m_FileIdTool;
+    QString                     m_PdfCreatorTool;
 
     DImportFormat*              m_BaseFormat;
     DInsightConfig*             m_Config;
@@ -108,4 +115,4 @@ public:
     const DImportFormat* find( const QString& formatName ) const;
 };
 
-#endif // DTARPARSER_H
+#endif // DIMPORTFORMAT_H

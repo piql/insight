@@ -1,11 +1,11 @@
-#+TITLE:KDRS Innsyn v1.0.0
+#+TITLE:Piql Innsyn v1.2.0
 #+AUTHOR:Piql AS
 #+EMAIL:ole.liabo@piql.com
-#+DATE:2018.06.01
+#+DATE:2021.05.24
 #+OPTIONS: ^:nil
-#+DESCRIPTION:KDRS Innsyn
+#+DESCRIPTION:Piql Innsyn
 #+LANGUAGE: no
-#+CREATOR: Cooyright (c) 2020 <a href="http://www.piql.com">Piql AS</a>
+#+CREATOR: Cooyright (c) 2021 <a href="http://www.piql.com">Piql AS</a>
 #+latex_header: \hypersetup{colorlinks=true,linkcolor=blue}
 # #+TOC: headlines 5
 
@@ -42,7 +42,7 @@ Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
 * Installasjon
 
-1. Pakk ut /innsyn-v1.1.0.zip/.
+1. Pakk ut /innsyn-v1.2.0.zip/.
 2. Indeksering av vedlegg kan bruke en del plass, rediger derfor eventuelt
    /REPORTS_DIR/ i /insight.conf/ til å peke på en katalog med mye ledig
    diskplass.
@@ -53,7 +53,7 @@ Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
 [[./screenshot.png]]
 
-1. Kjør /insight.exe/ (mac/linux: insight) fra katalogen /innsyn-v1.1.0/.
+1. Kjør /insight.exe/ (mac/linux: insight) fra katalogen /innsyn-v1.2.0/.
 2. Brukergrensesnittet har fire hovedelementer:
    1) *Nodetre*: Viser alle elementene i uttrekket i en trestrukture etter en import. 
       Hver node i treet tilsvarer en XML knagg. Nodetreet viser også tidligere 
@@ -115,10 +115,27 @@ Etter import genereres en PDF-rapport i rapport katalogen, bestemt av
 formatet: /REPORTS_DIR\åååå\MM\DD\TTMMSS\/.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
+* Journaler
+
+[[./journal.png]]
+
+For noen XML strukturer kan det være en 1 til mange relasjon mellom en node i XMLen og filer i arkivpakken. Et eksempel på dette er Norsk Helsearkiv arkivpakker der avlxml filen kan referere til flere digitaliserte sider og tilhørende OCR metadata.
+Denne sammenhengen kan defineres i format filen med nøkkelen /INFO_VIEW_JOURNAL_TYPE_REGEXP/. Noder som treffer denne nøkkelen vi få en *Journal* knapp nederst i nodeinformasjon visningen.
+Journal visningsmoduset lar brukerene velge ut enkeltsider i journalen som skal eksporteres. 
+
+** Generering av PDF journaler med OCR
+
+Journaler støtter visning og eksport av journaler som en /søkbar-PDF/, der hver side består av det digitaliserte bildet (feks en JPG) og den gjenskapte teksten (OCR) som et usynlig lag.
+Støttet OCR format er ALTO og HOCR. For mer informasjon se scriptet /pdf\create-pdf.cmd/. For å generere PDFer kreves det at flere verktøy er installert og tilgjengelig i søkestien:
+  - python: For kjøring av [[https://github.com/piql/HocrConverter][HocrConverter.py]] som genererer søkbare PDFer.
+  - [[http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/][pdftk]]: Slår sammen flere enkeltstående PDF sider til en PDF.
+  - [[https://github.com/filak/hOCR-to-ALTO][alto__hocr.xsl]]: XSLT skjema for ALTO til hOCR konvertering
+
+
 * Loggfiler
 
-- *innsyn-v1.1.0\insight.log*: Applikasjonslogg.
-- *innsyn-v1.1.0\insight.dmp*: Genereres hvis applikasjonen krasjer.
+- *innsyn-v1.2.0\insight.log*: Applikasjonslogg.
+- *innsyn-v1.2.0\insight.dmp*: Genereres hvis applikasjonen krasjer.
 - *REPORTS_DIR\YYYY\MM\DD\TTMMSS\attachments.log*: Logg over konvertering av vedlegg til søkbare tekstfiler.
 - *REPORTS_DIR\YYYY\MM\DD\TTMMSS\indexer.log*: Logg fra indekserings applikasjonen som genererer indekserings databasen.
 - *REPORTS_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log*: Logg fra søkemotoren.
@@ -167,6 +184,11 @@ ole.liabo@piql.com\\
 Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis den finnes.
 
 * Historikk
+
+** innsyn-v1.2.0-beta1
+*** Nye funksjoner
+ - Støtte for standard ut mappe ved eksport, settes med konfigurasjonsvariablen /FIXED_REPORT_EXPORT_FOLDER/.
+ - Søtte for journaler
 
 ** 01.07.2020 innsyn-v1.1.0
 *** Feilrettinger

@@ -32,6 +32,8 @@
 #include    <QSettings>
 #include    <QCoreApplication>
 #include    <QFile>
+#include    <QDateTime>
+
 
 /****************************************************************************/
 /*! \class DInsightConfig dinsightconfig.h
@@ -252,6 +254,15 @@ QDebug&  DInsightConfig::Log()
     return logStream;
 }
 
+//----------------------------------------------------------------------------
+/*!
+ *  REturn current date as string, suitable for creating filenames with dates.
+ */
+
+QString DInsightConfig::FileNameDatePart()
+{
+    return QDateTime::currentDateTime().toString( "yyyy-MM-dd" );
+}
 
 //----------------------------------------------------------------------------
 /*! 
@@ -260,7 +271,7 @@ QDebug&  DInsightConfig::Log()
 
 QString DInsightConfig::DefaultFileName()
 {
-    static QString def = QCoreApplication::applicationName() + QString( ".conf");
+    static QString def = QCoreApplication::applicationName() + QString( ".conf" );
 
     return def;
 }

@@ -44,6 +44,32 @@
 //============================================================================
 
 //----------------------------------------------------------------------------
+/*!
+ *  Matches key/value pair?
+ */
+
+bool DLeafMatcher::isMatch( const QString& key, const QString& value ) const
+{
+    if ( m_LeafMatch.match( key ).hasMatch() )
+    {
+        if ( m_ContentMatch.pattern().length() != 0 )
+        {
+            if ( m_ContentMatch.match( value ).hasMatch() )
+            {
+                return true;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+//----------------------------------------------------------------------------
 /*! 
  *
  */
@@ -65,4 +91,17 @@ bool DLeafMatcher::CreateFromString( DLeafMatcher& matcher, const QString& str )
         matcher.m_ContentMatch = DRegExp( items.at(1) );
     }
     return true;
+}
+
+bool DLeafMatcher::IsMatch( const DLeafMatchers& matchers, const QString& key, const QString& value )
+{
+    foreach( const DLeafMatcher& matcher, matchers )
+    {
+        if ( matcher.isMatch( key,value ) )
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

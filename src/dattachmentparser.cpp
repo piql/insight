@@ -31,6 +31,37 @@
 //
 #include    <QFileInfo>
 #include    <QDir>
+#include    <QDirIterator>
+
+/****************************************************************************/
+/*! \class DJournalPage dattachmentparser.h
+ *  \ingroup Insight
+ *  \brief Points to journal attachments for one page
+ *
+ *  m_Checked: Include in export? Default is true.
+ */
+
+//----------------------------------------------------------------------------
+/*!
+ *  Constructor.
+ */
+
+DJournalPage::DJournalPage()
+    : m_Checked( true )
+{
+}
+
+bool DJournal::hasCheckedPages() const
+{
+    foreach(const DJournalPage& p, m_Pages)
+    {
+        if (p.m_Checked) 
+        {
+            return true;
+        }    
+    }
+    return false;
+}
 
 /****************************************************************************/
 /*! \class DAttachmentParser dattachmentparser.h
@@ -45,13 +76,18 @@
  *  Constructor.
  */
 
-DAttachmentParser::DAttachmentParser( DTreeItems* treeItems, const QString& rootDir, const DLeafMatchers& attachmentTypeRegExp )
+DAttachmentParser::DAttachmentParser( 
+    DTreeItems* treeItems, 
+    const QString& rootDir, 
+    const DLeafMatchers& attachmentTypeRegExp,
+    const DJournalMatchers& journalMatchers )
     : m_MaxNodeCount( treeItems->size() ),
       m_FinalNodeReached( false ),
       m_TreeItems( treeItems ),
       m_RootDir( rootDir ),
       m_AttachmentTypeRegExp( attachmentTypeRegExp ),
-      m_AttachmentsSizeBytes( 0 )
+      m_AttachmentsSizeBytes( 0 ),
+      m_JournalMatchers( journalMatchers )
 {
 }
 
@@ -67,12 +103,17 @@ DAttachmentParser::~DAttachmentParser()
     {
         delete a;
     }
+
+    foreach( DJournal* j, m_Journals )
+    {
+        delete j;
+    }
 }
 
 
 //----------------------------------------------------------------------------
 /*! 
- *  Return number of attachment nodes found.
+ *  Return attachment nodes found.
  */
 
 DAttachments& DAttachmentParser::attachments()
@@ -111,6 +152,17 @@ DAttachmentIndexes& DAttachmentParser::attachmentsNotFound()
 qint64 DAttachmentParser::attachmentsSizeInBytes()
 {
     return m_AttachmentsSizeBytes;
+}
+
+
+//----------------------------------------------------------------------------
+/*!
+ *  Return journal nodes found.
+ */
+
+DJournals& DAttachmentParser::journals()
+{
+    return m_Journals;
 }
 
 
@@ -212,6 +264,39 @@ void DAttachmentParser::run()
             }
         }
 
+
+        // Journal?
+        DJournalMatcher* journalMatcher = isJournalNode( (*currentNode)->m_Text );
+        if ( journalMatcher )
+        {
+            // Find matching pages
+            QString wildcardPages = DJournalMatcher::CreateWildcard( journalMatcher->m_PageWildcard, *currentNode );
+            QString wildcardOcr = DJournalMatcher::CreateWildcard( journalMatcher->m_OcrWildcard, *currentNode );
+            QFileInfo filePages( wildcardPages );
+            QFileInfo fileOcr( wildcardOcr );
+
+            QDir dirPages( filePages.absolutePath() );
+            QDir dirOcr( fileOcr.absolutePath() );
+            QFileInfoList pages = dirPages.entryInfoList( QStringList() << filePages.fileName(), QDir::NoFilter, QDir::SortFlag::Name);
+            QFileInfoList ocrs = dirOcr.entryInfoList( QStringList() << fileOcr.fileName(), QDir::NoFilter, QDir::SortFlag::Name );
+            
+            DJournal* journal = new DJournal;
+            journal->m_TreeItem = *currentNode;
+            (*currentNode)->m_Journal = journal;
+            for (int i = 0; i < pages.size(); i++ )
+            {
+                DJournalPage page;
+                page.m_PageFileName = pages.at(i).absoluteFilePath();
+                if ( ocrs.length() > i )
+                {
+                    page.m_OcrFileName = ocrs.at(i).absoluteFilePath();
+                }
+                journal->m_Pages.push_back( page );
+            }
+
+            m_Journals.push_back( journal );
+        }
+
         DLeafNodesIterator it = (*currentNode)->m_Nodes.begin();
         while ( it != (*currentNode)->m_Nodes.end() )
         {
@@ -235,7 +320,7 @@ void DAttachmentParser::run()
                 }
 
             }
-            
+
             it++;
         }
         currentNode++;
@@ -273,4 +358,24 @@ bool DAttachmentParser::isAttachmentNode( const char* text, const char* content 
     }
 
     return false;
+}
+
+//----------------------------------------------------------------------------
+/*!
+ *  Return true if current node points to a journal.
+ */
+
+DJournalMatcher* DAttachmentParser::isJournalNode( const char* text )
+{
+    QString key( text );
+
+    foreach( const DJournalMatcher& matcher, m_JournalMatchers )
+    {
+        if ( matcher.m_NodeMatch.match( key ).hasMatch() )
+        {
+            return (DJournalMatcher*)&matcher;
+        }
+    }
+
+    return NULL;
 }

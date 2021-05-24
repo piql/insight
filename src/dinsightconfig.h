@@ -72,6 +72,8 @@ public:
     static DRegExps      StringToRegExps( const QString& key );
     static DLeafMatchers StringToLeafMatchers( const QString& key );
     static QDebug&       Log();
+    static QString       FileNameDatePart();
+
 private:
     DInsightConfig();
     static DInsightConfig& AppConfig();

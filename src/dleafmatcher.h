@@ -37,6 +37,7 @@
 
 //  FORWARD DECLARATIONS
 //
+class DLeafMatcher;
 
 //============================================================================
 // CLASS: DLeafMatcher
@@ -46,10 +47,15 @@ public:
     QRegularExpression      m_LeafMatch;
     QRegularExpression      m_ContentMatch;
 
+    bool isMatch( const QString& key, const QString& value ) const;
+
 public:
     static bool CreateFromString( DLeafMatcher& matcher, const QString& str );
+    static bool IsMatch( const QVector<DLeafMatcher>& matchers, const QString& key, const QString& value );
 };
 
+//============================================================================
+// CLASS: DLeafMatchers
 typedef QVector<DLeafMatcher>   DLeafMatchers;
 
 

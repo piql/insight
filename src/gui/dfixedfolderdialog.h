@@ -45,16 +45,19 @@ class DFixedFolderDialog : public QDialog
 {
     Q_OBJECT
 public:
-    DFixedFolderDialog( const QString& rootFolder, const QString& title );
+    DFixedFolderDialog( const QString& rootFolder, const QString& fileName, const QString& title );
     virtual ~DFixedFolderDialog();
 
     QString fileName();
 
+private slots:
+    void selectionChanged( const QItemSelection&, const QItemSelection& );
 
 
 private:
     Ui::FixedFolderDialog m_Ui;
     QString               m_RootFolder;
+         
 };
 
 

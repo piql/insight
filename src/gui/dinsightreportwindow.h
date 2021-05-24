@@ -30,7 +30,7 @@
 //
 #include    "ui_dinsightreportwindow.h"
 #include    "dinsightreport.h"
-
+#include    "dattachmentindexer.h"
 
 //  QT INCLUDES
 //
@@ -47,7 +47,7 @@ class DInsightReportWindow : public QDialog
 {
     Q_OBJECT
 public:
-    DInsightReportWindow( DInsightReport& report, QStringList& attachments );
+    DInsightReportWindow( DInsightReport& report, QStringList& attachments, DJournals& journals );
     virtual ~DInsightReportWindow();
 
 
@@ -70,6 +70,7 @@ private:
     Ui::IngestToolReportWindow m_Ui;
     DInsightReport&            m_Report;
     QStringList                m_Attachments;
+    DJournals                  m_Journals;
 };
 
 

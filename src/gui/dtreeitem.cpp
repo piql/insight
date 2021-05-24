@@ -126,14 +126,6 @@ int DLeafNode::match( const char* text ) const
     QString v( m_Value );
 
     return v.indexOf( QString( text ) );
-/*
-    const char* p = strstr( m_Value, text );
-    if ( p )
-    {
-        return p - m_Value;
-    }
-    return -1;
-*/
 }
 
 
@@ -169,7 +161,8 @@ int DLeafNode::match( const QString& text ) const
 DTreeItem::DTreeItem( DTreeItem* parent, const QString& text )
     : m_Parent( parent ),
       m_Text( strdup( text.toStdString().c_str() ) ),
-      m_State( 0 )
+      m_State( 0 ),
+      m_Journal( NULL )
 {
     if ( parent )
     {
@@ -188,7 +181,8 @@ DTreeItem::DTreeItem( DTreeItem* parent, const QString& text )
 DTreeItem::DTreeItem( DTreeItem* parent, const char* text )
     : m_Parent( parent ),
       m_Text( text ),
-      m_State( 0 )
+      m_State( 0 ),
+      m_Journal( NULL )
 {
     assert(parent != this);
     if ( parent )
@@ -353,6 +347,22 @@ DLeafNode* DTreeItem::findLeaf( const char* key )
     return nullptr;
 }
 
+const DLeafNode* DTreeItem::findLeaf( const char* key ) const
+{
+    DLeafNodesConstIterator it = m_Nodes.cbegin();
+    DLeafNodesConstIterator itEnd = m_Nodes.cend();
+    while ( it != itEnd )
+    {
+        if ( strcmp( (*it)->m_Key, key ) == 0 )
+        {
+            return *it;
+        }
+        it++;
+    }
+    return nullptr;
+}
+
+
 DTreeItem* DTreeItem::findChild( const char* text )
 {
     DChildrenIterator it = m_Children.begin();
@@ -400,7 +410,7 @@ QString DTreeItem::findRootPath() const
         path.prepend("/" + QString( i->m_Text ) );
         if ( dynamic_cast<const DTreeRootItem*>(i) )
         {
-            return path;
+            return "." + path;
         }
         i = i->m_Parent;
     }

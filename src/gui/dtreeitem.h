@@ -45,6 +45,7 @@
 class DTreeItem;
 class DTreeRootItem;
 class DImportFormat;
+class DJournal;
 
 //============================================================================
 // CLASS: DLeafNode
@@ -107,6 +108,7 @@ public:
     void setChecked( bool checked );
     bool hasChildren() const;
     DLeafNode* findLeaf( const char* key );
+    const DLeafNode* findLeaf( const char* key ) const;
     DTreeItem* findChild( const char* text );
     const DTreeRootItem* findRootItem() const;
     QString              findRootPath() const;
@@ -133,6 +135,7 @@ public:
     int                     m_State;
     DLeafNodes              m_Nodes;
     int                     m_Row;
+    DJournal*               m_Journal;
 };
 
 //============================================================================

@@ -31,10 +31,12 @@
 #include    "dregexp.h"
 #include    "dleafmatcher.h"
 #include    "dtreeitem.h"
+#include    "djournalmatcher.h"
+#include    "dpendingimport.h"
 
 //  QT INCLUDES
 //
-
+#include    <QString>
 
 //  FORWARD DECLARATIONS
 //
@@ -89,6 +91,7 @@ public:
     void            setFromReport( bool fromReport );
     bool            fromReport();
     qint64          attachmentsSizeInBytes();
+    const DPendingImports& pendingImports();
 
 public:
     static QString              FileNameKey();
@@ -145,6 +148,8 @@ private:
     DLeafMatchers       m_DocumentTypeRegExp;
     bool                m_FromReport;
     QString             m_ExtractDir;
+    DJournalMatchers    m_JournalMatchers;
+    DPendingImports     m_PendingImports;
 };
 
 

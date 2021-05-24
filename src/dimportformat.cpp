@@ -77,6 +77,11 @@ const DLeafMatchers & DImportFormat::documentTypeRegExp() const
     return m_DocumentTypeRegExp;
 }
 
+const DJournalMatchers & DImportFormat::journalMatchers() const
+{
+    return m_JournalMatchers;
+}
+
 const DRegExps & DImportFormat::folderTypeRegExp() const
 {
     return m_FolderTypeRegExp;
@@ -92,6 +97,11 @@ const DLeafMatchers & DImportFormat::importTypeRegExp() const
     return m_ImportTypeRegExp;
 }
     
+const DLeafMatchers & DImportFormat::autoImportRegExp() const
+{
+    return m_AutoImportRegExp;
+}
+
 const DRegExps & DImportFormat::checksumTypeRegExp() const
 {
     return m_ChecksumTypeRegExp;
@@ -129,6 +139,15 @@ QString DImportFormat::fileIdTool( const QString& fileName ) const
 {
     QString tool = m_FileIdTool;
     tool.replace("%FILENAME%", fileName);
+    return tool;
+}
+
+QString DImportFormat::convertToPdfTool( const QString& filesFile, const QString& out, const QString& temp ) const
+{
+    QString tool = QDir::toNativeSeparators( m_PdfCreatorTool );
+    tool.replace( "%FILESFILE%", QDir::toNativeSeparators( filesFile ) );
+    tool.replace( "%OUT%", QDir::toNativeSeparators( out ) );
+    tool.replace( "%TEMP%", QDir::toNativeSeparators( temp ) );
     return tool;
 }
 
@@ -196,6 +215,9 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
 
     // File id tool - used to identify file formats, prefered before extension matching
     format.m_FileIdTool = format.m_Config->get( "IMPORT_FORMAT_ID_TOOL", "" );
+
+    // Pdf creator tool - creates PDF for journal pages
+    format.m_PdfCreatorTool = format.m_Config->get( "JOURNAL_PDF_CREATOR_TOOL", "" );
     
     // Tree node modifiers, makes node names more "presentable"
     format.m_TreeViewNodeRegExp = format.getRegExps( "TREEVIEW_NODE_REGEXP" );
@@ -214,6 +236,12 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
     // Detect document info node type, presented with a 'View' button in info view.
     format.m_DocumentTypeRegExp = format.getLeafMatchers( "INFOVIEW_DOCUMENT_TYPE_REGEXP" );
 
+    // Detect journal nodes, journal nodes have options for handling associated documents
+    if ( !DJournalMatcher::CreateFromString( format.m_JournalMatchers, format.m_Config->get( "INFO_VIEW_JOURNAL_TYPE_REGEXP" ) ) )
+    {
+        DInsightConfig::Log() << "Invalid INFO_VIEW_JOURNAL_TYPE_REGEXP. It must have regexp/wildcard/wildcard triplets." << endl;
+    }
+
     // Detect folder info node type, presented with a 'View' button in info view
     format.m_FolderTypeRegExp = format.getRegExps( format.m_Config->getLocalizedKey( "INFOVIEW_FOLDER_TYPE_REGEXP" ) );
 
@@ -222,6 +250,9 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
 
     // Detect import info node type, presented with a 'Import' button in info view
     format.m_ImportTypeRegExp = format.getLeafMatchers( format.m_Config->getLocalizedKey( "INFOVIEW_IMPORT_TYPE_REGEXP" ) );
+
+    // Auto load nodes
+    format.m_AutoImportRegExp = format.getLeafMatchers( format.m_Config->getLocalizedKey( "INFOVIEW_AUTO_IMPORT_REGEXP" ) );
 
     // Detect checksum node, presented with a 'Validate' button in info view
     format.m_ChecksumTypeRegExp = format.getRegExps( format.m_Config->getLocalizedKey( "INFOVIEW_CHECKSUFORMAT_TYPE_REGEXP" ) );
