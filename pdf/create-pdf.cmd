@@ -22,6 +22,7 @@ set temp=%3
 set timestamp=%date%_%time:~0,-3%
 set timestamp=%timestamp::=_%
 set timestamp=%timestamp:.=_%
+set timestamp=%timestamp:/=_%
 set convertlog=%temp%\journal_%timestamp%.log
 
 echo Exporting journal to PDF > %convertlog%
