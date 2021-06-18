@@ -1,41 +1,43 @@
 
 # Innhold
 
-1.  [Introduksjon](#orgb08de37)
-2.  [Systemkrav](#orgd6f4c13)
-    1.  [OS-X / Linux](#orge0e4791)
-3.  [Installasjon](#org3ba1e3a)
-4.  [Bruk](#orgca6bb96)
-5.  [Sphinx indeksering og søkemotor](#orga2ea3e2)
-6.  [Rapporter](#org580ceb5)
-7.  [Journaler](#orgeaeeead)
-    1.  [Generering av PDF journaler med OCR](#orgc7f36e1)
-8.  [Loggfiler](#orgb057092)
-9.  [Konfigurasjon](#orga6c3ccd)
-    1.  [Tips](#orgda63c78)
-10. [Ønsker, feil og mangler](#orga545d20)
-11. [Hvordan rapportere feil](#orga005c29)
-12. [Historikk](#org5257e0d)
-    1.  [innsyn-v1.2.0-beta1](#org3d2dd28)
-        1.  [Nye funksjoner](#orge2077f0)
-    2.  [01.07.2020 innsyn-v1.1.0](#org32bb6f3)
-        1.  [Feilrettinger](#org753c1dc)
-    3.  [innsyn-v1.1.0-beta2](#org83201e8)
-        1.  [Feilrettinger](#org0f72561)
-    4.  [innsyn-v1.1.0-beta1](#orgb23408e)
-        1.  [Nye funksjoner](#orgf87f345)
-        2.  [Feilrettinger](#orga6e94a1)
-    5.  [2018.06.01 innsyn-v1.0.0](#org61c126b)
-    6.  [2018.04.13 innsyn-v1.0.0-rc1](#org0e41ff0)
-    7.  [2018.02.05 innsyn-v1.0.0-beta2](#org0a19c58)
-    8.  [2018.01.18 innsyn-v1.0.0-beta1](#orgad2d064)
-13. [Utvikling](#orgace29a1)
-    1.  [Ubuntu](#orgef4f2df)
-    2.  [Windows](#org094e555)
+1.  [Introduksjon](#orgf5b5d05)
+2.  [Systemkrav](#orga15da36)
+    1.  [OS-X / Linux](#orgac9781a)
+3.  [Installasjon](#orge92f3e9)
+4.  [Bruk](#org4c379a8)
+5.  [Sphinx indeksering og søkemotor](#orgcc9f055)
+6.  [Rapporter](#orgbcb67e6)
+7.  [Journaler](#org70e4406)
+    1.  [Generering av PDF journaler med OCR](#org0fb50d1)
+8.  [Loggfiler](#orgc41db0c)
+9.  [Konfigurasjon](#orgaf5f781)
+    1.  [Tips](#orgd19a310)
+10. [Ønsker, feil og mangler](#org6ffb425)
+11. [Hvordan rapportere feil](#org407b96d)
+12. [Historikk](#org5ef6a5c)
+    1.  [innsyn-v1.2.0-beta3](#org7dc5c43)
+        1.  [Nye funksjoner](#org17ad561)
+    2.  [innsyn-v1.2.0-beta1](#orgf84be56)
+        1.  [Nye funksjoner](#orgec8a520)
+    3.  [01.07.2020 innsyn-v1.1.0](#org43cbe36)
+        1.  [Feilrettinger](#orge40eff9)
+    4.  [innsyn-v1.1.0-beta2](#org9f2f394)
+        1.  [Feilrettinger](#orga37774d)
+    5.  [innsyn-v1.1.0-beta1](#org49f17d5)
+        1.  [Nye funksjoner](#org2da6504)
+        2.  [Feilrettinger](#org0dbd5f9)
+    6.  [2018.06.01 innsyn-v1.0.0](#orga3e1d2e)
+    7.  [2018.04.13 innsyn-v1.0.0-rc1](#org7cda307)
+    8.  [2018.02.05 innsyn-v1.0.0-beta2](#orgfffaf47)
+    9.  [2018.01.18 innsyn-v1.0.0-beta1](#org1dfe4b6)
+13. [Utvikling](#orgee83663)
+    1.  [Ubuntu](#orgc75a2c0)
+    2.  [Windows](#org9712f2b)
 
 
 
-<a id="orgb08de37"></a>
+<a id="orgf5b5d05"></a>
 
 # Introduksjon
 
@@ -51,14 +53,14 @@ Innsyn kommer med støtte for disse filformatene:
 -   TAR: Filformat for som pakker mange filer sammen til en fil og bevarer filinformasjon (filnavn, dato, rettigheter). Innsyn støtter ikke utpakking av enkle tar filer, men viser strukturen.
 
 
-<a id="orgd6f4c13"></a>
+<a id="orga15da36"></a>
 
 # Systemkrav
 
 Applikasjonen er testet på Windows 10 64bit.
 
 
-<a id="orge0e4791"></a>
+<a id="orgac9781a"></a>
 
 ## OS-X / Linux
 
@@ -75,7 +77,7 @@ Sjekk at det ligger i pathen med:
     Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
 
-<a id="org3ba1e3a"></a>
+<a id="orge92f3e9"></a>
 
 # Installasjon
 
@@ -87,7 +89,7 @@ Sjekk at det ligger i pathen med:
     *insight.conf*. Tilgjenelige språk er *engelsk*, *bokmål* og *nynorsk*. Standard språk er satt til bokmål. Vær obs på at språk ikke bør endres etter at programmet er tatt i bruk.
 
 
-<a id="orgca6bb96"></a>
+<a id="org4c379a8"></a>
 
 # Bruk
 
@@ -131,7 +133,7 @@ Sjekk at det ligger i pathen med:
         e-post. Vær klar over at skjermet informasjon ikke skal sendes på vanlig e-post.
 
 
-<a id="orga2ea3e2"></a>
+<a id="orgcc9f055"></a>
 
 # Sphinx indeksering og søkemotor
 
@@ -153,7 +155,7 @@ Når Innsyn kjører og man har lastet og indeksert ett uttrekk, kan man kjøre S
 Se Sphinx manualen for mer informasjon.
 
 
-<a id="org580ceb5"></a>
+<a id="orgbcb67e6"></a>
 
 # Rapporter
 
@@ -163,7 +165,7 @@ formatet: *REPORTS\_DIR\\åååå\MM\DD\TTMMSS\\*.  I rapport katalogen
 legges også loggfiler fra indekseringen og indekserings databasen.
 
 
-<a id="orgeaeeead"></a>
+<a id="org70e4406"></a>
 
 # Journaler
 
@@ -174,7 +176,7 @@ Denne sammenhengen kan defineres i format filen med nøkkelen *INFO\_VIEW\_JOURN
 Journal visningsmoduset lar brukerene velge ut enkeltsider i journalen som skal eksporteres. 
 
 
-<a id="orgc7f36e1"></a>
+<a id="org0fb50d1"></a>
 
 ## Generering av PDF journaler med OCR
 
@@ -186,7 +188,7 @@ Støttet OCR format er ALTO og HOCR. For mer informasjon se scriptet *pdf\create
 -   [alto\_\_hocr.xsl](https://github.com/filak/hOCR-to-ALTO): XSLT skjema for ALTO til hOCR konvertering
 
 
-<a id="orgb057092"></a>
+<a id="orgc41db0c"></a>
 
 # Loggfiler
 
@@ -197,14 +199,14 @@ Støttet OCR format er ALTO og HOCR. For mer informasjon se scriptet *pdf\create
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Logg fra søkemotoren.
 
 
-<a id="orga6c3ccd"></a>
+<a id="orgaf5f781"></a>
 
 # Konfigurasjon
 
 Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på hva som kan konfigureres. Ved endring må applikasjonen restartes. Hvert enkelt filformat har sin egen konfigurasjonsfil. De ligger i mappen *formats*. Alle filene som slutter på *.conf* i denne katalogen vil ved oppstart leses inn og vises som ett eget import format i applikasjonen. 
 
 
-<a id="orgda63c78"></a>
+<a id="orgd19a310"></a>
 
 ## Tips
 
@@ -213,7 +215,7 @@ Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på
     Prøv med `insight -platform windows:dpiawareness=0` for å få riktig størrelse på vinduet. Beskrivelse av andre parametere som tweaker utseendet finnes her: <https://doc.qt.io/qt-5/qguiapplication.html#supported-command-line-options>
 
 
-<a id="orga545d20"></a>
+<a id="org6ffb425"></a>
 
 # Ønsker, feil og mangler
 
@@ -244,7 +246,7 @@ Konfigurasjonsfilen heter *insight.conf*. Se i denne filen for dokumentasjon på
     på disken.
 
 
-<a id="orga005c29"></a>
+<a id="org407b96d"></a>
 
 # Hvordan rapportere feil
 
@@ -252,17 +254,32 @@ ole.liabo@piql.com
 Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis den finnes.
 
 
-<a id="org5257e0d"></a>
+<a id="org5ef6a5c"></a>
 
 # Historikk
 
 
-<a id="org3d2dd28"></a>
+<a id="org7dc5c43"></a>
+
+## innsyn-v1.2.0-beta3
+
+
+<a id="org17ad561"></a>
+
+### Nye funksjoner
+
+-   Støtte for automatisk nodevalg, settes per format med *TREEVIEW\_AUTO\_SELECT\_REGEXP* variablen.
+-   Støtte for automatisk skjuling av barne noder ved import med *TREEVIEW\_AUTO\_COLLAPSE\_REGEXP* variablen.
+-   Journaler inkluderes ved eksport.
+-   Bakgrunnsmodus: Støtter autoeksport med kommandolinjeparameterene *&#x2013;file*, *&#x2013;file-format* og *&#x2013;auto-export*.
+
+
+<a id="orgf84be56"></a>
 
 ## innsyn-v1.2.0-beta1
 
 
-<a id="orge2077f0"></a>
+<a id="orgec8a520"></a>
 
 ### Nye funksjoner
 
@@ -270,12 +287,12 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Søtte for journaler
 
 
-<a id="org32bb6f3"></a>
+<a id="org43cbe36"></a>
 
 ## 01.07.2020 innsyn-v1.1.0
 
 
-<a id="org753c1dc"></a>
+<a id="orge40eff9"></a>
 
 ### Feilrettinger
 
@@ -283,24 +300,24 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Lese inn konfig filer som UTF-8 på Windows.
 
 
-<a id="org83201e8"></a>
+<a id="org9f2f394"></a>
 
 ## innsyn-v1.1.0-beta2
 
 
-<a id="org0f72561"></a>
+<a id="orga37774d"></a>
 
 ### Feilrettinger
 
 -   Installasjon for Windows.
 
 
-<a id="orgb23408e"></a>
+<a id="org49f17d5"></a>
 
 ## innsyn-v1.1.0-beta1
 
 
-<a id="orgf87f345"></a>
+<a id="org2da6504"></a>
 
 ### Nye funksjoner
 
@@ -311,7 +328,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Støtte for å endre XML-løv noder basert på både node navnet og innholdet i noden.
 
 
-<a id="orga6e94a1"></a>
+<a id="org0dbd5f9"></a>
 
 ### Feilrettinger
 
@@ -319,14 +336,14 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   Melding etter konvertering av vedlegg. Får beskjed både om at konvertering feilet og at vedlegg er tomme.
 
 
-<a id="org61c126b"></a>
+<a id="orga3e1d2e"></a>
 
 ## 2018.06.01 innsyn-v1.0.0
 
 -   [IKAMR-20180425-02] BUG på norske tegn i søk? Hvis her er norske tegn så virker ikke "Skill mellom små og store bokstaver" som IKKE avkrysset dvs. <fornavn>TORBJØRN</fornavn> vil ikke få treff når jeg søker med "Torbjørn".
 
 
-<a id="org0e41ff0"></a>
+<a id="org7cda307"></a>
 
 ## 2018.04.13 innsyn-v1.0.0-rc1
 
@@ -349,7 +366,7 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj *insight.dmp* hvis d
 -   [IKARO-20180223-01] Jeg har en rekke tidligere kjøringer listet i hovedvinduet når jeg starter opp. Disse er tomme. Hvis jeg prøver å «Åpne» en av disse, så krasjer Insight. Det blir ikke lagt en insight.dmp. Dette skjer hver gang.
 
 
-<a id="org0a19c58"></a>
+<a id="orgfffaf47"></a>
 
 ## 2018.02.05 innsyn-v1.0.0-beta2
 
@@ -371,14 +388,14 @@ Oppdateringer basert på tilbakemeldinger fra IKA-MR, IKA-VA og IKA-Rogaland.
 -   [PIQL-20180122-03] Viser størrelsen på vedlegg ved import.
 
 
-<a id="orgad2d064"></a>
+<a id="org1dfe4b6"></a>
 
 ## 2018.01.18 innsyn-v1.0.0-beta1
 
 Første versjon levert til beta test.
 
 
-<a id="orgace29a1"></a>
+<a id="orgee83663"></a>
 
 # Utvikling
 
@@ -396,7 +413,7 @@ create-release-osx.sh
 create-release.cmd
 
 
-<a id="orgef4f2df"></a>
+<a id="orgc75a2c0"></a>
 
 ## Ubuntu
 
@@ -406,9 +423,12 @@ sudo apt install libquazip5-dev
 sudo apt install qttools5-dev-tools
 
 
-<a id="org094e555"></a>
+<a id="org9712f2b"></a>
 
 ## Windows
+
+    setup-win64.cmd
+    qmake -tp vc
 
 Her må man bygge poppler manuelt. 
 
