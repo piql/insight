@@ -448,6 +448,16 @@ const DRegExps& DTreeItem::labelRegExp() const
     return format()->treeViewLabelRegExp();
 }
 
+const DRegExps& DTreeItem::autoSelectRegExp() const
+{
+    return format()->autoSelectRegExp();
+}
+
+const DRegExps& DTreeItem::autoCollapseRegExp() const
+{
+    return format()->autoCollapseRegExp();
+}
+
 //----------------------------------------------------------------------------
 /*! 
  *  Get vector of anchestors.

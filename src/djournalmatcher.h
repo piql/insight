@@ -1,15 +1,15 @@
-#ifndef DREGEXP_H
-#define DREGEXP_H
+#ifndef DJOURNALMATCHER_H
+#define DJOURNALMATCHER_H
 
 /*****************************************************************************
 **  
-**  Definition of the DRegExp class
+**  Definition of the DJournalMatcher class
 **
-**  Creation date:  2017/08/16
+**  Creation date:  2021/05/08
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2020 Piql AS.
+**  Copyright (c) 2021 Piql AS.
 **  
 **  This program is free software; you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -37,16 +37,29 @@
 
 //  FORWARD DECLARATIONS
 //
+class DTreeItem;
+class DJournalMatcher;
 
 //============================================================================
-// CLASS: DRegExps
-typedef QRegularExpression DRegExp;
-typedef QVector<DRegExp>   DRegExps;
+// CLASS: DJournalMatchers
 
-class DRegExpUtils
+typedef QVector<DJournalMatcher>   DJournalMatchers;
+
+
+//============================================================================
+// CLASS: DJournalMatcher
+
+class DJournalMatcher
 {
 public:
-    static bool Match( const DRegExps& regExps, const char* text );
+    QRegularExpression      m_NodeMatch;
+    QString                 m_PageWildcard;
+    QString                 m_OcrWildcard;
+
+public:
+    static bool CreateFromString( DJournalMatchers& matchers, const QString& str );
+    static QString CreateWildcard( const QString& wildcard, DTreeItem* item );
 };
 
-#endif // DREGEXP_H
+
+#endif // DJOURNALMATCHER_H

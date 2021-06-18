@@ -115,6 +115,8 @@ public:
     const DImportFormat* format() const;
     const DRegExps&      nodeRegExp() const;
     const DRegExps&      labelRegExp() const;
+    const DRegExps&      autoSelectRegExp() const;
+    const DRegExps&      autoCollapseRegExp() const;
 
 
 private:

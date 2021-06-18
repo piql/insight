@@ -31,6 +31,7 @@
 #include    "ui_dinsightreportwindow.h"
 #include    "dinsightreport.h"
 #include    "dattachmentindexer.h"
+#include    "dimport.h"
 
 //  QT INCLUDES
 //
@@ -39,6 +40,7 @@
 //  FORWARD DECLARATIONS
 //
 class QPrinter;
+class QString;
 
 //============================================================================
 // CLASS: DInsightReportWindow
@@ -47,9 +49,15 @@ class DInsightReportWindow : public QDialog
 {
     Q_OBJECT
 public:
-    DInsightReportWindow( DInsightReport& report, QStringList& attachments, DJournals& journals );
+    DInsightReportWindow( 
+        DInsightReport& report, 
+        QStringList& attachments, 
+        DJournals& journals,
+        DImports& imports );
     virtual ~DInsightReportWindow();
 
+public:
+    void createExport( const QString& fileName );
 
 private slots:
     void okButtonClicked();
@@ -59,6 +67,7 @@ private slots:
 
 private:
     bool createPdfReport( const QString& fileName );
+    bool createJournalAttachments( QStringList& files );
     bool createAttachmentArchive( const QString& fileName, const QString& reportFileName );
     bool printReport( QPrinter& printer );
     bool printAttachments( QPrinter& printer );
@@ -70,7 +79,8 @@ private:
     Ui::IngestToolReportWindow m_Ui;
     DInsightReport&            m_Report;
     QStringList                m_Attachments;
-    DJournals                  m_Journals;
+    DJournals&                 m_Journals;
+    DImports&                  m_Imports;
 };
 
 

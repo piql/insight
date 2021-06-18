@@ -28,6 +28,7 @@
 
 //  PROJECT INCLUDES
 //
+#include   "dregexp.h"
 
 //  QT INCLUDES
 //
@@ -35,6 +36,7 @@
 
 //  FORWARD DECLARATIONS
 //
+class DTreeItem;
 
 //============================================================================
 // CLASS: DTreeView
@@ -45,6 +47,9 @@ class DTreeView : public QTreeView
 
 public:
     explicit DTreeView(QWidget* parent=nullptr);
+
+
+    void collapseRecursive( DTreeItem* root, const DRegExps& match );
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event);

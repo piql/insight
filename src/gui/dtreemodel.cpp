@@ -82,7 +82,18 @@ DTreeModel::~DTreeModel()
 
 DTreeItem* DTreeModel::createItem( DTreeRootItem* root, DTreeItem* parent, const char* text )
 {
-    return root->createItem( parent, text );
+    DTreeItem* item = root->createItem( parent, text );
+
+    const DRegExps& autoSelect = item->format()->autoSelectRegExp();
+    if ( autoSelect.size() )
+    {
+        if ( DRegExpUtils::Match( autoSelect, text ) )
+        {
+            item->setChecked(true);    
+        }
+    }
+    
+    return item;
 }
 
 

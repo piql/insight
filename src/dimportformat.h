@@ -62,6 +62,8 @@ public:
     const DRegExps &            deleteTypeRegExp() const;
     const DLeafMatchers &       importTypeRegExp() const;
     const DLeafMatchers &       autoImportRegExp() const;
+    const DRegExps &            autoSelectRegExp() const;
+    const DRegExps &            autoCollapseRegExp() const;
     const DRegExps &            checksumTypeRegExp() const;
     const DRegExps &            checksumSourceTypeRegExp() const;
     QString                     extractTool( const QString& fileName, const QString& destination ) const;
@@ -90,6 +92,8 @@ private:
     DRegExps                    m_DeleteTypeRegExp;
     DLeafMatchers               m_ImportTypeRegExp;
     DLeafMatchers               m_AutoImportRegExp;
+    DRegExps                    m_AutoSelectRegExp;
+    DRegExps                    m_AutoCollapseRegExp;
     DRegExps                    m_ChecksumTypeRegExp;
     DRegExps                    m_ChecksumSourceTypeRegExp;
     DRegExps                    m_ExtractTool;

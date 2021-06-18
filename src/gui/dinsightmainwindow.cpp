@@ -137,12 +137,15 @@ void DTableSearchResultCell::mouseDoubleClickEvent(QMouseEvent * /*event*/)
  *  Constructor.
  */
 
-DInsightMainWindow::DInsightMainWindow( DImportFormats* formats)
+DInsightMainWindow::DInsightMainWindow( 
+    DImportFormats* formats,
+    const QString& attachmentParsing )
   : m_CurrentImport( nullptr ),
     m_Model( nullptr ),
     m_SearchThread( nullptr ),
     m_SearchDeamonProcess( nullptr ),
-    m_ImportFormats( formats )
+    m_ImportFormats( formats ),
+    m_AttachmentParsing( attachmentParsing )
 {
     m_Ui.setupUi( this );
 
@@ -289,7 +292,7 @@ void DInsightMainWindow::aboutButtonClicked()
 {
     QString infoText;
     infoText += "Version: " + QCoreApplication::applicationVersion() + "<br />";
-    infoText += "Copyright Piql 2018";
+    infoText += "Copyright Piql 2021";
     //infoText += "<p>Support: <a href=\"mailto:support@piql.com\">support@piql.com</a></p>";
 
     infoText += "<p><a href=\"https://www.piql.com\">www.piql.com</a></p>";
@@ -404,6 +407,7 @@ void DInsightMainWindow::enumerateProjects( const QString& rootDir )
 void DInsightMainWindow::importFile(
     const QString& fileNameRelative,
     const QString& importFormatName,
+    const QString& exportFile,
     DTreeItem* parent )
 {
     // Cancel search
@@ -441,6 +445,7 @@ void DInsightMainWindow::importFile(
                 {
                     DInsightConfig::Log() << "Already loaded, reloading" << endl;
                     m_CurrentImport = *it;
+                    m_ExportFile = exportFile;
                     (*it)->load( m_ImportFormats->find( (*it)->formatName() ) );
                     return;
                 }
@@ -492,6 +497,7 @@ void DInsightMainWindow::importFile(
         m_Imports.push_back( import );
         m_CurrentImport = import;
         setupUiForImport();
+        m_ExportFile = exportFile;
     }
 }
 
@@ -560,78 +566,10 @@ void DInsightMainWindow::cancelIndexer()
 
 void DInsightMainWindow::importFileFinished( bool ok )
 {
-    bool parsingAttachments = false;
-
     DImport* import = (DImport*)QObject::sender();
 
     if ( !import->fromReport() )
     {
-        if ( ok )
-        {
-            unsigned int attachmentsNotFound = import->attachmentsNotFound();
-            unsigned int attachmentsFound = import->attachmentsFound();
-            if ( attachmentsNotFound )
-            {
-                QMessageBox::warning( this, tr("Attachments not found"), tr("%1 attachments referenced by the AIP where not found during import.").arg( attachmentsNotFound ) );
-            }
-
-            bool searchableAttachments = true;
-            if ( searchableAttachments && attachmentsFound )
-            {
-                bool forceAttachmentParsing = DInsightConfig::GetBool( "ATTACHMENT_PARSING_DONT_ASK_USER", false );
-                if ( forceAttachmentParsing )
-                {
-                    parsingAttachments = true;
-                }
-                else
-                {
-                    QString sizeString;
-                    if ( import->attachmentsSizeInBytes() / (qint64)(1024*1024) )
-                    {
-                        sizeString = QString( "%1 MB" ).arg( import->attachmentsSizeInBytes() / (qint64)(1024*1024) );
-                    }
-                    else
-                    {
-                        sizeString = QString( "%1 KB" ).arg( import->attachmentsSizeInBytes() / (qint64)(1024) );
-                    }
-
-                    QString message = 
-                        tr( "%1 attachments found (total %2). Should they be made searchable?\n\nPlease note that this operation might take a long time, depending on the amount and size of the attachments.")
-                        .arg( attachmentsFound )
-                        .arg( sizeString );
-
-                    QMessageBox messageBox(QMessageBox::Question,
-                        tr("Searchable attachments?"),
-                        message,
-                        QMessageBox::Yes | QMessageBox::No,
-                        this);
-
-                    // Temp translation to norwegian
-                    messageBox.setButtonText(QMessageBox::Yes, tr("Ja"));
-                    messageBox.setButtonText(QMessageBox::No, tr("Nei"));
-                    parsingAttachments = messageBox.exec() == QMessageBox::Yes;
-                }
-
-                if ( parsingAttachments )
-                {
-                    // Launch attachment extractor thread
-                    import->index();
-
-                    m_ProgressBar->setVisible( true );
-                    m_ProgressBar->setRange( 0, 100 );
-                    m_ProgressBar->setValue( 0 );
-                    m_ProgressBar->setFormat( QString( "%p%" ) );
-                    m_ProgressBarInfo->setText( tr( "of attachments converted to text" ) );
-                    m_ProgressBar->setTextVisible(true);
-                    m_StatusBar->showMessage( "" );
-                }
-            }
-
-            //// Select document root
-            //m_Ui.treeView->setCurrentIndex( m_Model->index(0,0) );
-            //activatedTreeItem( m_Model->index(0,0) );
-        }
-
         // Create import report filenames. If this is a child import, the reports
         // should be created in the parent import folder.
         QString report = import->reportsDir();
@@ -677,15 +615,20 @@ void DInsightMainWindow::importFileFinished( bool ok )
             infoMessage = tr("Unloaded: %1").arg( import->fileName() );
         }
     }
-    else if ( parsingAttachments ) 
-    {
-        infoMessage = tr("Indexing");
-    }
     else
     {
         infoMessage = tr("Import complete!");
     }
-    m_Ui.treeView->expandAll();
+
+    if ( m_CurrentImport->GetReportFormat()->autoCollapseRegExp().size() )
+    {
+        m_Ui.treeView->collapseRecursive( m_CurrentImport->root(), m_CurrentImport->GetReportFormat()->autoCollapseRegExp() );
+    }
+    else
+    {
+        m_Ui.treeView->expandAll();
+    }
+
     int nodeCount = treeNodeCount( false );
     m_Ui.treeView->setItemsExpandable( nodeCount < DInsightConfig::GetInt( "TREE_VIEW_MAX_NODE_EXPAND_COUNT", 20000000) ); // Can be really slow, disable on large trees
     int nodeCountSelected = treeNodeCount( true );
@@ -722,30 +665,117 @@ void DInsightMainWindow::importFileFinished( bool ok )
     
     m_Ui.treeNodesSearchFilterGroupBox->setVisible( count > 0 );
 
-    if ( !parsingAttachments ) 
+    m_Ui.treeView->setCurrentIndex( m_Model->index( m_CurrentImport->root() ) );
+    updateInfo( import->root() );
+
+    if ( ok ) // TODO: Check if from report?
     {
+        m_PendingIndexing.push_back( m_CurrentImport );
+    }
+
+    const DPendingImports& pendingImports = m_CurrentImport->pendingImports();
+    m_PendingImports.append( pendingImports );
+    if ( m_PendingImports.size() )
+    {
+        DPendingImport pendingImport = m_PendingImports.first();
+        m_PendingImports.pop_front();
+        importDocument( pendingImport.m_Document, pendingImport.m_Root );
+    }
+    else
+    {
+        // Parse attachments?
+        if ( m_PendingIndexing.size() )
+        {
+            startIndexing();
+
+            m_Ui.importButton->setText( tr( "Cancel Indexing" ) );
+        }
+
+        // Export?
+        if ( m_ExportFile.length() )
+        {
+            exportReport( m_ExportFile );
+            m_ExportFile = QString();
+            exit( 0 );
+        }
+
         m_ProgressBar->hide();
         m_ProgressBarInfo->hide();
         m_StatusBar->showMessage( infoMessage );
         m_Ui.importButton->setText( tr( "Import" ) );
         m_Ui.importButton->setEnabled( true );
-
+        m_CurrentImport = nullptr;
         startSearchDeamon();
     }
-    else
-    {
-        m_Ui.importButton->setText( tr( "Cancel Indexing" ) );
-    }
 
-    m_Ui.treeView->setCurrentIndex( m_Model->index( m_CurrentImport->root() ) );
-    updateInfo( import->root() );
-
-    if ( !parsingAttachments ) 
-    {
-        m_CurrentImport = nullptr;
-    }
 }
 
+
+void DInsightMainWindow::startIndexing()
+{
+    DImport* import = *m_PendingIndexing.begin();
+    m_CurrentImport = import;
+    m_PendingIndexing.erase( m_PendingIndexing.begin() );
+
+    unsigned int attachmentsNotFound = import->attachmentsNotFound();
+    unsigned int attachmentsFound = import->attachmentsFound();
+    if ( attachmentsNotFound )
+    {
+        QMessageBox::warning( this, tr( "Attachments not found" ), tr( "%1 attachments referenced by the AIP where not found during import." ).arg( attachmentsNotFound ) );
+    }
+
+    bool parsingAttachments = false;
+    bool searchableAttachments = true;
+    if ( searchableAttachments && attachmentsFound )
+    {
+        if ( m_AttachmentParsing != "ASK" )
+        {
+            parsingAttachments = m_AttachmentParsing == "YES";
+        }
+        else
+        {
+            QString sizeString;
+            if ( import->attachmentsSizeInBytes() / (qint64)(1024 * 1024) )
+            {
+                sizeString = QString( "%1 MB" ).arg( import->attachmentsSizeInBytes() / (qint64)(1024 * 1024) );
+            }
+            else
+            {
+                sizeString = QString( "%1 KB" ).arg( import->attachmentsSizeInBytes() / (qint64)(1024) );
+            }
+
+            QString message =
+                tr( "%1 attachments found (total %2). Should they be made searchable?\n\nPlease note that this operation might take a long time, depending on the amount and size of the attachments." )
+                .arg( attachmentsFound )
+                .arg( sizeString );
+
+            QMessageBox messageBox( QMessageBox::Question,
+                tr( "Searchable attachments?" ),
+                message,
+                QMessageBox::Yes | QMessageBox::No,
+                this );
+
+            // Temp translation to norwegian
+            messageBox.setButtonText( QMessageBox::Yes, tr( "Ja" ) );
+            messageBox.setButtonText( QMessageBox::No, tr( "Nei" ) );
+            parsingAttachments = messageBox.exec() == QMessageBox::Yes;
+        }
+
+        if ( parsingAttachments )
+        {
+            // Launch attachment extractor thread
+            import->index();
+
+            m_ProgressBar->setVisible( true );
+            m_ProgressBar->setRange( 0, 100 );
+            m_ProgressBar->setValue( 0 );
+            m_ProgressBar->setFormat( QString( "%p%" ) );
+            m_ProgressBarInfo->setText( tr( "of attachments converted to text" ) );
+            m_ProgressBar->setTextVisible( true );
+            m_StatusBar->showMessage( "" );
+        }
+    }
+}
 
 //----------------------------------------------------------------------------
 /*! 
@@ -1100,11 +1130,16 @@ void DInsightMainWindow::makeAbsolute( QString& filename, const QModelIndex& ind
 
 void DInsightMainWindow::makeAbsolute( QString& filename, DTreeItem* item )
 {
+    MakeAbsolute( filename, item, m_Imports);
+}
+
+void DInsightMainWindow::MakeAbsolute( QString& filename, DTreeItem* item, DImports& imports )
+{
     if ( !QFile::exists( filename ) )
     {
         const DTreeRootItem* root = item->findRootItem();
         const DImportFormat* format = root->format();
-        DImport* import = findImport( root );
+        DImport* import = FindImport( root, imports );
 
         if ( format->parser() == "dir" )
         {
@@ -1436,7 +1471,7 @@ void DInsightMainWindow::importDocument( const QString& document, DTreeItem* ite
         const DImportFormat* importFormat = m_ImportFormats->findMatching( absDocument );
 
         DInsightConfig::Log() << "Importing doc: " << absDocument << endl;
-        importFile( absDocument, importFormat->name(), item );
+        importFile( absDocument, importFormat->name(), m_ExportFile, item );
     }
 }
 
@@ -1666,8 +1701,13 @@ void DInsightMainWindow::addSearchResult( const QString& location, const QString
 
 DImport* DInsightMainWindow::findImport( const DTreeItem* item )
 {
-    DImportsIterator it = m_Imports.begin();
-    DImportsIterator itEnd = m_Imports.end();
+    return FindImport( item, m_Imports );
+}
+
+DImport* DInsightMainWindow::FindImport( const DTreeItem* item, DImports& imports )
+{
+    DImportsIterator it = imports.begin();
+    DImportsIterator itEnd = imports.end();
 
     while ( it != itEnd )
     {
@@ -1835,28 +1875,29 @@ void DInsightMainWindow::indexingFinished( DImport::DIndexingState state )
     {
         message = QString( tr( "Failed to start indexer! See import log for more details." ) );
     }
+    else if ( state == DImport::INDEXING_STATE_SKIP )
+    {
+        message = QString( tr( "Indexing skipped." ) );
+    }
     else
     {
         message = QString( tr( "Indexing canceled!" ) );
     }
     
-    m_Ui.importButton->setText( tr( "Import" ) );
-    m_Ui.importButton->setEnabled( true );
-    m_StatusBar->showMessage( message );
-    m_ProgressBar->setVisible( false );
-    m_ProgressBarInfo->setVisible( false );
-
-    const DPendingImports& pendingImports = m_CurrentImport->pendingImports();
-    m_PendingImports.append( pendingImports );
-    m_CurrentImport = nullptr;
-    if ( m_PendingImports.size() )
+    if ( m_PendingIndexing.size() )
     {
-        DPendingImport pendingImport = m_PendingImports.first(); 
-        m_PendingImports.pop_front();
-        importDocument( pendingImport.m_Document, pendingImport.m_Root );
+        startIndexing();
     }
+    else 
+    {
+        m_Ui.importButton->setText( tr( "Import" ) );
+        m_Ui.importButton->setEnabled( true );
+        m_StatusBar->showMessage( message );
+        m_ProgressBar->setVisible( false );
+        m_ProgressBarInfo->setVisible( false );
 
-    startSearchDeamon();
+        m_CurrentImport = nullptr;
+    }
 }
 
 
@@ -2117,6 +2158,11 @@ void DInsightMainWindow::loadXmlProgress( unsigned long /*count*/, float progres
 
 void DInsightMainWindow::exportButtonClicked()
 {
+    exportReport();
+}
+
+void DInsightMainWindow::exportReport( const QString& fileName )
+{
     DInsightReport report;
     QStringList existingAttachmentsFullPath;
     DJournals journals;
@@ -2139,7 +2185,7 @@ void DInsightMainWindow::exportButtonClicked()
             if ( treeNodeCountRecursive( (*it)->root(), true ) )
             {
                 QStringList attachments;
-                createReport( tr("Export Report"), (*it)->root(), report, 0, INT_MAX, attachments, journals );
+                createReport( tr( "Export Report" ), (*it)->root(), report, 0, INT_MAX, attachments, journals );
 
                 QString attachmentRoot = (*it)->fileNameRoot();
                 if ( (*it)->root()->format()->parser() == "dir" )
@@ -2159,19 +2205,26 @@ void DInsightMainWindow::exportButtonClicked()
                 report.startTable( 0 );
                 foreach( QString attachment, attachments )
                 {
-                    report.addRow( attachment );        
-                }    
-                report.endTable(0);
+                    report.addRow( attachment );
+                }
+                report.endTable( 0 );
             }
             it++;
-        }                    
+        }
     }
 
     // Display export dialog with report 
-    DInsightReportWindow reportDialog( report, existingAttachmentsFullPath, journals );
-    reportDialog.exec();
-}
+    DInsightReportWindow reportDialog( report, existingAttachmentsFullPath, journals, m_Imports );
 
+    if ( fileName.length() )
+    {
+        reportDialog.createExport( fileName );
+    }
+    else
+    {
+        reportDialog.exec();
+    }
+}
 
 //----------------------------------------------------------------------------
 /*! 
@@ -2263,6 +2316,7 @@ void DInsightMainWindow::createReport(
             
             ++it;
         }
+        report.endTable( level );
 
         // Journal node?
         if (parent->m_Journal)
@@ -2286,7 +2340,6 @@ void DInsightMainWindow::createReport(
             }
         }
 
-        report.endTable( level );
     }
 
     // Search through all child nodes for matching text

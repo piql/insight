@@ -1,15 +1,12 @@
-#ifndef DREGEXP_H
-#define DREGEXP_H
-
 /*****************************************************************************
 **  
-**  Definition of the DRegExp class
+**  Implementation of the DRegExp class
 **
-**  Creation date:  2017/08/16
+**  Creation date:  2021/06/16
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2020 Piql AS.
+**  Copyright (c) 2021 Piql AS.
 **  
 **  This program is free software; you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -28,25 +25,18 @@
 
 //  PROJECT INCLUDES
 //
+#include   "dregexp.h"
 
 
-//  QT INCLUDES
-//
-#include   <QRegularExpression>
-#include   <QVector>
-
-//  FORWARD DECLARATIONS
-//
-
-//============================================================================
-// CLASS: DRegExps
-typedef QRegularExpression DRegExp;
-typedef QVector<DRegExp>   DRegExps;
-
-class DRegExpUtils
+bool DRegExpUtils::Match( const DRegExps& regExps, const char* text )
 {
-public:
-    static bool Match( const DRegExps& regExps, const char* text );
-};
-
-#endif // DREGEXP_H
+    for ( int i = 0; i < regExps.length(); i++ )
+    {
+        QRegularExpressionMatch match = regExps.at( i ).match( text );
+        if ( match.hasMatch() )
+        {
+            return true;
+        }
+    }
+    return false;
+}

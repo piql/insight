@@ -1,15 +1,15 @@
-#ifndef DREGEXP_H
-#define DREGEXP_H
+#ifndef DPENDINGIMPORT_H
+#define DPENDINGIMPORT_H
 
 /*****************************************************************************
 **  
-**  Definition of the DRegExp class
+**  Definition of the DPendingImport class
 **
-**  Creation date:  2017/08/16
+**  Creation date:  2021/05/13
 **  Created by:     Ole Liabo
 **
 **
-**  Copyright (c) 2020 Piql AS.
+**  Copyright (c) 2021 Piql AS.
 **  
 **  This program is free software; you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -29,24 +29,28 @@
 //  PROJECT INCLUDES
 //
 
-
 //  QT INCLUDES
 //
-#include   <QRegularExpression>
-#include   <QVector>
+#include    <QString>
+#include    <QList>
 
 //  FORWARD DECLARATIONS
 //
+class DTreeItem;
 
 //============================================================================
-// CLASS: DRegExps
-typedef QRegularExpression DRegExp;
-typedef QVector<DRegExp>   DRegExps;
+// CLASS: DPendingImport
 
-class DRegExpUtils
+class DPendingImport
 {
 public:
-    static bool Match( const DRegExps& regExps, const char* text );
+    DTreeItem *     m_Root;
+    QString         m_Document;
 };
 
-#endif // DREGEXP_H
+//============================================================================
+// CLASS: DPendingImports
+
+typedef QList<DPendingImport> DPendingImports;
+
+#endif // DPENDINGIMPORT_H

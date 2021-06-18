@@ -185,6 +185,13 @@ Ved feilrapportering legg ved loggfiler og ved programkrasj /insight.dmp/ hvis d
 
 * Historikk
 
+** innsyn-v1.2.0-beta3
+*** Nye funksjoner
+ - Støtte for automatisk nodevalg, settes per format med /TREEVIEW_AUTO_SELECT_REGEXP/ variablen.
+ - Støtte for automatisk skjuling av barne noder ved import med /TREEVIEW_AUTO_COLLAPSE_REGEXP/ variablen. 
+ - Journaler inkluderes ved eksport.
+ - Bakgrunnsmodus: Støtter autoeksport med kommandolinjeparameterene /--file/, /--file-format/ og /--auto-export/.
+
 ** innsyn-v1.2.0-beta1
 *** Nye funksjoner
  - Støtte for standard ut mappe ved eksport, settes med konfigurasjonsvariablen /FIXED_REPORT_EXPORT_FOLDER/.
@@ -281,5 +288,10 @@ sudo apt install libquazip5-dev
 sudo apt install qttools5-dev-tools
 
 ** Windows
+#+BEGIN_SRC
+setup-win64.cmd
+qmake -tp vc
+#+END_SRC
+
 Her må man bygge poppler manuelt. 
 

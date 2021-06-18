@@ -102,6 +102,16 @@ const DLeafMatchers & DImportFormat::autoImportRegExp() const
     return m_AutoImportRegExp;
 }
 
+const DRegExps & DImportFormat::autoSelectRegExp() const
+{
+    return m_AutoSelectRegExp;
+}
+
+const DRegExps & DImportFormat::autoCollapseRegExp() const
+{
+    return m_AutoCollapseRegExp;
+}
+
 const DRegExps & DImportFormat::checksumTypeRegExp() const
 {
     return m_ChecksumTypeRegExp;
@@ -253,6 +263,12 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
 
     // Auto load nodes
     format.m_AutoImportRegExp = format.getLeafMatchers( format.m_Config->getLocalizedKey( "INFOVIEW_AUTO_IMPORT_REGEXP" ) );
+
+    // Auto select nodes
+    format.m_AutoSelectRegExp = format.getRegExps( "TREEVIEW_AUTO_SELECT_REGEXP" );
+
+    // Auto collapse nodes
+    format.m_AutoCollapseRegExp = format.getRegExps( "TREEVIEW_AUTO_COLLAPSE_REGEXP" );
 
     // Detect checksum node, presented with a 'Validate' button in info view
     format.m_ChecksumTypeRegExp = format.getRegExps( format.m_Config->getLocalizedKey( "INFOVIEW_CHECKSUFORMAT_TYPE_REGEXP" ) );

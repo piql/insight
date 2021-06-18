@@ -87,6 +87,7 @@ public:
 // CLASS: DJournals
 
 typedef std::vector<DJournal*> DJournals;
+typedef DJournals::iterator DJournalsIterator;
 
 //============================================================================
 // CLASS: DAttachments

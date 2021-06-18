@@ -193,7 +193,7 @@ QString QPersistantFileDialog::getExistingDirectory (
  */
 
 QString QPersistantFileDialog::getFixedRootSaveFileName(
-    QWidget * parent,
+    QWidget * /*parent*/,
     const QString & caption,
     const QString & fileName,
     const QString & rootDir )

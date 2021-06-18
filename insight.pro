@@ -185,6 +185,7 @@ include( src/thirdparty/yxml/yxml.pri )
 
 SOURCES          +=   src/main.cpp \
                       src/drunguard.cpp \
+                      src/dregexp.cpp \
                       src/dxmlparser.cpp \
                       src/ddirparser.cpp \
                       src/dattachmentindexer.cpp \

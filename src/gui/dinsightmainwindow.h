@@ -67,12 +67,25 @@ class DInsightMainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    DInsightMainWindow( DImportFormats* formats );
+    DInsightMainWindow( DImportFormats* formats, const QString& attachmentParsing );
     virtual ~DInsightMainWindow();
 
 public:
     static void    ReplaceString( QString& key, const DRegExps& regExps );
-    static QString GetTreeItemLabel(DTreeItem *item);
+    static QString GetTreeItemLabel( DTreeItem *item );
+    static void    MakeAbsolute( QString& filename, DTreeItem* item, DImports& imports );
+    static DImport*FindImport( const DTreeItem* item, DImports& imports );
+
+signals:
+    void importComplete( bool ok );
+
+public:
+    void importFile(
+        const QString& fileName,
+        const QString& importFormatName,
+        const QString& exportFile = QString(),
+        DTreeItem* parent = nullptr );
+    void exportReport( const QString& fileName = QString() );
 
 public slots:
     void importFileFinished( bool ok );
@@ -125,10 +138,6 @@ private:
 private:
 
     void    updateInfo( Node* parent );
-    void    importFile(
-                const QString& fileName,
-                const QString& importFormatName,
-                DTreeItem* parent = nullptr );
     void    enumerateProjects( const QString& rootDir );
     void    cancelImport();
     void    cancelIndexer();
@@ -166,6 +175,7 @@ private:
     DImport*findImport( const DTreeItem* item );
     QString createCombinedSearchConfigFile();
     void    startSearchDeamon();
+    void    startIndexing();
     void    setupUiForImport();
     void    importDocumentClicked( const QString& document, QModelIndex& index );
     void    importDocument( const QString& document, DTreeItem* item );
@@ -184,6 +194,7 @@ private:
     DImports                    m_Imports;
     DImport*                    m_CurrentImport;
     DPendingImports             m_PendingImports;
+    DImports                    m_PendingIndexing;
     DTreeModel*                 m_Model;
     DSearchThread*              m_SearchThread;
     QStatusBar*                 m_StatusBar;
@@ -191,6 +202,8 @@ private:
     QLabel*                     m_ProgressBarInfo;
     QProcess*                   m_SearchDeamonProcess;
     DImportFormats*             m_ImportFormats;
+    QString                     m_AttachmentParsing;
+    QString                     m_ExportFile;
 };
 
 

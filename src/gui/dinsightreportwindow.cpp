@@ -28,6 +28,8 @@
 #include    "dinsightreportwindow.h"
 #include    "dinsightconfig.h"
 #include    "qpersistantfiledialog.h"
+#include    "dinsightjournalwindow.h"
+#include    "dinsightmainwindow.h"
 
 //  ZIP INCLUDES
 //
@@ -72,8 +74,11 @@
 DInsightReportWindow::DInsightReportWindow( 
     DInsightReport& report, 
     QStringList& attachments,
-    DJournals& journals )
-  : m_Report( report )
+    DJournals& journals,
+    DImports& imports  )
+  : m_Report( report ),
+    m_Journals( journals ),
+    m_Imports( imports )
 {
     m_Ui.setupUi( this );    
 
@@ -88,7 +93,6 @@ DInsightReportWindow::DInsightReportWindow(
 
     m_Ui.reportView->setHtml( m_Report.text() );
     m_Attachments = attachments;
-    m_Journals = journals;
 }
 
 
@@ -138,16 +142,21 @@ void DInsightReportWindow::saveButtonClicked()
         fileName.append( ".pdf" );
     }
 
+    createExport(fileName);
+}
+
+
+void DInsightReportWindow::createExport( const QString& fileName )
+{
     createPdfReport( fileName );
 
-    if ( m_Attachments.size() )
+    if ( m_Attachments.size() || m_Journals.size() )
     {
-        QString fileNameZip = QFileInfo(fileName).path() + QDir::separator() + QFileInfo(fileName).completeBaseName() + ".zip";
+        QString fileNameZip = QFileInfo( fileName ).path() + QDir::separator() + QFileInfo( fileName ).completeBaseName() + "-attachments.zip";
         fileNameZip = QDir::toNativeSeparators( fileNameZip );
         createAttachmentArchive( fileNameZip, fileName );
     }
 }
-
 
 //----------------------------------------------------------------------------
 /*! 
@@ -157,6 +166,39 @@ void DInsightReportWindow::saveButtonClicked()
 bool DInsightReportWindow::createPdfReport( const QString& fileName )
 {
     return m_Report.save( fileName );
+}
+
+bool DInsightReportWindow::createJournalAttachments( QStringList& files )
+{
+    if ( m_Journals.size() )
+    {
+        // Convert journal to PDF
+        DJournalsIterator it = m_Journals.begin();
+        DJournalsIterator itEnd = m_Journals.end();
+
+        int journalCount = 0;
+        for ( ; it != itEnd; it++ )
+        {
+            QString journalFilename = tr( "journal-%1.pdf" ).arg( journalCount );
+            DInsightMainWindow::MakeAbsolute( journalFilename, (*it)->m_TreeItem, m_Imports );
+            QString tempDir = QFileInfo( journalFilename ).path();
+            bool ok = DInsightJournalWindow::GeneratePdf( journalFilename, *it, tempDir );
+            if ( !ok )
+            {
+                QString title = tr( "Failed to create PDF file" );
+                QString message = tr( "Failed to create file: %1" ).arg( journalFilename );
+
+                DInsightConfig::Log() << message << endl;
+                QMessageBox::warning( this, title, message );
+                return false;
+            }
+
+            files.push_back( journalFilename );
+
+            journalCount++;
+        }
+    }
+    return true;
 }
 
 
@@ -178,7 +220,13 @@ bool DInsightReportWindow::printReport( QPrinter& printer )
 
 bool DInsightReportWindow::printAttachments( QPrinter& printer )
 {
-    foreach( QString attachment, m_Attachments )
+    QStringList files = m_Attachments;
+    if ( !createJournalAttachments( files ) )
+    {
+        return false;
+    }
+
+    foreach( QString attachment, files )
     {        
         QPainter painter( &printer );
 
@@ -294,6 +342,11 @@ bool DInsightReportWindow::createAttachmentArchive( const QString& fileName, con
     QStringList files = m_Attachments;
     files.push_front( reportFileName );
 
+    if ( !createJournalAttachments( files ) )
+    {
+        return false;
+    }
+
     if ( !JlCompress::compressFiles( fileName, files ) )
     {
         QString title = tr( "Failed to create ZIP file");
@@ -330,7 +383,7 @@ void DInsightReportWindow::emailButtonClicked()
     }
 
     QString attachment;
-    if ( m_Attachments.size() )
+    if ( m_Attachments.size() || m_Journals.size() )
     {
         QString fileNameZip = QDir::toNativeSeparators( QFileInfo(fileName).path() + QDir::separator() + QFileInfo(fileName).completeBaseName() + ".zip" );
         if ( !createAttachmentArchive( fileNameZip, fileName ) )

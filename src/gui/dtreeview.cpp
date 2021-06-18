@@ -26,6 +26,9 @@
 //  PROJECT INCLUDES
 //
 #include    "dtreeview.h"
+#include    "dregexp.h"
+#include    "dtreeitem.h"
+#include    "dtreemodel.h"
 
 //  QT INCLUDES
 //
@@ -49,6 +52,23 @@ DTreeView::DTreeView(QWidget* parent/*=nullptr*/)
 
 }
 
+void DTreeView::collapseRecursive( DTreeItem* root, const DRegExps& match )
+{
+    if ( root->hasChildren() && DRegExpUtils::Match( match, root->m_Text ) )
+    {
+        collapse( ((DTreeModel*)model())->index( root ) );
+    }
+    else
+    {
+        auto it = root->m_Children.cbegin();
+        auto itEnd = root->m_Children.cend();
+        while ( it != itEnd )
+        {
+            collapseRecursive( *it, match );
+            it++;
+        }
+    }
+}
 
 //----------------------------------------------------------------------------
 /*! 

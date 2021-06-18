@@ -37,6 +37,7 @@
 #include    <QMessageBox>
 #include    <QDir>
 #include    <QSqlDatabase>
+#include    <QCommandLineParser>
 
 //  PLATFORM INCLUDES
 //
@@ -44,6 +45,7 @@
 #include    <Windows.h>
 #include    <Dbghelp.h>
 #endif
+#include    <iostream>
 
 #if defined WIN32
 HANDLE ghJob = nullptr;
@@ -106,6 +108,7 @@ LONG WINAPI unhandledExceptionFilter( _In_ struct _EXCEPTION_POINTERS *pep )
 }
 #endif
 
+
 //============================================================================
 
 int  main( int argc, char* argv[] )
@@ -137,7 +140,21 @@ int  main( int argc, char* argv[] )
     qtApp.setOrganizationName( "Piql" );
     qtApp.setOrganizationDomain("piql.com");
     qtApp.setApplicationName( "insight" );
-    qtApp.setApplicationVersion( "v1.1.0-rc2" );
+    qtApp.setApplicationVersion( "v1.2.0-beta3" );
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription( "Archival Package Inspector and Dissimination tool" );
+    QCommandLineOption helpOption = parser.addHelpOption();
+    QCommandLineOption versionOption = parser.addVersionOption();
+
+    // Add options
+    QCommandLineOption fileOption( QStringList() << "f" << "file", "<file> to open", "file" );
+    QCommandLineOption fileFormatOption( QStringList() << "file-format", "<format> of file to open", "format" );
+    QCommandLineOption autoExportOption( QStringList() << "a" << "auto-export", "Auto export to <file>", "file" );
+    parser.addOption( fileOption );
+    parser.addOption( fileFormatOption );
+    parser.addOption( autoExportOption );
+
 
     QString language = DInsightConfig::Get( "LANGUAGE", "en" );
     QString languageFile = QString( "insight_%1.qm" ).arg( language );
@@ -198,9 +215,44 @@ int  main( int argc, char* argv[] )
     }
     DImport::SetReportFormat( reportFormat );
 
-    // Start GUI
-    DInsightMainWindow window( &formats );
+    // Parse command line
+    parser.process( qtApp );
+
+    if ( !parser.parse( QCoreApplication::arguments() ) ) {
+        std::cerr << parser.errorText().toStdString() << endl;
+        return 1;
+    }
+
+    if ( parser.isSet( versionOption ) )
+    {
+        printf( "%s %s\n", qPrintable( QCoreApplication::applicationName() ),
+            qPrintable( QCoreApplication::applicationVersion() ) );
+        return 0;
+    }
+
+    if ( parser.isSet( helpOption ) )
+    {
+        parser.showHelp();
+        return 0;
+    }
+
+    QString attachmentParsing = DInsightConfig::Get( "ATTACHMENT_PARSING", "ASK" );
+    if ( parser.isSet( autoExportOption ) )
+    {
+        attachmentParsing = "YES";
+    }
+
+    // Create app main window
+    DInsightMainWindow window( &formats, attachmentParsing );
     window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
+
+    if ( parser.isSet( fileOption ) )
+    {
+        window.importFile( parser.value( fileOption ), parser.value( fileFormatOption ), parser.value( autoExportOption ) );
+    }
+
+    // Start GUI
     window.show();
+
     return qtApp.exec();
 }
