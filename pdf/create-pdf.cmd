@@ -47,7 +47,9 @@ if not exist %HOCR_SCRIPT% (
 )
 
 
+del /q %temp%\journal_*pdf
 set output=%temp%\journal_%timestamp%
+
 set pdffiles=%temp%\journal_pages_%timestamp%.txt
 set n=0
 FOR /F "tokens=1,2 delims=;" %%i in (%files%) do (
@@ -62,9 +64,9 @@ FOR /F "tokens=1,2 delims=;" %%i in (%files%) do (
     set /A n+=1   
 )
 
-pdftk %pdfs% output %out%
+call combine-pdfs.cmd %temp% journal_%timestamp%_*.pdf %out% %convertlog%
 if not %ERRORLEVEL% equ 0 (
-    echo ERROR executing pdftk %pdfs% output %out% >> %convertlog%
+    echo ERROR executing combine-pdfs.cmd %temp% journal_%timestamp%_*.pdf %out% >> %convertlog%
     exit /b 1
 )
 endlocal

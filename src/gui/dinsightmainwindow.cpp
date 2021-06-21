@@ -620,9 +620,10 @@ void DInsightMainWindow::importFileFinished( bool ok )
         infoMessage = tr("Import complete!");
     }
 
-    if ( m_CurrentImport->GetReportFormat()->autoCollapseRegExp().size() )
+    const DImportFormat* format = m_ImportFormats->find( m_CurrentImport->formatName() );
+    if ( format->autoCollapseRegExp().size() )
     {
-        m_Ui.treeView->collapseRecursive( m_CurrentImport->root(), m_CurrentImport->GetReportFormat()->autoCollapseRegExp() );
+        m_Ui.treeView->collapseRecursive( m_CurrentImport->root(), format->autoCollapseRegExp() );
     }
     else
     {

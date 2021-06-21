@@ -251,8 +251,11 @@ int  main( int argc, char* argv[] )
         window.importFile( parser.value( fileOption ), parser.value( fileFormatOption ), parser.value( autoExportOption ) );
     }
 
-    // Start GUI
-    window.show();
+    if ( !parser.isSet( autoExportOption ) )
+    {
+        // Start GUI
+        window.show();
+    }
 
     return qtApp.exec();
 }
