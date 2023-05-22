@@ -26,6 +26,7 @@
 //  PROJECT INCLUDES
 //
 #include    "dsearchthread.h"
+#include "QtCore/qlocale.h"
 #include    "dtreemodel.h"
 #include    "dtreeitem.h"
 #include    "dattachmentindexer.h"
@@ -36,7 +37,7 @@
 #include    <QSqlDatabase>
 #include    <QSqlQuery>
 #include    <QSqlError>
-#include    <QTextCodec>
+#include    <QStringConverter>
 
 //  SYSTEM INCLUDES
 //
@@ -193,7 +194,7 @@ void DSearchThread::run()
 
         if (!db.isValid())
         {
-           DInsightConfig::Log() << "Could not create database connection" << endl;
+            DInsightConfig::Log() << "Could not create database connection" << Qt::endl;
         }
         db.setHostName( "127.0.0.1" );
         //db.setConnectOptions( "CLIENT_INTERACTIVE=TRUE" );
@@ -209,7 +210,7 @@ void DSearchThread::run()
                   << "Failed to open database: "
                   << db.lastError().text()
                   << " port: " << db.port()
-                  << endl;
+                  << Qt::endl;
               m_SearchResult = SEARCH_ABORTED;
               return;
             }
@@ -229,8 +230,8 @@ void DSearchThread::run()
                 if ( !ok )
                 {
                     QString dbError = query.lastError().text();
-                    DInsightConfig::Log() << "Search deamon query failed: " << queryString << endl;
-                    DInsightConfig::Log() << "Search deamon error: " << dbError << endl;    
+                    DInsightConfig::Log() << "Search deamon query failed: " << queryString << Qt::endl;
+                    DInsightConfig::Log() << "Search deamon error: " << dbError << Qt::endl;
                 }
                 else
                 {
@@ -335,7 +336,7 @@ DSearchThread::SearchResult DSearchThread::searchTree( DTreeItem* node, const ch
         {
             if ( m_NodesToExclude.find( node->m_Text ) == m_NodesToExclude.end() )
             {
-                foreach ( const DLeafNode* leaf, node->m_Nodes )
+                for ( const DLeafNode* leaf: node->m_Nodes )
                 {
                     if ( m_SearchModes & SEARCH_MODE_CASE_INSENSITIVE )
                     {

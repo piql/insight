@@ -8,13 +8,13 @@ rm *.dmg
 
 qmake || exit 1
 make || exit 1
-appname="innsyn.app"
+appname="innsyn-v1.3.0/insight.app"
 mv insight.app $appname
 
 
 
 qtver=`qmake -v | sed -e '2!d; s/.* \([0-9\.]*\) .*/\1/'`
-deploytool=/usr/local/Cellar/qt/$qtver/bin/macdeployqt
+#deploytool=/usr/local/Cellar/qt/$qtver/bin/macdeployqt
 
 $deploytool ./$appname
 

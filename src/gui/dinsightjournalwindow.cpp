@@ -243,7 +243,7 @@ bool DInsightJournalWindow::GeneratePdf( const QString& outFileName, const DJour
             {
                 stream << ";" << QDir::toNativeSeparators( ocrs.at( i ) );
             }
-            stream << endl;
+            stream << Qt::endl;
         }
         filesFile.close();
     }

@@ -560,7 +560,7 @@ void DXmlParser::run()
     if ( !stream->open() )
     {
         delete stream;
-        DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << endl;
+        DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << Qt::endl;
         return;
     }
     
@@ -595,7 +595,7 @@ void DXmlParser::run()
     m_NodeCount = context.m_Items;
     m_RootNode = context.m_RootNode;
 
-    DInsightConfig::Log() << "XML loading complete" << endl;
+    DInsightConfig::Log() << "XML loading complete" << Qt::endl;
 
     delete stream;
 }

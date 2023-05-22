@@ -378,7 +378,7 @@ DImport* DImport::CreateFromFile(
     DTreeItem* parent,
     DImport* parentImport )
 {
-    DInsightConfig::Log() << "Importing " << fileName << " parser=" << format->parser() << " has parent=" << (parent != nullptr) << " format=" << format->name() << endl;
+    DInsightConfig::Log() << "Importing " << fileName << " parser=" << format->parser() << " has parent=" << (parent != nullptr) << " format=" << format->name() << Qt::endl;
     
     DImport* import = new DImport( model );
     import->m_FromReport = false;
@@ -500,7 +500,7 @@ DImport* DImport::CreateFromFile(
     }
     else
     {
-        DInsightConfig::Log() << "Unknown parser: " << format->parser() << endl;
+        DInsightConfig::Log() << "Unknown parser: " << format->parser() << Qt::endl;
         delete import;
         return nullptr;
     }
@@ -567,7 +567,7 @@ DImport* DImport::CreateFromExtract(
 
 DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormats* formats )
 {
-    DInsightConfig::Log() << "Importing: " << fileName << endl;
+    DInsightConfig::Log() << "Importing: " << fileName << Qt::endl;
     
     DImport* import = new DImport( model );
 
@@ -581,7 +581,7 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
     import->m_RootItem = nullptr;
     if ( !import->loadReport() )
     {
-        DInsightConfig::Log() << "Import failed: " << fileName << " XML parsing failed." << endl;
+        DInsightConfig::Log() << "Import failed: " << fileName << " XML parsing failed." << Qt::endl;
         delete import;
         return nullptr;
     }
@@ -595,12 +595,12 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
         format = formats->find( import->m_ImportFormat );
         if ( format == nullptr )
         {
-            DInsightConfig::Log() << "Warning: Format not found: " << fileFormatNode->m_Value << endl;
+            DInsightConfig::Log() << "Warning: Format not found: " << fileFormatNode->m_Value << Qt::endl;
             format = formats->defaultFormat();
         }
         else
         {
-            DInsightConfig::Log() << "Using format: " << fileFormatNode->m_Value << endl;
+            DInsightConfig::Log() << "Using format: " << fileFormatNode->m_Value << Qt::endl;
         }
     }
     
@@ -614,7 +614,7 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
     }
     else
     {
-        DInsightConfig::Log() << "Import failed: " << fileName << " missing key: " << FileNameKey() << endl;
+        DInsightConfig::Log() << "Import failed: " << fileName << " missing key: " << FileNameKey() << Qt::endl;
         delete import;
         return nullptr;
     }
@@ -626,7 +626,7 @@ DImport* DImport::CreateFromReport( const QString& fileName, DTreeModel* model, 
     }
     else
     {
-        DInsightConfig::Log() << "Import failed: " << fileName << " missing key: " << ReportsDirKey() << endl;
+        DInsightConfig::Log() << "Import failed: " << fileName << " missing key: " << ReportsDirKey() << Qt::endl;
         delete import;
         return nullptr;
     }

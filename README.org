@@ -147,13 +147,47 @@ The config file is named /insight.conf/. The goal of the config file is that it 
 #+RESULTS:
 [[file:batch-mode.png]]
 
-To support automated dissemination workflows Insight support batch mode using the command line parameters: /--file/, /--file-format/ and /--auto-export/.
+To support automated dissemination workflows Insight support batch mode using the command line parameters: /--file/, /--file-format/ and /--auto-export/. The *auto-export* feature is useful if the format is configures to auto select nodes at import using the /TREEVIEW_AUTO_SELECT_REGEXP/ key.
+
+** Batch mode example
+#+BEGIN_SRC
+insight --file nha-sip.tar --file-format "Norsk Helsearkiv SIP" \
+  --auto-export out.pdf
+#+END_SRC
+This command will open the AIP file /nha-sip.tar/ as a /Norsk Helsearkiv SIP/ as defined by [[./formats/nha-sip.conf]] format file and export it to /out.pdf/, then exit the application. Full example [[./nha-sip-convert.cmd][here]].
+
+The import process is controlled by various keys in the format file:
+#+BEGIN_SRC
+; File patterns supported by the format, separated by '@'
+IMPORT_FORMAT_PATTERNS=*.7z@*.tar
+; Extraction tools, order must match pattern list above
+EXTRACT_TOOL="^.*\.7z$@7z x -y \
+  -o%DESTINATION% %FILENAME%@^.*\.tar$@tar \
+  -C %DESTINATION% -xf %FILENAME%"
+
+; Auto load nodes will be loaded into tree view when importing XML
+INFOVIEW_AUTO_IMPORT_REGEXP_EN=filename[^.*avlxml\\.xml$]
+#+END_SRC
+
+Auto load nodes will use the first format matching the filename. For the example above this is [[./formats/epjark.conf]]. This format definition file uses the /TREEVIEW_AUTO_SELECT_REGEXP/ key to auto-select nodes at import. Only selected nodes will be included in the export.
+#+BEGIN_SRC
+; Auto select nodes will be selected when importing XML
+TREEVIEW_AUTO_SELECT_REGEXP=pasientjournal@diagnose
+#+END_SRC
 
 * How to report issues
 
 Please create a GitHub issue with a detailed as possible description of what happened. Attach log files and /insight.dmp/ if it exists. Do not post sensitive material!
 
 * History
+** insight-v1.3.0
+ - Upgraded to Qt 6.5
+ - Replaced PDF library poppler with QPdfDocument
+ - OS-X: Support dark mode
+ - OS-X: Fix view relative folder
+
+ - Bugs:
+   - OS-X: Does not load config file
 
 ** insight-v1.2.0
  - Translated user manual to English.
@@ -202,7 +236,11 @@ First beta test release.
 
 The application is created using the Qt framework. When this is installed the application can be build using:
 #+BEGIN_SRC
-(cd src/thirdparty ; unzip quazip-0.7.3.zip)
+(cd src/thirdparty ; \
+ unzip quazip-1.4.zip ; \
+ cd quazip-1.4 ; \
+ cmake -S . -B ./out -D QUAZIP_QT_MAJOR_VERSION=6 ; \
+ cmake --build ./out)
 ./update-translations.sh
 qmake
 make

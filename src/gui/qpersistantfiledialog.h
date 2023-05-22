@@ -61,9 +61,9 @@ public:
         QWidget * parent = 0, 
         const QString & caption = QString(), 
         const QString & dir = QString(), 
-        const QString & filter = QString(), 
-        QString * selectedFilter = 0, 
-        QFileDialog::Options options = 0 );
+        const QString & filter = QString(),
+        QString * selectedFilter = 0,
+        QFileDialog::Options options = QFileDialog::Options() );
     static QStringList getOpenFileNames ( 
         const QString & uniqueID,
         QWidget * parent = 0, 
@@ -71,7 +71,7 @@ public:
         const QString & dir = QString(), 
         const QString & filter = QString(), 
         QString * selectedFilter = 0, 
-        QFileDialog::Options options = 0,
+        QFileDialog::Options options = QFileDialog::Options(),
         bool multiSelect = true );
     static QString getSaveFileName ( 
         const QString & uniqueID,
@@ -80,7 +80,7 @@ public:
         const QString & dir = QString(), 
         const QString & filter = QString(), 
         QString * selectedFilter = 0, 
-        QFileDialog::Options options = 0,
+        QFileDialog::Options options = QFileDialog::Options(),
         bool onlyDirPersistant = false );
     static QString getExistingDirectory ( 
         const QString & uniqueID,

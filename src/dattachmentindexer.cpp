@@ -226,7 +226,7 @@ void DAttachmentIndexer::run()
     DAttachments& attachments = m_AttachmentParser->attachments();
     DAttachmentIndexes& attachmentsFound = m_AttachmentParser->attachmentsFound();
 
-    foreach( unsigned int i, attachmentsFound )
+    for ( unsigned int i: attachmentsFound )
     {
         DAttachment* a = attachments.at( i );
         QString attachment = a->m_FileName;
@@ -263,7 +263,7 @@ void DAttachmentIndexer::run()
         }
         else
         {
-             *m_ConvertLog << tr("Skipping convert for file") << ": " << attachment << endl;
+            *m_ConvertLog << tr("Skipping convert for file") << ": " << attachment << Qt::endl;
         }
 
         if (isInterruptionRequested())
@@ -300,7 +300,7 @@ void DAttachmentIndexer::run()
     indexerTool = indexerTool.replace( "%NAME%", indexName( m_XmlFileName ) );
     
    
-    *m_ConvertLog << tr("Starting indexer") << ": " << indexerTool << endl;
+    *m_ConvertLog << tr("Starting indexer") << ": " << indexerTool << Qt::endl;
 
     indexerExe.start( indexerTool );
     if ( indexerExe.waitForStarted() )
@@ -311,7 +311,7 @@ void DAttachmentIndexer::run()
         {
             if (isInterruptionRequested())
             {
-                *m_ConvertLog << tr("Indexer interrupted") << endl;
+                *m_ConvertLog << tr("Indexer interrupted") << Qt::endl;
                 indexerExe.kill();
                 indexerExe.waitForFinished();
                 break;
@@ -321,14 +321,14 @@ void DAttachmentIndexer::run()
 
     if ( indexerExe.error() == QProcess::FailedToStart )
     {
-        *m_ConvertLog << tr("Failed to start") << ": " << indexerTool << endl;
+        *m_ConvertLog << tr("Failed to start") << ": " << indexerTool << Qt::endl;
         m_Error = true;
     }
     else if ( indexerExe.exitCode() != 0 )
     {
-        *m_ConvertLog << tr("Indexer failed") << ": " << endl;
+        *m_ConvertLog << tr("Indexer failed") << ": " << Qt::endl;
         QByteArray output = indexerExe.readAllStandardError();
-        *m_ConvertLog << QString(output).trimmed() << endl;
+        *m_ConvertLog << QString(output).trimmed() << Qt::endl;
         m_Error = true;
     }
 
@@ -415,26 +415,26 @@ void DAttachmentIndexer::toolFinished( QProcess* toolExe, bool emptyFile, const 
     if ( toolExe->error() == QProcess::FailedToStart )
     {
         m_AttachmentsFailedToConvert.push_back( attachment );
-        *m_ConvertLog << command << ": " << tr("ERROR") << " " << tr("Failed to start") << endl;
+        *m_ConvertLog << command << ": " << tr("ERROR") << " " << tr("Failed to start") << Qt::endl;
     }
     else if ( toolExe->exitCode() != 0 )
     {
         m_AttachmentsFailedToConvert.push_back( attachment );
-        *m_ConvertLog << command << ": " << tr("ERROR") << " (" << toolExe->exitCode() << ")" << endl;
+        *m_ConvertLog << command << ": " << tr("ERROR") << " (" << toolExe->exitCode() << ")" << Qt::endl;
         *m_ConvertLog << tr( "OUTPUT" ) << ": ";
 
         QByteArray output = toolExe->readAllStandardError();
-        *m_ConvertLog << QString(output).trimmed() << endl;
+        *m_ConvertLog << QString(output).trimmed() << Qt::endl;
     }
     else
     {
-        *m_ConvertLog << command << ": " << tr("OK") << endl;
+        *m_ConvertLog << command << ": " << tr("OK") << Qt::endl;
         m_ConvertOK.push_back( index );
     }
 
     if ( emptyFile && toolExe->error() != QProcess::FailedToStart)
     {
-        *m_ConvertLog << attachment << ": " << tr("Convert result is empty (has no text)") << endl;
+        *m_ConvertLog << attachment << ": " << tr("Convert result is empty (has no text)") << Qt::endl;
         m_AttachmentsEmpty.push_back( attachment );
     }
 

@@ -53,7 +53,7 @@ DJournalPage::DJournalPage()
 
 bool DJournal::hasCheckedPages() const
 {
-    foreach(const DJournalPage& p, m_Pages)
+    for(const auto &p: m_Pages)
     {
         if (p.m_Checked) 
         {
@@ -99,12 +99,12 @@ DAttachmentParser::DAttachmentParser(
 
 DAttachmentParser::~DAttachmentParser()
 {
-    foreach( DAttachment* a, m_Attachments )
+    for( auto * a: m_Attachments )
     {
         delete a;
     }
 
-    foreach( DJournal* j, m_Journals )
+    for( DJournal* j: m_Journals )
     {
         delete j;
     }
@@ -339,7 +339,7 @@ bool DAttachmentParser::isAttachmentNode( const char* text, const char* content 
     QString key( text );
     QString value( content );
 
-    foreach( const DLeafMatcher& matcher, m_AttachmentTypeRegExp )
+    for( const DLeafMatcher& matcher: m_AttachmentTypeRegExp )
     {
         if ( matcher.m_LeafMatch.match( key ).hasMatch() )
         {
@@ -369,7 +369,7 @@ DJournalMatcher* DAttachmentParser::isJournalNode( const char* text )
 {
     QString key( text );
 
-    foreach( const DJournalMatcher& matcher, m_JournalMatchers )
+    for ( const DJournalMatcher& matcher: m_JournalMatchers )
     {
         if ( matcher.m_NodeMatch.match( key ).hasMatch() )
         {

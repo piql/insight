@@ -350,7 +350,7 @@ Qt::ItemFlags DTreeModel::flags(const QModelIndex & index) const
 {
     if ( !index.isValid() )
     {
-        return 0;
+        return Qt::ItemFlags();
     }
 
     static Qt::ItemFlags flags = Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled; 

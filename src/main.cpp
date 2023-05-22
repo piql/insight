@@ -140,7 +140,7 @@ int  main( int argc, char* argv[] )
     qtApp.setOrganizationName( "Piql" );
     qtApp.setOrganizationDomain("piql.com");
     qtApp.setApplicationName( "insight" );
-    qtApp.setApplicationVersion( "v1.2.0-beta3" );
+    qtApp.setApplicationVersion( "v1.3.0" );
 
     QCommandLineParser parser;
     parser.setApplicationDescription( "Archival Package Inspector and Dissimination tool" );
@@ -160,8 +160,8 @@ int  main( int argc, char* argv[] )
     QString languageFile = QString( "insight_%1.qm" ).arg( language );
     languageFile = DOsXTools::GetBundleResource( languageFile.toStdString() ).c_str();
 
-    DInsightConfig::Log() << QSqlDatabase::drivers() << endl;
-    DInsightConfig::Log() << QCoreApplication::libraryPaths() << endl;
+    DInsightConfig::Log() << QSqlDatabase::drivers() << Qt::endl;
+    DInsightConfig::Log() << QCoreApplication::libraryPaths() << Qt::endl;
 
     // Localization support
     QTranslator translator;
@@ -187,11 +187,12 @@ int  main( int argc, char* argv[] )
 
     // Load the import formats
     DImportFormats formats;
-    if ( !DImportFormats::Load( formats, "./formats" ) )
+    QString formatsDefaultDir = DOsXTools::GetBundleResource( "./formats" ).c_str();
+    if ( !DImportFormats::Load( formats, formatsDefaultDir ) )
     {
         QMessageBox::warning( 
             nullptr, "Load error",
-            QString( "Failed to load import formats." ) );
+            QString( "Failed to load import formats from %1." ).arg(formatsDefaultDir) );
         return 1;
     }
 
@@ -219,7 +220,7 @@ int  main( int argc, char* argv[] )
     parser.process( qtApp );
 
     if ( !parser.parse( QCoreApplication::arguments() ) ) {
-        std::cerr << parser.errorText().toStdString() << endl;
+        std::cerr << parser.errorText().toStdString() << std::endl;
         return 1;
     }
 
