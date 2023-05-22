@@ -53,7 +53,7 @@ CMU112_BASE       =   ../../../base
 
 INCLUDEPATH       =   src \
                       src/gui \
-                      src/thirdparty/quazip-0.7.3/quazip/ \
+                      src/thirdparty/quazip-1.4/quazip/ \
                       src/thirdparty/minixml/inc \
                       src/thirdparty/tools/inc \
                       src/thirdparty/posixtar/inc \
