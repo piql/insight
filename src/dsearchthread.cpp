@@ -26,7 +26,7 @@
 //  PROJECT INCLUDES
 //
 #include    "dsearchthread.h"
-#include "QtCore/qlocale.h"
+#include    "QtCore/qlocale.h"
 #include    "dtreemodel.h"
 #include    "dtreeitem.h"
 #include    "dattachmentindexer.h"

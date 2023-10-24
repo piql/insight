@@ -79,7 +79,8 @@ Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
    2) *Export*: Generate a report of selected nodes in the node tree. The report can be saved to disk or sent as an attachment in e-mail. Please note security requirements for disseminated material before sending on e-mail.
 
 * Sphinx indexer and search engine
-For efficient full text searches in the attachments referenced by the archival package the search engine Sphinx is used. First all attachments are converted to text, then Sphinx builds and index to facilitate efficient look-ups.
+For efficient full text searches in the attachments referenced by the archival package the search engine [[Sphinx][http://sphinxsearch.com/downloads/sphinx-3.5.1-82c60cb-windows-amd64.zip/thankyou.html]] is used. First all attachments are converted to text, then Sphinx builds and index to facilitate efficient look-ups.
+The command line tool /pdftotext/ is used to convert the PDF files to text. This tool must be avaliable in the path.
 
 With insight running and after loading and indexing an archival package, it is possible to run SQL queries directly on the index with MySQL (version 5.6) client installed:
 #+BEGIN_SRC
@@ -183,8 +184,10 @@ Please create a GitHub issue with a detailed as possible description of what hap
 ** insight-v1.3.0
  - Upgraded to Qt 6.5
  - Replaced PDF library poppler with QPdfDocument
+ - Replaced custom built pdftotext tool with precomiled tool
  - OS-X: Support dark mode
  - OS-X: Fix view relative folder
+ - Upgraded to latest sphinx indexer
 
  - Bugs:
    - OS-X: Does not load config file
@@ -236,24 +239,51 @@ First beta test release.
 
 The application is created using the Qt framework. When this is installed the application can be build using:
 #+BEGIN_SRC
-(cd src/thirdparty ; \
- unzip quazip-1.4.zip ; \
- cd quazip-1.4 ; \
- cmake -S . -B ./out -D QUAZIP_QT_MAJOR_VERSION=6 ; \
- cmake --build ./out)
-./update-translations.sh
-qmake
-make
+  # Linux / OS-X
+  (cd src/thirdparty ; \
+   unzip quazip-1.4.zip ; \
+   cd quazip-1.4 ; \
+   cmake -S . -B ./out -D QUAZIP_QT_MAJOR_VERSION=6 ; \
+   cmake --build ./out)
+  ./update-translations.sh
+  qmake
+  make
+
+  # Windows
+  cd src/thirdparty
+  unzip quazip-1.4.zip
+  cd quazip-1.4
+  cmake -S . -B ./out -D QUAZIP_QT_MAJOR_VERSION=6 -D CMAKE_LIBRARY_PATH=c:\dev\Piql\zlib-win64\Release
+  cmake --build ./out --config release 
+  cmake --build ./out --config debug
+  ./update-translations.sh
+  qmake
+  nmake
 #+END_SRC
 
-On systems the MySQL driver has to be built:
+On some systems the MySQL driver has to be built and copied to distribution dir:
 https://doc.qt.io/qt-5/sql-driver.html#qmysql-for-mysql-5-and-higher
+
+```
+mkdir mysql
+cd mysql
+qt-cmake c:\Qt\6.5.0\Src\qtbase\src\plugins\sqldrivers \
+   -DCMAKE_INSTALL_PREFIX=c:\Qt\6.5.0\msvc2019_64 \
+   -DMySQL_INCLUDE_DIR="c:\Program Files\MySQL\MySQL Server 8.0\include" \
+   -DMySQL_LIBRARY="c:\Program Files\MySQL\MySQL Server 8.0\lib\libmysql.lib"
+```
 
 To create release packages use:
 #+BEGIN_SRC
 create-release-osx.sh
 create-release.cmd
 #+END_SRC
+
+** pdftotext
+*** Windows
+The tool pdftotext comes from the /Xpdf command line tools/ pacakge downloaded from https://www.xpdfreader.com/download.html. The /pdf2text.exe/ and config file /xpdfrc/ must be in the path.
+*** Other
+Intall with you favourite package manager and ensure tool is avaliable in path.
 
 ** Ubuntu
 
@@ -269,6 +299,4 @@ sudo apt install qttools5-dev-tools
 setup-win64.cmd
 qmake -tp vc
 #+END_SRC
-
-Poppler PDF library have to be compiled manually.
 

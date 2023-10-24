@@ -54,7 +54,7 @@ DInsightConfig::DInsightConfig( const QString& fileName )
       m_Settings( m_FileName, QSettings::IniFormat )
 {
 #ifdef _WIN32
-    m_Settings.setIniCodec( "UTF-8" );
+//    m_Settings.setIniCodec( "UTF-8" );
 #endif // _WIN32
 }
 
@@ -70,7 +70,7 @@ DInsightConfig::DInsightConfig()
 #endif
 {
 #ifdef _WIN32
-    m_Settings.setIniCodec( "UTF-8" );
+//    m_Settings.setIniCodec( "UTF-8" );
 #endif // _WIN32
 }
 

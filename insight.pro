@@ -7,13 +7,14 @@
 #
 ##############################################################################
 
-QT               +=   xml widgets gui core printsupport sql core5compat pdf
+QT               +=   xml widgets gui core printsupport sql core5compat pdf 
 TEMPLATE          =   app
-CONFIG           +=   qt debug_and_release
+win32:TEMPLATE   +=   vcapp
+CONFIG           +=   qt debug_and_release console
 CONFIG           +=   lrelease 
 macx:CONFIG      +=   app_bundle
 TARGET            =   insight
-DESTDIR           =   ./innsyn-v1.3.0
+!win32:DESTDIR    =   ./innsyn-v1.3.0
 
 ##  SUPPORT DEBUG AND RELEASE BUILDS  ##
 !debug_and_release|build_pass {
@@ -64,7 +65,13 @@ macx:INCLUDEPATH +=   $$(CV_BOOST_INCLUDE)
 DEPENDPATH       +=   $$INCLUDEPATH
 
 win32:release:LIBS += \
-                      lib/win64/release/zlib.lib
+                      #lib/win64/release/zlib.lib \
+                      src/thirdparty/quazip-1.4/lib/quazip/Release/quazip1-qt6.lib
+win32:debug:LIBS += \
+                      #lib/win64/release/zlib.lib \
+                      src/thirdparty/quazip-1.4/lib/quazip/Debug/quazip1-qt6d.lib \
+                      "C:/Program Files/MySQL/MySQL Server 8.0/lib/mysqlclient.lib" \
+                      "C:/Program Files/MySQL/MySQL Server 8.0/lib/libmysql.lib"
 
    
 # Library dependency checking
@@ -87,10 +94,10 @@ macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz -L./src/thirdpart
 # Tested on Debian GNU/Linux using distribution
 # libraries (libquazip5-dev)
 unix:!macx {
-INCLUDEPATH      +=   /usr/include/quazip5
-LIBS             +=   -lquazip5 -lz
-target.path       =   /usr/bin
-INSTALLS         +=   target
+    INCLUDEPATH      +=   /usr/include/quazip5
+    LIBS             +=   -lquazip5 -lz
+    target.path       =   /usr/bin
+    INSTALLS         +=   target
 }
 
 TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \

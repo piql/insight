@@ -40,7 +40,7 @@ copy sphinx\* %target%\.
 copy src\thirdparty\pdf2text\release\pdf2text.exe %target%\.
 copy c:\windows\system32\MSVCP140.DLL %target%\.
 copy c:\windows\system32\MSVCR140.DLL %target%\.
-copy *qm %target%\.
+copy release\*qm %target%\.
 copy %QTDIR%\bin\qt5printsupport.dll %target%\.
 copy %QTDIR%\bin\qt5widgets.dll %target%\.
 copy %QTDIR%\bin\qt5gui.dll %target%\.
@@ -56,14 +56,16 @@ xcopy /s /i %QTDIR%\plugins\styles\*dll %target%\styles
 del %target%\imageformats\*d.dll
 del %target%\sqldrivers\*d.dll
 
-:: Poppler
-copy lib\win64\release\* %target%\.
+:: zlib
+copy %ZLIBDIR%\Release\zlib.dll %target%\.
+copy src\thirdparty\quazip-1.4\out\quazip\Release\*dll %target%\.
 
 :: 7zip
 copy lib\7zip\* %target%\.
 
 :: SPHINX
-copy lib\sphinx\* %target%\.
+set sphinxver="3.5.1"
+copy lib\sphinx-%sphinxver%\bin\* %target%\.
 copy src\thirdparty\create_xml\release\create_xml.exe %target%\.
 
 :: FORMATS

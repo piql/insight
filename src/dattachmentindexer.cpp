@@ -88,7 +88,7 @@ void DPdf2Txt::run()
     QProcess toolExe;
 
     // Execute
-    toolExe.start( m_Command );
+    toolExe.startCommand( m_Command );
     toolExe.waitForFinished();
 
     // Check size of out file
@@ -208,6 +208,7 @@ DAttachmentIndexer::DAttachmentIndexer(
 
 DAttachmentIndexer::~DAttachmentIndexer()
 {
+    m_ConvertLogFile.close();
     delete m_ConvertLog;
 }
 
@@ -302,7 +303,7 @@ void DAttachmentIndexer::run()
    
     *m_ConvertLog << tr("Starting indexer") << ": " << indexerTool << Qt::endl;
 
-    indexerExe.start( indexerTool );
+    indexerExe.startCommand( indexerTool );
     if ( indexerExe.waitForStarted() )
     {
         emit indexerStarted();

@@ -1578,9 +1578,13 @@ void DInsightMainWindow::searchFinished()
     searchInfo( m_Ui.searchEdit->text() );
 
     unsigned int matchCount = 0;
+    unsigned int currentPage = 0;
+    unsigned int pageCount = 0;
     if ( m_SearchThread )
     {
         matchCount = m_SearchThread->matchCount();
+        currentPage = m_SearchThread->currentPage();
+        pageCount = m_SearchThread->pageCount();
     }
 
     // Did we find anything?
@@ -1598,11 +1602,11 @@ void DInsightMainWindow::searchFinished()
     }
 
     // Prev/next buttons?
-    m_Ui.previousSearchPageButton->setEnabled( m_SearchThread->currentPage() != 0 );
-    m_Ui.nextSearchPageButton->setEnabled( m_SearchThread->currentPage() < m_SearchThread->pageCount() - 1 || m_SearchThread->hasMorePages() );
-    m_Ui.nextSearchPageButton->setVisible( m_SearchThread->pageCount() > 1 );
-    m_Ui.previousSearchPageButton->setVisible( m_SearchThread->pageCount() > 1 );
-    m_Ui.searchNavigationFrame->setVisible( m_SearchThread->pageCount() > 1 );
+    m_Ui.previousSearchPageButton->setEnabled( currentPage != 0 );
+    m_Ui.nextSearchPageButton->setEnabled( currentPage < m_SearchThread->pageCount() - 1 || m_SearchThread->hasMorePages() );
+    m_Ui.nextSearchPageButton->setVisible( pageCount > 1 );
+    m_Ui.previousSearchPageButton->setVisible( pageCount > 1 );
+    m_Ui.searchNavigationFrame->setVisible( pageCount > 1 );
 
     m_Ui.searchResult->resizeColumnToContents( 0 );
     m_Ui.searchResult->setVisible( m_Ui.searchEdit->text().length() );
@@ -2754,14 +2758,17 @@ void DInsightMainWindow::startSearchDeamon()
     QObject::connect( m_SearchDeamonProcess, &QProcess::errorOccurred, this, &DInsightMainWindow::searchDeamonError );
     QObject::connect( QCoreApplication::instance(), SIGNAL(aboutToQuit()), m_SearchDeamonProcess, SLOT(kill()));
 
-    m_SearchDeamonProcess->start( searchTool );
+    m_SearchDeamonProcess->startCommand( searchTool );
 
 #if defined WIN32
     // Make sure deamon is killed if application crashes
     if(ghJob)
     {
-        if(0 == AssignProcessToJobObject( ghJob, m_SearchDeamonProcess->pid()->hProcess) )
+        HANDLE hProcess = OpenProcess(SYNCHRONIZE, TRUE, m_SearchDeamonProcess->processId());
+        if(hProcess)
         {
+            AssignProcessToJobObject(ghJob, hProcess);
+            CloseHandle(hProcess);
         }
     }
 #endif

@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/debug
+/innsyn-1.3.0
+/innsyn-v1.3.0
+/lib/sphinx-3.5.1
+/mysql
+/obj/W64
+/release
