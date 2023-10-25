@@ -127,6 +127,11 @@ void DImport::load( const DImportFormat* format )
         QString importRoot = m_ExtractDir;
         parser  = new DDirParser( &m_TreeItems, importRoot, m_Model, m_RootItem, format );
     }
+    else if (format->parser() == "Random")
+    {
+        QString importRoot = m_ExtractDir;
+        parser = new DXmlParser(&m_TreeItems, "", m_Model, m_RootItem, format);
+    }
     else
     {
         assert(0);
@@ -411,7 +416,7 @@ DImport* DImport::CreateFromFile(
     
     // Open file
     QFile file( import->m_FileName );
-    if ( format->parser() != "random" )
+    if ( format->parser() != "Random")
     {
         if ( !file.open(QIODevice::ReadOnly) )
         {
@@ -494,7 +499,7 @@ DImport* DImport::CreateFromFile(
         // Parse temp dir
         parser = new DDirParser( &import->m_TreeItems, extractPath, import->m_Model, import->m_RootItem, format );
     }
-    else if ( format->parser() == "random" )
+    else if ( format->parser() == "Random" )
     {
         parser = new DXmlParser( &import->m_TreeItems, "", import->m_Model, import->m_RootItem, format );
     }

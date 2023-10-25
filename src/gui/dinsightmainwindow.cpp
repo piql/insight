@@ -1442,19 +1442,19 @@ void DInsightMainWindow::importDocument( const QString& document, DTreeItem* ite
     if ( import )
     {
         DInsightConfig::Log() << "Re-importing: " << import->fileName() << Qt::endl;
-        QFileInfo info( import->fileName() );
-        if ( !info.exists() )
+        const DImportFormat* format = m_ImportFormats->find(import->formatName());
+        if (format == nullptr)
         {
-            DInsightConfig::Log() << "Opening failed, file does not exist: " << import->fileName() << Qt::endl;
-            QMessageBox::information( this, tr( "Failed to open file" ), tr( "Failed to open '%1'." ).arg( import->fileName() ), QMessageBox::Ok );
+            DInsightConfig::Log() << "Import format not found: " << import->formatName() << Qt::endl;
+            QMessageBox::information(this, tr("Format not found"), tr("Import format not found: '%1'.").arg(import->formatName()), QMessageBox::Ok);
             return;
         }
 
-        const DImportFormat* format = m_ImportFormats->find( import->formatName() );
-        if ( format == nullptr )
+        QFileInfo info( import->fileName() );
+        if ( !info.exists() && format->parser() != "Random")
         {
-            DInsightConfig::Log() << "Import format not found: " << import->formatName() << Qt::endl;
-            QMessageBox::information( this, tr( "Format not found" ), tr( "Import format not found: '%1'." ).arg( import->formatName() ), QMessageBox::Ok );
+            DInsightConfig::Log() << "Opening failed, file does not exist: " << import->fileName() << Qt::endl;
+            QMessageBox::information( this, tr( "Failed to open file" ), tr( "Failed to open '%1'." ).arg( import->fileName() ), QMessageBox::Ok );
             return;
         }
 

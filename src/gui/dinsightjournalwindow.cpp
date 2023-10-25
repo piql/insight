@@ -90,7 +90,9 @@ DInsightJournalWindow::DInsightJournalWindow( DJournal* journal, DImport* import
     m_Ui.page->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
     m_Ui.page->setScaledContents( true );
 
-    setPage( m_CurrentPage );
+    if (m_Journal->m_Pages.size()){
+        setPage( m_CurrentPage );
+    }
 }
 
 
