@@ -239,33 +239,26 @@ int  main( int argc, char* argv[] )
         return 0;
     }
 
-    if ( cmdLine.isSet( serverOption) ) 
+    // Start GUI mode
+    QString attachmentParsing = DInsightConfig::Get( "ATTACHMENT_PARSING", "ASK" );
+    if ( cmdLine.isSet( autoExportOption ) )
     {
-        // Run as server
+        attachmentParsing = "YES";
     }
-    else 
+
+    // Create app main window
+    DInsightMainWindow window( &formats, attachmentParsing );
+    window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
+
+    if ( cmdLine.isSet( fileOption ) )
     {
-        // Start GUI mode
-        QString attachmentParsing = DInsightConfig::Get( "ATTACHMENT_PARSING", "ASK" );
-        if ( cmdLine.isSet( autoExportOption ) )
-        {
-            attachmentParsing = "YES";
-        }
+        window.importFile( cmdLine.value( fileOption ), cmdLine.value( fileFormatOption ), cmdLine.value( autoExportOption ) );
+    }
 
-        // Create app main window
-        DInsightMainWindow window( &formats, attachmentParsing );
-        window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
-
-        if ( cmdLine.isSet( fileOption ) )
-        {
-            window.importFile( cmdLine.value( fileOption ), cmdLine.value( fileFormatOption ), cmdLine.value( autoExportOption ) );
-        }
-
-        if ( !cmdLine.isSet( autoExportOption ) )
-        {
-            // Start GUI
-            window.show();
-        }
+    if ( !cmdLine.isSet( autoExportOption ) )
+    {
+        // Start GUI
+        window.show();
     }
 
     return qtApp.exec();

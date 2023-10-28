@@ -1,7 +1,7 @@
 :: Configure varaibles below for your environment, then run qmake
 
 :: Setup MSVC variables
-"c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
+call "c:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 
 :: set QTDIR=c:\Qt\5.14.1\msvc2017_64
 set QTDIR=C:\Qt\6.5.0\msvc2019_64

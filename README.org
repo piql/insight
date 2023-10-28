@@ -195,6 +195,7 @@ Please create a GitHub issue with a detailed as possible description of what hap
  - Bugs:
    - OS-X: Does not load config file
    - Parse Journal pages bug?
+   - Attachments search button not always visible after load.
 
 ** insight-v1.2.0
  - Translated user manual to English.

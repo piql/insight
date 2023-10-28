@@ -671,6 +671,9 @@ void DXmlParser::run()
         reader.requestInterruption();
         reader.wait();
     }
+    else {
+        reader.wait();
+    }
 
     context.incItems( context.m_CurrentNode, !isInterruptionRequested() );
     m_NodeCount = context.m_Items;

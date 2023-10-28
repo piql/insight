@@ -22,49 +22,49 @@
         <translation>vedlegg.log</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="266"/>
+        <location filename="src/dattachmentindexer.cpp" line="267"/>
         <source>Skipping convert for file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="303"/>
+        <location filename="src/dattachmentindexer.cpp" line="304"/>
         <source>Starting indexer</source>
         <translation>Starter indeksering</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="314"/>
+        <location filename="src/dattachmentindexer.cpp" line="315"/>
         <source>Indexer interrupted</source>
         <translation>Indeksering avbrutt</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="324"/>
-        <location filename="src/dattachmentindexer.cpp" line="418"/>
+        <location filename="src/dattachmentindexer.cpp" line="325"/>
+        <location filename="src/dattachmentindexer.cpp" line="419"/>
         <source>Failed to start</source>
         <translation>Klarte ikke starte</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="329"/>
+        <location filename="src/dattachmentindexer.cpp" line="330"/>
         <source>Indexer failed</source>
         <translation>Indeksering feilet</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="418"/>
-        <location filename="src/dattachmentindexer.cpp" line="423"/>
+        <location filename="src/dattachmentindexer.cpp" line="419"/>
+        <location filename="src/dattachmentindexer.cpp" line="424"/>
         <source>ERROR</source>
         <translation>FEIL</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="424"/>
+        <location filename="src/dattachmentindexer.cpp" line="425"/>
         <source>OUTPUT</source>
         <translation>UTSKRIFT</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="431"/>
+        <location filename="src/dattachmentindexer.cpp" line="432"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="src/dattachmentindexer.cpp" line="437"/>
+        <location filename="src/dattachmentindexer.cpp" line="438"/>
         <source>Convert result is empty (has no text)</source>
         <translation>Konverteringsresultat er tomt (har ingen tekst)</translation>
     </message>
@@ -72,122 +72,122 @@
 <context>
     <name>DImport</name>
     <message>
-        <location filename="src/gui/dimport.cpp" line="313"/>
+        <location filename="src/models/dimport.cpp" line="318"/>
         <source>nodeCount</source>
         <translation>antallNoder</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="314"/>
-        <location filename="src/gui/dimport.cpp" line="734"/>
+        <location filename="src/models/dimport.cpp" line="319"/>
+        <location filename="src/models/dimport.cpp" line="739"/>
         <source>attachments</source>
         <translation>vedlegg</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="315"/>
+        <location filename="src/models/dimport.cpp" line="320"/>
         <source>attachmentsNotFound</source>
         <translation>vedleggIkkeFunnet</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="316"/>
-        <location filename="src/gui/dimport.cpp" line="324"/>
+        <location filename="src/models/dimport.cpp" line="321"/>
+        <location filename="src/models/dimport.cpp" line="329"/>
         <source>importCanceled</source>
         <translation>importAvbrutt</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="324"/>
+        <location filename="src/models/dimport.cpp" line="329"/>
         <source>Import canceled by user</source>
         <translation>Import ble avbrutt av brukeren</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="397"/>
+        <location filename="src/models/dimport.cpp" line="402"/>
         <source>childimports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="407"/>
+        <location filename="src/models/dimport.cpp" line="412"/>
         <source>Directory creation failed</source>
         <translation>Klarte ikke lage mappe</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="407"/>
+        <location filename="src/models/dimport.cpp" line="412"/>
         <source>Failed to create directory &apos;%1&apos;.</source>
         <translation>Klarte ikke å lage mappen &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="418"/>
+        <location filename="src/models/dimport.cpp" line="423"/>
         <source>Failed to open file</source>
         <translation>Åpning av fil feilet</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="418"/>
+        <location filename="src/models/dimport.cpp" line="423"/>
         <source>Failed to open &apos;%1&apos;.</source>
         <translation>Åpning av fil %1 feilet.</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="428"/>
-        <location filename="src/gui/dimport.cpp" line="434"/>
+        <location filename="src/models/dimport.cpp" line="433"/>
+        <location filename="src/models/dimport.cpp" line="439"/>
         <source>import</source>
         <translation>import</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="442"/>
+        <location filename="src/models/dimport.cpp" line="447"/>
         <source>importDate</source>
         <translation>importDato</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="444"/>
+        <location filename="src/models/dimport.cpp" line="449"/>
         <source>sizeBytes</source>
         <translation>stoerrelseBytes</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="447"/>
-        <location filename="src/gui/dimport.cpp" line="449"/>
+        <location filename="src/models/dimport.cpp" line="452"/>
+        <location filename="src/models/dimport.cpp" line="454"/>
         <source>fileDate</source>
         <translation>filDato</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="451"/>
+        <location filename="src/models/dimport.cpp" line="456"/>
         <source>importFormat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="467"/>
+        <location filename="src/models/dimport.cpp" line="472"/>
         <source>extract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="472"/>
+        <location filename="src/models/dimport.cpp" line="477"/>
         <source>Failed to create directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="472"/>
+        <location filename="src/models/dimport.cpp" line="477"/>
         <source>Failed to create &apos;%1/%2&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="485"/>
+        <location filename="src/models/dimport.cpp" line="490"/>
         <source>Failed to extract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="485"/>
+        <location filename="src/models/dimport.cpp" line="490"/>
         <source>Failed to extract &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="492"/>
-        <location filename="src/gui/dimport.cpp" line="900"/>
+        <location filename="src/models/dimport.cpp" line="497"/>
+        <location filename="src/models/dimport.cpp" line="905"/>
         <source>extractFolder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="878"/>
+        <location filename="src/models/dimport.cpp" line="883"/>
         <source>importFileName</source>
         <translation>importFilnavn</translation>
     </message>
     <message>
-        <location filename="src/gui/dimport.cpp" line="889"/>
+        <location filename="src/models/dimport.cpp" line="894"/>
         <source>reportsFolder</source>
         <translation>rapportMappe</translation>
     </message>
@@ -207,42 +207,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="148"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="150"/>
         <source>Page %1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="156"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="158"/>
         <source>OCR: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="175"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="177"/>
         <source>journal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="178"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="180"/>
         <source>Genererer journal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="197"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="199"/>
         <source>Failed to convert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="197"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="199"/>
         <source>Failed to convert to PDF, check PDF tool config in format file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="205"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="207"/>
         <source>Failed to open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="205"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="207"/>
         <source>Failed to open PDF:
 %1
 
@@ -250,7 +250,7 @@ Check PDF tool config in format file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightjournalwindow.cpp" line="231"/>
+        <location filename="src/gui/dinsightjournalwindow.cpp" line="233"/>
         <source>journal-files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -264,7 +264,7 @@ Check PDF tool config in format file.</source>
     <message>
         <location filename="src/gui/dinsightmainwindow.cpp" line="205"/>
         <location filename="src/gui/dinsightmainwindow.cpp" line="1512"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2239"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2243"/>
         <source>Select</source>
         <translation>Velg</translation>
     </message>
@@ -280,14 +280,14 @@ Check PDF tool config in format file.</source>
     <message>
         <location filename="src/gui/dinsightmainwindow.cpp" line="425"/>
         <location filename="src/gui/dinsightmainwindow.cpp" line="1351"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1449"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1457"/>
         <source>Failed to open file</source>
         <translation>Åpning av fil feilet</translation>
     </message>
     <message>
         <location filename="src/gui/dinsightmainwindow.cpp" line="425"/>
         <location filename="src/gui/dinsightmainwindow.cpp" line="1351"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1449"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1457"/>
         <source>Failed to open &apos;%1&apos;.</source>
         <translation>Åpning av fil %1 feilet.</translation>
     </message>
@@ -340,7 +340,7 @@ Check PDF tool config in format file.</source>
         <translation type="vanished">Antall noder</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2206"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2210"/>
         <source>Attachments</source>
         <translation>Vedlegg</translation>
     </message>
@@ -488,7 +488,7 @@ Abort processing?</source>
     <message>
         <location filename="src/gui/dinsightmainwindow.cpp" line="706"/>
         <location filename="src/gui/dinsightmainwindow.cpp" line="1494"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1895"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1899"/>
         <source>Import</source>
         <translation>Import</translation>
     </message>
@@ -626,12 +626,12 @@ Abort processing?</source>
         <translation>Lukket filen: %1</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1457"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1449"/>
         <source>Format not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1457"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1449"/>
         <source>Import format not found: &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -641,52 +641,52 @@ Abort processing?</source>
         <translation>søk pågår</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1591"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1595"/>
         <source>No match.</source>
         <translation>Ingen treff.</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1613"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1617"/>
         <source>Search complete! %1 matches found.</source>
         <translation>Søk ferdig! %1 treff funnet.</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1617"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1621"/>
         <source>Search complete! Over %1 matches found, displaying first %1 matches.</source>
         <translation>Søk ferdig! Over %1 treff ble funnet, viser første %1 treff.</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1866"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1870"/>
         <source>Warning: %1 attachments failed to convert. See report log for details.</source>
         <translation>Advarsel: %1 vedlegg feilet under konvertering til tekst. Se rapportlogg for detailjer.</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1871"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1875"/>
         <source> Warning: %1 attachments are empty. See report log for details.</source>
         <translation>Advarsel: %1 vedleggene er tomme. Se rapport logg for detaljer.</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1874"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1878"/>
         <source>Indexing of %1 attachments complete! %2</source>
         <translation>Ferdig med å lage indeks for %1 vedlegg! %2</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1878"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1882"/>
         <source>Failed to start indexer! See import log for more details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1882"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1886"/>
         <source>Indexing skipped.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2035"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2039"/>
         <source>%1 nodes selected.</source>
         <translation>%1 noder valgt.</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2039"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2043"/>
         <source>%1 node selected.</source>
         <translation>%1 node valgt.</translation>
     </message>
@@ -695,7 +695,7 @@ Abort processing?</source>
         <translation type="vanished">Klarte ikke koble til databasen</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2810"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2816"/>
         <source>Indexer started!</source>
         <translation>Programmet som lager indeks startet!</translation>
     </message>
@@ -704,17 +704,17 @@ Abort processing?</source>
         <translation type="vanished">Indeksering ferdig!</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2814"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2820"/>
         <source>Failed to connect to indexer!</source>
         <translation>Får ikke kontakt med programmet som lager indeks!</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2819"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2825"/>
         <source>Failed to start indexer!</source>
         <translation>Klarte ikke starte programmet som lager  indeks!</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1886"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1890"/>
         <source>Indexing canceled!</source>
         <translation>Laging av indeks avbrutt</translation>
     </message>
@@ -737,7 +737,7 @@ Abort processing?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="1927"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="1931"/>
         <source>Indexing attachments, might take a long time</source>
         <translation>Lage indeks av vedlegg, dette kan ta lang tid</translation>
     </message>
@@ -750,7 +750,7 @@ Abort processing?</source>
         <translation type="vanished">XML import ferdig!</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2190"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2194"/>
         <source>Export Report</source>
         <translation>Eksport Rapport</translation>
     </message>
@@ -768,23 +768,23 @@ Abort processing?</source>
         <translation type="vanished">Følgende vedlegg ble ikke funnet of vil ikke bli inkludert i rapporten: %1</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2238"/>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2239"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2242"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2243"/>
         <source>Deselect</source>
         <translation>Fjern valg</translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2328"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2332"/>
         <source>Journal sider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2335"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2339"/>
         <source>Page %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/gui/dinsightmainwindow.cpp" line="2583"/>
+        <location filename="src/gui/dinsightmainwindow.cpp" line="2587"/>
         <source>Line %1</source>
         <translation>Linje %1</translation>
     </message>
