@@ -1,12 +1,11 @@
-#+MACRO: version v1.2.0
+#+MACRO: version v1.3.0
 #+TITLE:Piql Insight {{{version}}}
 #+AUTHOR:Piql AS
-#+EMAIL:ole.liabo@piql.com
-#+DATE:2021.12.24
+#+DATE:2023.10.24
 #+OPTIONS: ^:nil
 #+DESCRIPTION:Piql Insight
 #+LANGUAGE: en
-#+CREATOR: Copyright (c) 2021 <a href="http://www.piql.com">Piql AS</a>
+#+CREATOR: Copyright (c) 2023 <a href="http://www.piql.com">Piql AS</a>
 #+latex_header: \hypersetup{colorlinks=true,linkcolor=blue}
 # #+TOC: headlines 5
 
