@@ -142,18 +142,20 @@ int  main( int argc, char* argv[] )
     qtApp.setApplicationName( "insight" );
     qtApp.setApplicationVersion( "v1.3.0" );
 
-    QCommandLineParser parser;
-    parser.setApplicationDescription( "Archival Package Inspector and Dissimination tool" );
-    QCommandLineOption helpOption = parser.addHelpOption();
-    QCommandLineOption versionOption = parser.addVersionOption();
+    QCommandLineParser cmdLine;
+    cmdLine.setApplicationDescription( "Archival Package Inspector and Dissimination tool" );
+    QCommandLineOption helpOption = cmdLine.addHelpOption();
+    QCommandLineOption versionOption = cmdLine.addVersionOption();
 
     // Add options
     QCommandLineOption fileOption( QStringList() << "f" << "file", "<file> to open", "file" );
     QCommandLineOption fileFormatOption( QStringList() << "file-format", "<format> of file to open", "format" );
     QCommandLineOption autoExportOption( QStringList() << "a" << "auto-export", "Auto export to <file>", "file" );
-    parser.addOption( fileOption );
-    parser.addOption( fileFormatOption );
-    parser.addOption( autoExportOption );
+    QCommandLineOption serverOption(QStringList() << "s" << "server", "Run in server mode", "port");
+    cmdLine.addOption( fileOption );
+    cmdLine.addOption( fileFormatOption );
+    cmdLine.addOption( autoExportOption );
+    //cmdLine.addOption( serverOption );
 
 
     QString language = DInsightConfig::Get( "LANGUAGE", "en" );
@@ -217,45 +219,53 @@ int  main( int argc, char* argv[] )
     DImport::SetReportFormat( reportFormat );
 
     // Parse command line
-    parser.process( qtApp );
+    cmdLine.process( qtApp );
 
-    if ( !parser.parse( QCoreApplication::arguments() ) ) {
-        std::cerr << parser.errorText().toStdString() << std::endl;
+    if ( !cmdLine.parse( QCoreApplication::arguments() ) ) {
+        std::cerr << cmdLine.errorText().toStdString() << std::endl;
         return 1;
     }
 
-    if ( parser.isSet( versionOption ) )
+    if ( cmdLine.isSet( versionOption ) )
     {
         printf( "%s %s\n", qPrintable( QCoreApplication::applicationName() ),
             qPrintable( QCoreApplication::applicationVersion() ) );
         return 0;
     }
 
-    if ( parser.isSet( helpOption ) )
+    if ( cmdLine.isSet( helpOption ) )
     {
-        parser.showHelp();
+        cmdLine.showHelp();
         return 0;
     }
 
-    QString attachmentParsing = DInsightConfig::Get( "ATTACHMENT_PARSING", "ASK" );
-    if ( parser.isSet( autoExportOption ) )
+    if ( cmdLine.isSet( serverOption) ) 
     {
-        attachmentParsing = "YES";
+        // Run as server
     }
-
-    // Create app main window
-    DInsightMainWindow window( &formats, attachmentParsing );
-    window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
-
-    if ( parser.isSet( fileOption ) )
+    else 
     {
-        window.importFile( parser.value( fileOption ), parser.value( fileFormatOption ), parser.value( autoExportOption ) );
-    }
+        // Start GUI mode
+        QString attachmentParsing = DInsightConfig::Get( "ATTACHMENT_PARSING", "ASK" );
+        if ( cmdLine.isSet( autoExportOption ) )
+        {
+            attachmentParsing = "YES";
+        }
 
-    if ( !parser.isSet( autoExportOption ) )
-    {
-        // Start GUI
-        window.show();
+        // Create app main window
+        DInsightMainWindow window( &formats, attachmentParsing );
+        window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
+
+        if ( cmdLine.isSet( fileOption ) )
+        {
+            window.importFile( cmdLine.value( fileOption ), cmdLine.value( fileFormatOption ), cmdLine.value( autoExportOption ) );
+        }
+
+        if ( !cmdLine.isSet( autoExportOption ) )
+        {
+            // Start GUI
+            window.show();
+        }
     }
 
     return qtApp.exec();

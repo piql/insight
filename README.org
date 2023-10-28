@@ -188,9 +188,13 @@ Please create a GitHub issue with a detailed as possible description of what hap
  - OS-X: Support dark mode
  - OS-X: Fix view relative folder
  - Upgraded to latest sphinx indexer
+ - Random format: Bugfixes.
+ - Optimize: Made reading & parsing of XMLs run in parallell. 
+ - Journal: Fixed crash if journal had no pages.
 
  - Bugs:
    - OS-X: Does not load config file
+   - Parse Journal pages bug?
 
 ** insight-v1.2.0
  - Translated user manual to English.

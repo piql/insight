@@ -54,6 +54,8 @@ CMU112_BASE       =   ../../../base
 
 INCLUDEPATH       =   src \
                       src/gui \
+                      src/models \
+                      src/formats \
                       src/thirdparty/quazip-1.4/quazip/ \
                       src/thirdparty/minixml/inc \
                       src/thirdparty/tools/inc \
@@ -114,14 +116,19 @@ TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \
                       src/thirdparty/tools/src/dbaseio.cpp \
                       src/thirdparty/tools/src/dbasefile.cpp \
                       src/thirdparty/tools/src/dfile.cpp
-                      
+        
+MODELS_SOURCES    =   src/models/dtreeitem.cpp \
+                      src/models/dtreemodel.cpp \
+                      src/models/dimport.cpp
+                                
+MODELS_HEADERS    =   src/models/dtreeitem.h \
+                      src/models/dtreemodel.h \
+                      src/models/dimport.h
+                                          
 GUI_SOURCES       =   src/gui/dinsightmainwindow.cpp \
                       src/gui/dinsightreportwindow.cpp \
                       src/gui/dinsightjournalwindow.cpp \
                       src/gui/dtreeview.cpp \
-                      src/gui/dtreeitem.cpp \
-                      src/gui/dtreemodel.cpp \
-                      src/gui/dimport.cpp \
                       src/gui/dwaitcursor.cpp \
                       src/gui/qpersistantfiledialog.cpp \
                       src/gui/qaboutdialog.cpp \
@@ -130,9 +137,6 @@ GUI_HEADERS       =   src/gui/dinsightmainwindow.h \
                       src/gui/dinsightreportwindow.h \
                       src/gui/dinsightjournalwindow.h \
                       src/gui/dtreeview.h \
-                      src/gui/dtreeitem.h \
-                      src/gui/dtreemodel.h \
-                      src/gui/dimport.h \
                       src/gui/dwaitcursor.h \
                       src/gui/qpersistantfiledialog.h \
                       src/gui/qaboutdialog.h  \
@@ -165,7 +169,8 @@ SOURCES          +=   src/main.cpp \
                       src/djournalmatcher.cpp \
                       $$GUI_SOURCES \
                       $$ZIP_SOURCES \
-                      $$POSIXTAR_SOURCES
+                      $$POSIXTAR_SOURCES \
+                      $$MODELS_SOURCES
 
 HEADERS          +=   src/drunguard.h \
                       src/dxmlparser.h \
@@ -183,7 +188,8 @@ HEADERS          +=   src/drunguard.h \
                       $$GUI_HEADERS \
                       $$ZIP_HEADERS \
                       $$TOOLS_INCLUDES \
-                      $$POSIXTAR_INCLUDES   
+                      $$POSIXTAR_INCLUDES \
+                      $$MODELS_HEADERS
 
 TRANSLATIONS      =   insight_nb.ts \
                       insight_nn.ts \
