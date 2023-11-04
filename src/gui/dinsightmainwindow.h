@@ -59,6 +59,7 @@ class DTableSearchResultCell;
 class QProcess;
 class DInsightMainWindow;
 class DImportFormats;
+class DContext;
 
 //============================================================================
 // CLASS: DInsightMainWindow
@@ -67,14 +68,12 @@ class DInsightMainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    DInsightMainWindow( DImportFormats* formats, const QString& attachmentParsing );
+    DInsightMainWindow( DContext& context, const QString& attachmentParsing );
     virtual ~DInsightMainWindow();
 
 public:
     static void    ReplaceString( QString& key, const DRegExps& regExps );
     static QString GetTreeItemLabel( DTreeItem *item );
-    static void    MakeAbsolute( QString& filename, DTreeItem* item, DImports& imports );
-    static DImport*FindImport( const DTreeItem* item, DImports& imports );
 
 signals:
     void importComplete( bool ok );
@@ -87,16 +86,13 @@ public:
         DTreeItem* parent = nullptr );
     void exportReport( const QString& fileName = QString() );
 
-public slots:
+private slots:
     void importFileFinished( bool ok );
     void indexingFinished( DImport::DIndexingState state );
     void indexingProgress( float progress );
     void indexingIndexerStated();
     void loadXmlProgress( unsigned long /*count*/, float progress );
     void unloadFinished( bool ok );
-
-
-private slots:
     void aboutButtonClicked();
     void importButtonClicked();
     void exportButtonClicked();
@@ -138,7 +134,7 @@ private:
 private:
 
     void    updateInfo( Node* parent );
-    void    enumerateProjects( const QString& rootDir );
+    void    setupProjects();
     void    cancelImport();
     void    cancelIndexer();
     bool    searchInfo( const QString& text );
@@ -184,6 +180,9 @@ private:
     void    treeNodeSelectionCountChanged();
     void    makeAbsolute( QString& filename, const QModelIndex& index );
     void    makeAbsolute( QString& filename, DTreeItem* item );
+    void    connectImportLoad(DImport* import);
+    void    connectImportUnload(DImport* import);
+    void    connectImportIndexer(DImport* import);
 
     
 private:
@@ -191,7 +190,8 @@ private:
     QGridLayout*                m_InfoView;
     unsigned int                m_SearchResultMax;
 
-    DImports                    m_Imports;
+    DContext&                   m_Context;
+    DImports&                   m_Imports;
     DImport*                    m_CurrentImport;
     DPendingImports             m_PendingImports;
     DImports                    m_PendingIndexing;

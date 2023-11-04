@@ -29,7 +29,7 @@
 #include    "dinsightconfig.h"
 #include    "qpersistantfiledialog.h"
 #include    "dinsightjournalwindow.h"
-#include    "dinsightmainwindow.h"
+#include    "dcontext.h"
 
 //  ZIP INCLUDES
 //
@@ -181,7 +181,7 @@ bool DInsightReportWindow::createJournalAttachments( QStringList& files )
         for ( ; it != itEnd; it++ )
         {
             QString journalFilename = tr( "journal-%1.pdf" ).arg( journalCount );
-            DInsightMainWindow::MakeAbsolute( journalFilename, (*it)->m_TreeItem, m_Imports );
+            DContext::MakeAbsolute( journalFilename, (*it)->m_TreeItem, m_Imports );
             QString tempDir = QFileInfo( journalFilename ).path();
             bool ok = DInsightJournalWindow::GeneratePdf( journalFilename, *it, tempDir );
             if ( !ok )

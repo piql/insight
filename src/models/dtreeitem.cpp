@@ -241,7 +241,7 @@ int DTreeItem::row()
 
 //----------------------------------------------------------------------------
 /*! 
- *  Return number of tree item children.
+ *  Return row index (realtive to parent node)
  */
 
 int DTreeItem::rowSlow() 
@@ -718,7 +718,7 @@ void DTreeRootItem::removeNode( const QString& key )
     }
 }
 
-bool DTreeRootItem::isToplevelRoot()
+bool DTreeRootItem::isToplevelRoot() const
 {
     return m_Parent->m_Parent == nullptr;
 }

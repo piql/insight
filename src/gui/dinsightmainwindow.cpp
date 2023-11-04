@@ -40,6 +40,7 @@
 #include    "qaboutdialog.h"
 #include    "dimportformat.h"
 #include    "dinsightjournalwindow.h"
+#include    "dcontext.h"
 
 //  QT INCLUDES
 //
@@ -138,13 +139,15 @@ void DTableSearchResultCell::mouseDoubleClickEvent(QMouseEvent * /*event*/)
  */
 
 DInsightMainWindow::DInsightMainWindow( 
-    DImportFormats* formats,
+    DContext& context,
     const QString& attachmentParsing )
-  : m_CurrentImport( nullptr ),
-    m_Model( nullptr ),
+  : m_Context(context),
+    m_CurrentImport( nullptr ),
+    m_Model( &context.m_Model ),
     m_SearchThread( nullptr ),
     m_SearchDeamonProcess( nullptr ),
-    m_ImportFormats( formats ),
+    m_ImportFormats( &context.m_ImportFormats ),
+    m_Imports( context.m_Imports),
     m_AttachmentParsing( attachmentParsing )
 {
     m_Ui.setupUi( this );
@@ -165,7 +168,6 @@ DInsightMainWindow::DInsightMainWindow(
     QObject::connect( m_Ui.searchEdit, SIGNAL(textChanged(const QString &)), this, SLOT(searchEditChanged(const QString &)));
     
     // Tree view and mode setup
-    m_Model = new DTreeModel( m_ImportFormats );
     QObject::connect( m_Model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &)), this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &)));
 
 #if defined ENABLE_MODELTEST
@@ -249,8 +251,8 @@ DInsightMainWindow::DInsightMainWindow(
     m_Ui.exportButton->setEnabled( false );
     m_Ui.searchResult->setVisible( false );
 
-    // Enumerate all project files
-    enumerateProjects( DInsightReport::getReportsRootDir() );
+    // Setup project files
+    setupProjects();
 
 
     // Testing
@@ -292,7 +294,7 @@ void DInsightMainWindow::aboutButtonClicked()
 {
     QString infoText;
     infoText += "Version: " + QCoreApplication::applicationVersion() + "<br />";
-    infoText += "Copyright Piql 2021";
+    infoText += "Copyright Piql 2023";
     //infoText += "<p>Support: <a href=\"mailto:support@piql.com\">support@piql.com</a></p>";
 
     infoText += "<p><a href=\"https://www.piql.com\">www.piql.com</a></p>";
@@ -371,26 +373,8 @@ void DInsightMainWindow::importButtonClicked()
  *  Load all project files found under root folder.
  */
 
-void DInsightMainWindow::enumerateProjects( const QString& rootDir )
+void DInsightMainWindow::setupProjects()
 {
-    QStringList nameFilters;
-    nameFilters << DInsightReport::getXmlReportName();
-    QDirIterator dirIt( rootDir, nameFilters, QDir::NoFilter, QDirIterator::Subdirectories );
-
-    while ( dirIt.hasNext() )    
-    {
-        QString fileName = dirIt.next();
-        DImport* import = DImport::CreateFromReport( fileName, m_Model, this, m_ImportFormats );
-        if ( import ) 
-        {
-            m_Imports.push_back( import );
-        }
-        else
-        {
-            DInsightConfig::Log() << "Import failed: " << fileName << Qt::endl;
-        }
-    }
-
     if ( m_Imports.size() )
     {
         updateInfo( m_Imports.at(0)->root() );
@@ -473,18 +457,22 @@ void DInsightMainWindow::importFile(
     if ( format->parser() == "xml" )
     {
         import = DImport::CreateFromXml( fileName, m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else if ( format->parser() == "tar" )
     {
         import = DImport::CreateFromTar( fileName, m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else if ( format->parser() == "dir" )
     {
         import = DImport::CreateFromExtract( fileName, m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else if ( importFormatName == "random" )
     {
         import = DImport::CreateFromXml( "", m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else
     {
@@ -765,6 +753,7 @@ void DInsightMainWindow::startIndexing()
         if ( parsingAttachments )
         {
             // Launch attachment extractor thread
+            connectImportIndexer(import);
             import->index();
 
             m_ProgressBar->setVisible( true );
@@ -1131,39 +1120,7 @@ void DInsightMainWindow::makeAbsolute( QString& filename, const QModelIndex& ind
 
 void DInsightMainWindow::makeAbsolute( QString& filename, DTreeItem* item )
 {
-    MakeAbsolute( filename, item, m_Imports);
-}
-
-void DInsightMainWindow::MakeAbsolute( QString& filename, DTreeItem* item, DImports& imports )
-{
-    if ( !QFile::exists( filename ) )
-    {
-        const DTreeRootItem* root = item->findRootItem();
-        const DImportFormat* format = root->format();
-        DImport* import = FindImport( root, imports );
-
-        if ( format->parser() == "dir" )
-        {
-            if ( format->extractTool("a","b").length() != 0 )
-            {
-                // The content is relative to the "extract" folder under the import folder
-                QDir dir( import->reportsDir() );
-                dir.cd(tr("extract"));
-                QString path = item->findRootPath();
-                dir.cd(path);
-                filename = dir.filePath( filename );
-            }
-            else
-            {
-                // The content is relative to the import filename root
-            }
-        }
-        else
-        {
-            QDir dir( import->fileNameRoot() );
-            filename = dir.filePath( filename );
-        }
-    }
+    m_Context.makeAbsolute( filename, item );
 }
 
 
@@ -1426,6 +1383,7 @@ void DInsightMainWindow::importDocumentClicked( const QString& document, QModelI
         DImport* import = findImport( item );
         m_CurrentImport = import;
         import->setFromReport( true );
+        connectImportUnload(import);
         import->unload();
     }
     else
@@ -1463,6 +1421,7 @@ void DInsightMainWindow::importDocument( const QString& document, DTreeItem* ite
         setupUiForImport();
 
         import->setFromReport( true );
+        connectImportLoad(import);
         import->load( format );
     }
     else
@@ -1707,23 +1666,7 @@ void DInsightMainWindow::addSearchResult( const QString& location, const QString
 
 DImport* DInsightMainWindow::findImport( const DTreeItem* item )
 {
-    return FindImport( item, m_Imports );
-}
-
-DImport* DInsightMainWindow::FindImport( const DTreeItem* item, DImports& imports )
-{
-    DImportsIterator it = imports.begin();
-    DImportsIterator itEnd = imports.end();
-
-    while ( it != itEnd )
-    {
-        if ( (*it)->root() == item )
-        {
-            return *it;
-        }
-        it++;
-    }
-    return nullptr;
+    return m_Context.findImport(item);
 }
 
 
@@ -2925,6 +2868,38 @@ QString DInsightMainWindow::GetTreeItemLabel( DTreeItem *item )
     return label;
 }
 
+
+void DInsightMainWindow::connectImportLoad(DImport* import) 
+{
+    if (import) 
+    {
+        // Cleanup connections
+        import->disconnect();
+
+        // Connect importer to main window
+        connect(import, &DImport::imported, this, &DInsightMainWindow::importFileFinished);
+        connect(import, &DImport::nodesReady, this, &DInsightMainWindow::loadXmlProgress);
+    }
+}
+
+void DInsightMainWindow::connectImportUnload(DImport* import)
+{
+    // Cleanup connections
+    import->disconnect();
+
+    // unload
+    // Connect importer to main window
+    connect(import, &DImport::imported, this, &DInsightMainWindow::unloadFinished);
+}
+
+void DInsightMainWindow::connectImportIndexer(DImport* import)
+{
+    // Cleanup connections
+    import->disconnect();
+
+    connect(import, &DImport::indexingProgress, this, &DInsightMainWindow::indexingProgress);
+    connect(import, &DImport::indexed, this, &DInsightMainWindow::indexingFinished);
+}
 
 /****************************************************************************/
 /*! \class DTableSearchResultDelegate dinsightmainwindow.cpp

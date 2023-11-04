@@ -38,7 +38,7 @@
 /****************************************************************************/
 /*! \class DTreeModel dtreemodel.h
  *  \ingroup Insight
- *  \brief Tree widget data model
+ *  \brief Import node tree data model
  */
 
 
