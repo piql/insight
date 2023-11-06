@@ -37,12 +37,12 @@
 //  QT INCLUDES
 //
 #include    <QString>
+#include    <QUuid>
 
 //  FORWARD DECLARATIONS
 //
 class DTreeRootItem;
 class DTreeModel;
-class DInsightMainWindow;
 class DXmlParser;
 class DAttachmentParser;
 class DAttachmentIndexer;
@@ -56,8 +56,19 @@ class DImport : public QObject
 {
     Q_OBJECT
 public:
-    enum DImportState { IMPORT_STATE_IMPORTING, IMPORT_STATE_CANCELING, IMPORT_STATE_INDEXING, IMPORT_STATE_DONE };
-    enum DIndexingState { INDEXING_STATE_OK, INDEXING_STATE_CANCELED, INDEXING_STATE_SKIP, INDEXING_STATE_ERROR };
+    enum DImportState { 
+        IMPORT_STATE_UNDEFINED,
+        IMPORT_STATE_IMPORTING_REPORT,
+        IMPORT_STATE_REPORT_IMPORTED,
+        IMPORT_STATE_IMPORTING, 
+        IMPORT_STATE_CANCELING, 
+        IMPORT_STATE_INDEXING, 
+        IMPORT_STATE_DONE };
+    enum DIndexingState { 
+        INDEXING_STATE_OK, 
+        INDEXING_STATE_CANCELED, 
+        INDEXING_STATE_SKIP, 
+        INDEXING_STATE_ERROR };
 
 private:
     DImport( DTreeModel* model );
@@ -73,11 +84,11 @@ public:
     void            unloadChildren();
     void            index();
     bool            hasChildren();
-    DImportState    state();
-    DTreeRootItem*  root();
-    QString         fileName();
+    DImportState    state() const;
+    DTreeRootItem*  root() const;
+    QString         fileName() const;
     QString         fileNameRoot();
-    QString         formatName();
+    QString         formatName() const;
     QString         databaseName();
     QString         reportsDir();
     QString         attachmentsDir();
@@ -92,6 +103,7 @@ public:
     bool            fromReport();
     qint64          attachmentsSizeInBytes();
     const DPendingImports& pendingImports();
+    const QUuid&    uuid() const;
 
 public:
     static QString              FileNameKey();
@@ -104,28 +116,32 @@ signals:
     void            imported( bool ok );
     void            indexed( DIndexingState state );
     void            removed( bool ok );
+    void            nodesReady( unsigned long count, float progress );
+    void            indexingProgress( float progress );
 
 public slots:
     void            loadXmlFinished();
     void            attachmentParserFinished();
     void            indexingIndexerStarted();
     void            indexingFinished();
+    void            nodesReadySlot(unsigned long count, float progress);
+    void            indexingProgressSlot(float progress);
 
 private:
     void            importFinished();
 
 
 public:
-    static DImport* CreateFromExtract( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
-    static DImport* CreateFromTar( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
-    static DImport* CreateFromXml( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
-    static DImport* CreateFromReport( const QString& fileName, DTreeModel* model, DInsightMainWindow* window, const DImportFormats* formats );
+    static DImport* CreateFromExtract( const QString& fileName, DTreeModel* model, QWidget* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
+    static DImport* CreateFromTar( const QString& fileName, DTreeModel* model, QWidget* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
+    static DImport* CreateFromXml( const QString& fileName, DTreeModel* model, QWidget* window, const DImportFormat* format, DTreeItem* parent, DImport* parentImport );
+    static DImport* CreateFromReport( const QString& fileName, DTreeModel* model, const DImportFormats* formats );
 
 private:
     static DImport* CreateFromFile(
         const QString& fileName,
         DTreeModel* model,
-        DInsightMainWindow* window,
+        QWidget* window,
         const DImportFormat* format,
         DTreeItem* parent,
         DImport* parentImport );
@@ -144,20 +160,22 @@ private:
     QString             m_ImportFormat;
     QString             m_ReportsDir;
     DTreeItems          m_TreeItems;
-    DInsightMainWindow* m_Window;
     DLeafMatchers       m_DocumentTypeRegExp;
     bool                m_FromReport;
     QString             m_ExtractDir;
     DJournalMatchers    m_JournalMatchers;
     DPendingImports     m_PendingImports;
+    QUuid               m_Uuid;
 };
 
 
 //============================================================================
 // CLASS: DImports
 
-typedef std::vector<DImport*> DImports;
-typedef DImports::iterator    DImportsIterator;
+typedef std::vector<DImport*>       DImports;
+typedef DImports::iterator          DImportsIterator;
+typedef DImports::const_iterator    DImportsConstIterator;
 
+DImport* GetImport(const DImports& imports, const QString& uuid);
 
 #endif // DIMPORT_H

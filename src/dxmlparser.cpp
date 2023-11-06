@@ -40,6 +40,11 @@
 #include    <stdio.h>
 #include    <string>
 
+//  QT INCLUDES
+//
+#include    <QSemaphore>
+#include    <QVector>
+
 //  PLATFORM INCLUDES
 //
 #if defined (WIN32)
@@ -449,6 +454,63 @@ inline static void sax_cb(yxml_t *x, yxml_ret_t r, DXmlContext* context )
     }
 }
 
+/****************************************************************************/
+/*! \class DReadFileThread dxmlparser.cpp
+ *  \ingroup Insight
+ *  \brief Read file in chunks
+ *
+ *  Make reding and parsing parallell.
+ */
+
+class DChunk
+{
+public:
+    static const int m_Size = 1024 * 16;
+public:
+    char m_Buffer[1024 * 16];
+    int m_Length;
+};
+
+class DReadFileThread : public QThread
+{
+private:
+    DXmlStream* m_Stream;
+    QSemaphore& m_FreeChunks;
+    QSemaphore& m_UsedChunks;
+    QVector<DChunk>& m_Chunks;
+
+public:
+    DReadFileThread(DXmlStream* stream, QSemaphore& freeChunks, QSemaphore& usedChunks, QVector<DChunk>& chunks);
+    virtual ~DReadFileThread();
+
+private:
+    virtual void run();
+
+};
+
+DReadFileThread::DReadFileThread(DXmlStream* stream, QSemaphore& freeChunks, QSemaphore& usedChunks, QVector<DChunk>& chunks)
+    : m_Stream(stream), m_FreeChunks(freeChunks), m_UsedChunks(usedChunks), m_Chunks(chunks)
+{
+}
+
+DReadFileThread::~DReadFileThread()
+{
+}
+
+void DReadFileThread::run()
+{
+    int bytesRead;
+    int i = 0;
+    do {
+        m_FreeChunks.acquire();
+        DChunk& chunk = m_Chunks[i % m_Chunks.size()];
+        bytesRead = m_Stream->read(chunk.m_Buffer, DChunk::m_Size);
+        chunk.m_Length = bytesRead;
+        m_UsedChunks.release();
+        i++;
+    } while (bytesRead != 0 && !isInterruptionRequested());
+}
+
 
 /****************************************************************************/
 /*! \class DXmlParser dxmlparser.cpp
@@ -560,42 +622,64 @@ void DXmlParser::run()
     if ( !stream->open() )
     {
         delete stream;
-        DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << endl;
+        DInsightConfig::Log() << "Opening failed, file does not exist: " << m_Filename << Qt::endl;
         return;
     }
     
     context.m_FileSize = stream->size();
     
-    char buffer[1024*16];
+    constexpr int chunkCount = 10;
+    QVector<DChunk> chunks(chunkCount);
+    QSemaphore freeChunks(chunkCount);
+    QSemaphore usedChunks;
 
-    int bytesRead = stream->read(buffer, sizeof(buffer));
+    DReadFileThread reader(stream, freeChunks, usedChunks, chunks);
+    reader.start();
 
-    while( bytesRead > 0 && !isInterruptionRequested())
+    int i = 0;
+    bool moreChunks;
+    do
     {
-        char *b = buffer;
-        while ( bytesRead )
+        usedChunks.acquire();
+        DChunk& chunk = chunks[i % chunkCount];
+        int bytesRead = chunk.m_Length;
+        moreChunks = bytesRead != 0;
+        while (bytesRead > 0 && !isInterruptionRequested())
         {
-            r = yxml_parse(x, *b);
-
-            if ( r == YXML_ESYN  )
+            char* b = chunk.m_Buffer;
+            while (bytesRead)
             {
-                requestInterruption();
-                m_LoadedOk = false;
-                break;
-            }
+                r = yxml_parse(x, *b);
 
-            sax_cb(x, r, &context);
-            b++;
-            bytesRead--;
+                if (r == YXML_ESYN)
+                {
+                    requestInterruption();
+                    m_LoadedOk = false;
+                    break;
+                }
+
+                sax_cb(x, r, &context);
+                b++;
+                bytesRead--;
+            }
         }
-        bytesRead = stream->read(buffer, sizeof(buffer));
+        freeChunks.release();
+        i++;
+    } while (moreChunks && !isInterruptionRequested());
+
+    if (isInterruptionRequested()) {
+        reader.requestInterruption();
+        reader.wait();
+    }
+    else {
+        reader.wait();
     }
 
     context.incItems( context.m_CurrentNode, !isInterruptionRequested() );
     m_NodeCount = context.m_Items;
     m_RootNode = context.m_RootNode;
 
-    DInsightConfig::Log() << "XML loading complete" << endl;
+    DInsightConfig::Log() << "XML loading complete" << Qt::endl;
 
     delete stream;
 }

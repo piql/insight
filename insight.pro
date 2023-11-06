@@ -7,13 +7,14 @@
 #
 ##############################################################################
 
-QT               +=   xml widgets gui core printsupport sql 
+QT               +=   xml widgets gui core printsupport sql core5compat pdf 
 TEMPLATE          =   app
-CONFIG           +=   qt debug_and_release
+win32:TEMPLATE   +=   vcapp
+CONFIG           +=   qt debug_and_release console
 CONFIG           +=   lrelease 
 macx:CONFIG      +=   app_bundle
 TARGET            =   insight
-DESTDIR           =   ./innsyn-v1.2.0
+!win32:DESTDIR    =   ./innsyn-v1.3.0
 
 ##  SUPPORT DEBUG AND RELEASE BUILDS  ##
 !debug_and_release|build_pass {
@@ -42,13 +43,8 @@ win32 {
 }
 
 
-macx:POPPLER_VER               =  0.84.0
-win32:POPPLER_VER              =  0.83.0
-win32:POPPLER_ROOT             =  c:/dev/
-
 OBJECTS_DIR                    =  obj/$$PLATFORM/$$CURBUILD
 MOC_DIR                        =  obj/$$PLATFORM/$$CURBUILD
-QMAKE_CXXFLAGS                +=  -DQUAZIP_STATIC 
 win32:QMAKE_CXXFLAGS_RELEASE  +=  /O2 /Ob2 /Oi /Ot /GL
 win32:QMAKE_LFLAGS_RELEASE    +=  /LTCG /DEBUG
 macx:QMAKE_LFLAGS             +=  -stdlib=libc++ -liconv -Wno-c++11-narrowing -framework CoreFoundation
@@ -58,23 +54,26 @@ CMU112_BASE       =   ../../../base
 
 INCLUDEPATH       =   src \
                       src/gui \
-                      src/thirdparty/quazip-0.7.3/quazip/ \
+                      src/models \
+                      src/formats \
+                      src/thirdparty/quazip-1.4/quazip/ \
                       src/thirdparty/minixml/inc \
                       src/thirdparty/tools/inc \
                       src/thirdparty/posixtar/inc \
-                      $$[QT_INSTALL_PREFIX]/include/QtZlib 
-win32:INCLUDEPATH+=   $$(POPPLER_INCLUDE)
+                      $$[QT_INSTALL_PREFIX]/include/QtZlib \
+                      src/thirdparty/quazip-1.4
 win32:INCLUDEPATH+=   $$(ZLIB_INCLUDE)
-macx:INCLUDEPATH +=   /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler \
-                      /usr/local/Cellar/poppler/$$POPPLER_VER/include/poppler/qt5/ \
-                      $$(CV_BOOST_INCLUDE)
-unix:!macx:INCLUDEPATH += /usr/include/poppler
+macx:INCLUDEPATH +=   $$(CV_BOOST_INCLUDE)
 DEPENDPATH       +=   $$INCLUDEPATH
 
 win32:release:LIBS += \
-                      lib/win64/release/poppler-qt5.lib \
-                      lib/win64/release/poppler.lib \
-					  lib/win64/release/zlib.lib
+                      #lib/win64/release/zlib.lib \
+                      src/thirdparty/quazip-1.4/lib/quazip/Release/quazip1-qt6.lib
+win32:debug:LIBS += \
+                      #lib/win64/release/zlib.lib \
+                      src/thirdparty/quazip-1.4/lib/quazip/Debug/quazip1-qt6d.lib \
+                      "C:/Program Files/MySQL/MySQL Server 8.0/lib/mysqlclient.lib" \
+                      "C:/Program Files/MySQL/MySQL Server 8.0/lib/libmysql.lib"
 
    
 # Library dependency checking
@@ -84,23 +83,23 @@ macx:LIBS +=          -L/usr/local/lib \
                       -lboost_date_time \
                       -lboost_regex \
                       -lboost_system \
-                      -lboost_chrono
+                      -lboost_chrono \
+                      -lquazip1-qt6.1.4
 unix:!macx:LIBS +=    -lboost_thread \
                       -lboost_date_time \
                       -lboost_regex \
                       -lboost_system \
                       -lboost_chrono
 
-macx:LIBS        +=   -L/usr/local/Cellar/poppler/$$POPPLER_VER/lib -lpoppler -lpoppler-qt5
-macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz
+macx:LIBS        +=   -L/usr/local/Cellar/zlib/1.2.11/lib  -lz -L./src/thirdparty/quazip-1.4/out/quazip/
 
 # Tested on Debian GNU/Linux using distribution
-# libraries (libpoppler-qt5-dev and libquazip5-dev)
+# libraries (libquazip5-dev)
 unix:!macx {
-INCLUDEPATH      +=   /usr/include/quazip5 /usr/include/poppler/qt5
-LIBS             +=   -lquazip5 -lz -lpoppler -lpoppler-qt5
-target.path       =   /usr/bin
-INSTALLS         +=   target
+    INCLUDEPATH      +=   /usr/include/quazip5
+    LIBS             +=   -lquazip5 -lz
+    target.path       =   /usr/bin
+    INSTALLS         +=   target
 }
 
 TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \
@@ -117,14 +116,19 @@ TOOLS_SOURCES     =   src/thirdparty/tools/src/derror.cpp \
                       src/thirdparty/tools/src/dbaseio.cpp \
                       src/thirdparty/tools/src/dbasefile.cpp \
                       src/thirdparty/tools/src/dfile.cpp
-                      
+        
+MODELS_SOURCES    =   src/models/dtreeitem.cpp \
+                      src/models/dtreemodel.cpp \
+                      src/models/dimport.cpp
+                                
+MODELS_HEADERS    =   src/models/dtreeitem.h \
+                      src/models/dtreemodel.h \
+                      src/models/dimport.h
+                                          
 GUI_SOURCES       =   src/gui/dinsightmainwindow.cpp \
                       src/gui/dinsightreportwindow.cpp \
                       src/gui/dinsightjournalwindow.cpp \
                       src/gui/dtreeview.cpp \
-                      src/gui/dtreeitem.cpp \
-                      src/gui/dtreemodel.cpp \
-                      src/gui/dimport.cpp \
                       src/gui/dwaitcursor.cpp \
                       src/gui/qpersistantfiledialog.cpp \
                       src/gui/qaboutdialog.cpp \
@@ -133,44 +137,10 @@ GUI_HEADERS       =   src/gui/dinsightmainwindow.h \
                       src/gui/dinsightreportwindow.h \
                       src/gui/dinsightjournalwindow.h \
                       src/gui/dtreeview.h \
-                      src/gui/dtreeitem.h \
-                      src/gui/dtreemodel.h \
-                      src/gui/dimport.h \
                       src/gui/dwaitcursor.h \
                       src/gui/qpersistantfiledialog.h \
                       src/gui/qaboutdialog.h  \
                       src/gui/dfixedfolderdialog.h
-
-ZIP_HEADERS       =   src/thirdparty/quazip-0.7.3/quazip/crypt.h \
-                      src/thirdparty/quazip-0.7.3/quazip/ioapi.h \
-                      src/thirdparty/quazip-0.7.3/quazip/JlCompress.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quaadler32.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quachecksum32.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quacrc32.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quagzipfile.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quaziodevice.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quazip.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipdir.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipfile.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipfileinfo.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipnewinfo.h \
-                      src/thirdparty/quazip-0.7.3/quazip/quazip_global.h \
-                      src/thirdparty/quazip-0.7.3/quazip/unzip.h \
-                      src/thirdparty/quazip-0.7.3/quazip/zip.h
-
-ZIP_SOURCES       =   src/thirdparty/quazip-0.7.3/quazip/unzip.c \
-                      src/thirdparty/quazip-0.7.3/quazip/zip.c \
-                      src/thirdparty/quazip-0.7.3/quazip/JlCompress.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/qioapi.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quaadler32.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quacrc32.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quagzipfile.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quaziodevice.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quazip.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipdir.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipfile.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipfileinfo.cpp \
-                      src/thirdparty/quazip-0.7.3/quazip/quazipnewinfo.cpp
 
 FORMS             =   src/gui/dinsightmainwindow.ui \
                       src/gui/dinsightjournalwindow.ui \
@@ -199,7 +169,8 @@ SOURCES          +=   src/main.cpp \
                       src/djournalmatcher.cpp \
                       $$GUI_SOURCES \
                       $$ZIP_SOURCES \
-                      $$POSIXTAR_SOURCES
+                      $$POSIXTAR_SOURCES \
+                      $$MODELS_SOURCES
 
 HEADERS          +=   src/drunguard.h \
                       src/dxmlparser.h \
@@ -217,7 +188,8 @@ HEADERS          +=   src/drunguard.h \
                       $$GUI_HEADERS \
                       $$ZIP_HEADERS \
                       $$TOOLS_INCLUDES \
-                      $$POSIXTAR_INCLUDES   
+                      $$POSIXTAR_INCLUDES \
+                      $$MODELS_HEADERS
 
 TRANSLATIONS      =   insight_nb.ts \
                       insight_nn.ts \

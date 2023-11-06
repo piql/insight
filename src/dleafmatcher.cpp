@@ -78,7 +78,7 @@ bool DLeafMatcher::CreateFromString( DLeafMatcher& matcher, const QString& str )
 {
     // Extract content between [], if any
     QRegularExpression splitTokens("[\\[\\]]");
-    QStringList items = str.split(splitTokens, QString::SplitBehavior::SkipEmptyParts);
+    QStringList items = str.split(splitTokens, Qt::SkipEmptyParts);
     if ( items.size() != 1 && items.size() != 2 )
     {
         return false;
@@ -95,7 +95,7 @@ bool DLeafMatcher::CreateFromString( DLeafMatcher& matcher, const QString& str )
 
 bool DLeafMatcher::IsMatch( const DLeafMatchers& matchers, const QString& key, const QString& value )
 {
-    foreach( const DLeafMatcher& matcher, matchers )
+    for ( const DLeafMatcher& matcher: matchers )
     {
         if ( matcher.isMatch( key,value ) )
         {

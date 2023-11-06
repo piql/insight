@@ -192,7 +192,7 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
     QFileInfo info( fileName );
     if ( !info.exists() )
     {
-        DInsightConfig::Log() << "Non existing file: " << fileName << endl;
+        DInsightConfig::Log() << "Non existing file: " << fileName << Qt::endl;
         return false;
     }
 
@@ -210,7 +210,7 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
         format.m_BaseFormat = new DImportFormat(); 
         if ( !DImportFormat::Load( *format.m_BaseFormat, baseFileName ) )
         {
-            DInsightConfig::Log() << "Failed to load base format: " << baseFileName << endl;
+            DInsightConfig::Log() << "Failed to load base format: " << baseFileName << Qt::endl;
             return false;
         }
     }
@@ -236,7 +236,7 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
     format.m_TreeViewLabelRegExp = format.getRegExps( format.m_Config->getLocalizedKey( "TREEVIEW_LABEL_REGEXP" ) );
     if ( format.m_TreeViewLabelRegExp.size() && format.m_TreeViewLabelRegExp.size() % 2 != 0 )
     {
-        DInsightConfig::Log() << "Invalid TREEVIEW_LABEL_REGEXP. It must have regexp/label pairs." << endl;
+        DInsightConfig::Log() << "Invalid TREEVIEW_LABEL_REGEXP. It must have regexp/label pairs." << Qt::endl;
         format.m_TreeViewLabelRegExp.clear();
     }
 
@@ -249,7 +249,7 @@ bool DImportFormat::Load( DImportFormat& format, const QString& fileName )
     // Detect journal nodes, journal nodes have options for handling associated documents
     if ( !DJournalMatcher::CreateFromString( format.m_JournalMatchers, format.m_Config->get( "INFO_VIEW_JOURNAL_TYPE_REGEXP" ) ) )
     {
-        DInsightConfig::Log() << "Invalid INFO_VIEW_JOURNAL_TYPE_REGEXP. It must have regexp/wildcard/wildcard triplets." << endl;
+        DInsightConfig::Log() << "Invalid INFO_VIEW_JOURNAL_TYPE_REGEXP. It must have regexp/wildcard/wildcard triplets." << Qt::endl;
     }
 
     // Detect folder info node type, presented with a 'View' button in info view
@@ -293,13 +293,13 @@ bool DImportFormats::Load( DImportFormats& formats, const QString& dirName )
     QFileInfoList files = dir.entryInfoList( filters );
     DImportFormat defaultFormat;
     bool defaultFound = false;
-    foreach( QFileInfo file, files )
+    for ( QFileInfo file: files )
     {
-        DInsightConfig::Log() << "Loading format: " << file.absoluteFilePath() << endl;
+        DInsightConfig::Log() << "Loading format: " << file.absoluteFilePath() << Qt::endl;
         DImportFormat format;
         if ( DImportFormat::Load(format, file.absoluteFilePath()) )
         {
-            DInsightConfig::Log() << "Format name: " << format.name() << endl;
+            DInsightConfig::Log() << "Format name: " << format.name() << Qt::endl;
             if ( format.name() != "default" )
             {
                 formats.push_back(format);
@@ -312,7 +312,7 @@ bool DImportFormats::Load( DImportFormats& formats, const QString& dirName )
         }
         else
         {
-            DInsightConfig::Log() << "ERROR loading format: " << file.absoluteFilePath() << endl;
+            DInsightConfig::Log() << "ERROR loading format: " << file.absoluteFilePath() << Qt::endl;
         }
     }
 
@@ -328,8 +328,8 @@ bool DImportFormats::Load( DImportFormats& formats, const QString& dirName )
 
 const DImportFormat* DImportFormats::defaultFormat() const
 {
-    QVector::const_iterator it = begin();
-    QVector::const_iterator itEnd = end();
+    DImportFormats::const_iterator it = begin();
+    DImportFormats::const_iterator itEnd = end();
     for ( ; it != itEnd; it++ )
     {
         if ( it->name() == "default" )
@@ -344,8 +344,8 @@ const DImportFormat* DImportFormats::defaultFormat() const
 
 const DImportFormat* DImportFormats::findMatching( const QString& fileName ) const
 {
-    QVector::const_iterator it = begin();
-    QVector::const_iterator itEnd = end();
+    DImportFormats::const_iterator it = begin();
+    DImportFormats::const_iterator itEnd = end();
 
     // First test if the file format id tool matches
     for ( ; it != itEnd; it++ )
@@ -353,7 +353,7 @@ const DImportFormat* DImportFormats::findMatching( const QString& fileName ) con
         QString tool = it->fileIdTool( fileName );
         if ( tool.length() != 0 )
         {
-            DInsightConfig::Log() << "Executing: " << tool << endl;
+            DInsightConfig::Log() << "Executing: " << tool << Qt::endl;
 
             int ok = QProcess::execute( tool );
             if ( ok == 0 )
@@ -370,27 +370,30 @@ const DImportFormat* DImportFormats::findMatching( const QString& fileName ) con
     {
         const DRegExps& patterns = it->patterns();
 
-        foreach ( const DRegExp& p, patterns )
+        for ( const DRegExp& p: patterns )
         {
             QFileInfo info( fileName );
-            QRegExp wildcard(p.pattern());
-            wildcard.setPatternSyntax(QRegExp::Wildcard);
-            if ( wildcard.exactMatch( info.fileName() ) )
+
+            auto pattern = QString("a .*|") + QRegularExpression::wildcardToRegularExpression(p.pattern());
+
+            // re matches exactly the pattern string p
+            auto wildcard = QRegularExpression(QRegularExpression::anchoredPattern(pattern));
+            if ( wildcard.match( info.fileName() ).hasMatch() )
             {
-                DInsightConfig::Log() << "File name " << fileName << " matches format " << it->name() << " with pattern " << p.pattern() << endl;
+                DInsightConfig::Log() << "File name " << fileName << " matches format " << it->name() << " with pattern " << p.pattern() << Qt::endl;
                 return it;
             }
         }
     }
 
-    DInsightConfig::Log() << "No format matching: " << fileName << ", returning default" << endl;
+    DInsightConfig::Log() << "No format matching: " << fileName << ", returning default" << Qt::endl;
     return defaultFormat();
 }
 
 const DImportFormat* DImportFormats::find( const QString& formatName ) const
 {
-    QVector::const_iterator it = begin();
-    QVector::const_iterator itEnd = end();
+    DImportFormats::const_iterator it = begin();
+    DImportFormats::const_iterator itEnd = end();
     for ( ; it != itEnd; it++ )
     {
         if ( it->name() == formatName )

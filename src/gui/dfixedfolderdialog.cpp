@@ -109,7 +109,7 @@ QString DFixedFolderDialog::fileName()
     return root.absoluteFilePath( m_Ui.lineEdit->text() );
 }
 
-void DFixedFolderDialog::selectionChanged( const QItemSelection& selected, const QItemSelection& )
+void DFixedFolderDialog::selectionChanged( const QItemSelection& /*selected*/, const QItemSelection&)
 {
     QModelIndexList list = m_Ui.treeView->selectionModel()->selectedIndexes();
     

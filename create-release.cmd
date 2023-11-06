@@ -40,30 +40,34 @@ copy sphinx\* %target%\.
 copy src\thirdparty\pdf2text\release\pdf2text.exe %target%\.
 copy c:\windows\system32\MSVCP140.DLL %target%\.
 copy c:\windows\system32\MSVCR140.DLL %target%\.
-copy *qm %target%\.
-copy %QTDIR%\bin\qt5printsupport.dll %target%\.
-copy %QTDIR%\bin\qt5widgets.dll %target%\.
-copy %QTDIR%\bin\qt5gui.dll %target%\.
-copy %QTDIR%\bin\qt5sql.dll %target%\.
-copy %QTDIR%\bin\qt5core.dll %target%\.
-copy %QTDIR%\bin\qt5xml.dll %target%\.
+copy release\*qm %target%\.
+copy %QTDIR%\bin\qt6printsupport.dll %target%\.
+copy %QTDIR%\bin\qt6widgets.dll %target%\.
+copy %QTDIR%\bin\qt6gui.dll %target%\.
+copy %QTDIR%\bin\qt6sql.dll %target%\.
+copy %QTDIR%\bin\qt6core.dll %target%\.
+copy %QTDIR%\bin\qt6xml.dll %target%\.
 copy "c:\Program Files\MySQL\MySQL Server 5.6\lib\libmysql.dll" %target%\.
 
 xcopy /s /i %QTDIR%\plugins\sqldrivers\*dll %target%\sqldrivers
+:: Include custom built mysql driver
+xcopy mysql\plugins\sqldrivers\*dll %target%\sqldrivers
 xcopy /s /i %QTDIR%\plugins\platforms\*dll %target%\platforms
 xcopy /s /i %QTDIR%\plugins\imageformats\*dll %target%\imageformats
 xcopy /s /i %QTDIR%\plugins\styles\*dll %target%\styles
 del %target%\imageformats\*d.dll
 del %target%\sqldrivers\*d.dll
 
-:: Poppler
-copy lib\win64\release\* %target%\.
+:: zlib
+copy %ZLIBDIR%\Release\zlib.dll %target%\.
+copy src\thirdparty\quazip-1.4\out\quazip\Release\*dll %target%\.
 
 :: 7zip
 copy lib\7zip\* %target%\.
 
 :: SPHINX
-copy lib\sphinx\* %target%\.
+set sphinxver="3.5.1"
+copy lib\sphinx-%sphinxver%\bin\* %target%\.
 copy src\thirdparty\create_xml\release\create_xml.exe %target%\.
 
 :: FORMATS

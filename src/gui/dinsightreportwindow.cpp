@@ -29,7 +29,7 @@
 #include    "dinsightconfig.h"
 #include    "qpersistantfiledialog.h"
 #include    "dinsightjournalwindow.h"
-#include    "dinsightmainwindow.h"
+#include    "dcontext.h"
 
 //  ZIP INCLUDES
 //
@@ -37,10 +37,11 @@
 
 //  POPPLER INCLUDES
 //
-#include    <qt5/poppler-qt5.h>
+//#include    <qt5/poppler-qt5.h>
 
 //  QT INCLUDES
 //
+#include    <QPdfDocument>
 #include    <QPainter>
 #include    <QFileDialog>
 #include    <QPrinter>
@@ -180,7 +181,7 @@ bool DInsightReportWindow::createJournalAttachments( QStringList& files )
         for ( ; it != itEnd; it++ )
         {
             QString journalFilename = tr( "journal-%1.pdf" ).arg( journalCount );
-            DInsightMainWindow::MakeAbsolute( journalFilename, (*it)->m_TreeItem, m_Imports );
+            DContext::MakeAbsolute( journalFilename, (*it)->m_TreeItem, m_Imports );
             QString tempDir = QFileInfo( journalFilename ).path();
             bool ok = DInsightJournalWindow::GeneratePdf( journalFilename, *it, tempDir );
             if ( !ok )
@@ -188,7 +189,7 @@ bool DInsightReportWindow::createJournalAttachments( QStringList& files )
                 QString title = tr( "Failed to create PDF file" );
                 QString message = tr( "Failed to create file: %1" ).arg( journalFilename );
 
-                DInsightConfig::Log() << message << endl;
+                DInsightConfig::Log() << message << Qt::endl;
                 QMessageBox::warning( this, title, message );
                 return false;
             }
@@ -226,7 +227,7 @@ bool DInsightReportWindow::printAttachments( QPrinter& printer )
         return false;
     }
 
-    foreach( QString attachment, files )
+    for ( const QString& attachment: files )
     {        
         QPainter painter( &printer );
 
@@ -261,18 +262,16 @@ bool DInsightReportWindow::printAttachments( QPrinter& printer )
 
 bool DInsightReportWindow::printPdfAttachment( QPainter& painter, QPrinter& printer, const QString& attachment )
 {
-    Poppler::Document * pdfDoc = Poppler::Document::load( attachment );
-    if ( !pdfDoc )
+    QPdfDocument pdfDoc( this );
+    if ( pdfDoc.load(attachment ) != QPdfDocument::Error::None )
     {
         QMessageBox::warning( this, tr( "Failed to open PDF" ), tr( "Failed to open: %1" ).arg( attachment ) );
         return false;
     }
 
-    for ( int p = 0; p < pdfDoc->numPages(); p++ )
+    for ( int p = 0; p < pdfDoc.pageCount(); p++ )
     {
-        Poppler::Page* page = pdfDoc->page( p );
-
-        QImage image = page->renderToImage();
+        QImage image = pdfDoc.render(p, printer.pageRect(QPrinter::Unit::DevicePixel).size().toSize());
         if ( image.isNull() )
         {
             QMessageBox::warning( this, tr( "Failed to render PDF" ), tr( "Failed to render: %1" ).arg( attachment ) );
@@ -280,10 +279,8 @@ bool DInsightReportWindow::printPdfAttachment( QPainter& painter, QPrinter& prin
         }
         painter.drawImage( 0, 0, image );
         printer.newPage();
-        delete page;
     }
 
-    delete pdfDoc;
     return true;
 }
 
@@ -297,12 +294,12 @@ bool DInsightReportWindow::printImageAttachment( QPainter& painter, QPrinter& pr
         return false;
     }
 
-    double xscale = printer.pageRect().width() / double(image.width());
-    double yscale = printer.pageRect().height() / double(image.height());
+    double xscale = printer.pageRect(QPrinter::Unit::DevicePixel).width() / double(image.width());
+    double yscale = printer.pageRect(QPrinter::Unit::DevicePixel).height() / double(image.height());
 
     double scale = qMin(xscale, yscale);
-    painter.translate(printer.paperRect().x() + printer.pageRect().width() / 2,
-                      printer.paperRect().y() + printer.pageRect().height() / 2);
+    painter.translate(printer.paperRect(QPrinter::Unit::DevicePixel).x() + printer.pageRect(QPrinter::Unit::DevicePixel).width() / 2,
+                      printer.paperRect(QPrinter::Unit::DevicePixel).y() + printer.pageRect(QPrinter::Unit::DevicePixel).height() / 2);
     painter.scale(scale, scale);
     painter.translate(-image.width() / 2, -image.height() / 2); // note uses the form width/height! use pix.h/w if random image
     //painter.drawPixmap(0, 0, pix);
@@ -325,7 +322,7 @@ bool DInsightReportWindow::printTextAttachment( QPainter& /*painter*/, QPrinter&
 
     QTextStream out( &data );
     QTextDocument doc( out.readAll() );
-    doc.setPageSize( printer.pageRect().size() ); // This is necessary if you want to hide the page number
+    doc.setPageSize( printer.pageRect(QPrinter::Unit::DevicePixel).size() ); // This is necessary if you want to hide the page number
     doc.print( &printer );
 
     return true;
@@ -350,9 +347,9 @@ bool DInsightReportWindow::createAttachmentArchive( const QString& fileName, con
     if ( !JlCompress::compressFiles( fileName, files ) )
     {
         QString title = tr( "Failed to create ZIP file");
-        QString message = tr( "Failed to create file: %1" ).arg( fileName );    
+        QString message = tr( "Failed to create file: %1" ).arg( fileName );
 
-        DInsightConfig::Log() << message << endl;
+        DInsightConfig::Log() << message << Qt::endl;
         QMessageBox::warning( this, title, message );
         return false;
     }

@@ -160,7 +160,7 @@ public:
     const DRegExps&     nodeRegExp() const;
     const DRegExps&     labelRegExp() const;
     const DImportFormat* format() const;
-    bool                isToplevelRoot();
+    bool                isToplevelRoot() const;
     void                setImportFormat( const DImportFormat* format );
 
 private:

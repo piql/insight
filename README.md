@@ -1,46 +1,51 @@
 
 # Table of Contents
 
-1.  [Introduction](#orgf8a74d2)
-2.  [About](#org04041f2)
-3.  [System Requirements](#org417adae)
-    1.  [OS-X / Linux](#orgcfbb6b0)
-4.  [Installation](#org679ec9d)
-5.  [Usage](#org9b7a1cb)
-6.  [Sphinx indexer and search engine](#org88b9ded)
-7.  [Reports](#orga28b81f)
-8.  [Journals](#orgabe3d53)
-    1.  [Creating *searchable-PDFs*](#org4bc7055)
-9.  [Log files](#orgbaf2dbd)
-10. [Configuration](#org9a1e7a2)
-    1.  [Tip](#org4ba8149)
-11. [Batch mode](#orgddd2e74)
-12. [How to report issues](#orge158d15)
-13. [History](#org63997a5)
-    1.  [insight-v1.2.0](#org0d7fdcd)
-    2.  [insight-v1.2.0-beta3](#orgc0102c8)
-        1.  [New features](#org9df6a3d)
-    3.  [innsyn-v1.2.0-beta1](#org819272d)
-        1.  [New features](#org12f1b7a)
-    4.  [01.07.2020 innsyn-v1.1.0](#org1fc15bd)
-        1.  [Fixes](#org78a5631)
-    5.  [innsyn-v1.1.0-beta2](#org31b8010)
-        1.  [Fixes](#orgeccf1fc)
-    6.  [innsyn-v1.1.0-beta1](#orge4f5804)
-        1.  [New features](#org1a99b84)
-        2.  [Fixes](#org9e30c35)
-    7.  [2018.06.01 innsyn-v1.0.0](#org7aaa33e)
-        1.  [Fixes](#org97d791c)
-    8.  [2018.04.13 innsyn-v1.0.0-rc1](#org0aa8db4)
-    9.  [2018.02.05 innsyn-v1.0.0-beta2](#org9d26b4c)
-    10. [2018.01.18 innsyn-v1.0.0-beta1](#org431ad64)
-14. [Development](#org24540bc)
-    1.  [Ubuntu](#org5467307)
-    2.  [Windows](#org8275eb6)
+1.  [Introduction](#orgd37efff)
+2.  [About](#org848f6bb)
+3.  [System Requirements](#org94a391a)
+    1.  [OS-X / Linux](#org58e0b0d)
+4.  [Installation](#orgc9b0958)
+5.  [Usage](#org134d5ef)
+6.  [Sphinx indexer and search engine](#orgec31a91)
+7.  [Reports](#orgd6db6a1)
+8.  [Journals](#orgfdf4cc7)
+    1.  [Creating *searchable-PDFs*](#org2ac13b5)
+9.  [Log files](#org96a2449)
+10. [Configuration](#org4675467)
+    1.  [Tip](#orgfe50afe)
+11. [Batch mode](#org7bca128)
+    1.  [Batch mode example](#orga24be88)
+12. [How to report issues](#orga83e37a)
+13. [History](#orgd10e3f4)
+    1.  [insight-v1.3.0](#orge1f24fa)
+    2.  [insight-v1.2.0](#org029cca5)
+    3.  [insight-v1.2.0-beta3](#org9eaf462)
+        1.  [New features](#org1c9ba28)
+    4.  [innsyn-v1.2.0-beta1](#org0a36f0c)
+        1.  [New features](#org0a3e47f)
+    5.  [01.07.2020 innsyn-v1.1.0](#orgdd72120)
+        1.  [Fixes](#orgacccf30)
+    6.  [innsyn-v1.1.0-beta2](#org256ce45)
+        1.  [Fixes](#org21fffb0)
+    7.  [innsyn-v1.1.0-beta1](#orgddbb8e5)
+        1.  [New features](#orge9e019c)
+        2.  [Fixes](#org56f71ea)
+    8.  [2018.06.01 innsyn-v1.0.0](#org9db0ca6)
+        1.  [Fixes](#org48e9dc5)
+    9.  [2018.04.13 innsyn-v1.0.0-rc1](#org4651688)
+    10. [2018.02.05 innsyn-v1.0.0-beta2](#org95df22d)
+    11. [2018.01.18 innsyn-v1.0.0-beta1](#org8614bac)
+14. [Development](#org943f71f)
+    1.  [pdftotext](#org032d1f7)
+        1.  [Windows](#orgc5b69e2)
+        2.  [Other](#orgb7d9b38)
+    2.  [Ubuntu](#orgfe9eeab)
+    3.  [Windows](#orge2319ea)
 
 
 
-<a id="orgf8a74d2"></a>
+<a id="orgd37efff"></a>
 
 # Introduction
 
@@ -58,21 +63,21 @@ Insight ships with these formats:
 -   TAR: Insight opens tar files and shows its content. XML files inside the tar can be further examined.
 
 
-<a id="org04041f2"></a>
+<a id="org848f6bb"></a>
 
 # About
 
 Piql Insight was originally developed for the *Kommunenes Digitale Ressursjsentral (KDRS)* in Norway and released under the name *KDRS Innsyn*. Its job was to support dissemination of archival packages in the *NORAK-5* format, used by the Norwegian legislation. It has later been extended to support multiple IP formats.
 
 
-<a id="org417adae"></a>
+<a id="org94a391a"></a>
 
 # System Requirements
 
 Released applications are tested on Windows 10 64bit.
 
 
-<a id="orgcfbb6b0"></a>
+<a id="org58e0b0d"></a>
 
 ## OS-X / Linux
 
@@ -91,23 +96,23 @@ Check that tool is available:
     Copyright (c) 2008-2016, Sphinx Technologies Inc (http://sphinxsearch.com)
 
 
-<a id="org679ec9d"></a>
+<a id="orgc9b0958"></a>
 
 # Installation
 
-1.  Extract *insight-v1.2.0.zip*.
+1.  Extract *insight-v1.3.0.zip*.
 2.  Indexing of attachments can require some disk space, consider changing data location
     *REPORTS\_DIR* in *insight.conf* and ensure it points to a location with sufficient disk space.
 3.  UI language can be changed by editing *LANGUAGE* in *insight.conf*. Current available languages are *english*, *norwegian-bokmål* and *norwegian-nynorsk*. Default language is *english*. Please note that changing language after launch can cause trouble since some of the paths are localized.
 
 
-<a id="org9b7a1cb"></a>
+<a id="org134d5ef"></a>
 
 # Usage
 
 ![img](./screenshot2.png)
 
-1.  Launch *insight.exe* (OS-X/Linux: insight) from *innsyn-v1.2.0*.
+1.  Launch *insight.exe* (OS-X/Linux: insight) from *innsyn-v1.3.0*.
 2.  The UI has four main elements:
     1.  **Node tree**: Shows all the elements in the imported XML/package. Each node in the tree corresponds to an XML tag or a file. It also shows previously loaded packages. These can be reloaded or deleted by using the **Import** or **Delete** buttons in the node-info window.
     2.  **Node info**: Shows detailed info for each node. Some elements have action buttons attached to them. For example has the element for attachments a **Display** button that allows the user to display the attachment with the viewer the operating system has associated with this file format.
@@ -126,11 +131,12 @@ Check that tool is available:
     2.  **Export**: Generate a report of selected nodes in the node tree. The report can be saved to disk or sent as an attachment in e-mail. Please note security requirements for disseminated material before sending on e-mail.
 
 
-<a id="org88b9ded"></a>
+<a id="orgec31a91"></a>
 
 # Sphinx indexer and search engine
 
-For efficient full text searches in the attachments referenced by the archival package the search engine Sphinx is used. First all attachments are converted to text, then Sphinx builds and index to facilitate efficient look-ups.
+For efficient full text searches in the attachments referenced by the archival package the search engine [Sphinx](http://sphinxsearch.com/downloads/sphinx-3.5.1-82c60cb-windows-amd64.zip/thankyou.html) is used. First all attachments are converted to text, then Sphinx builds and index to facilitate efficient look-ups.
+The command line tool *pdftotext* is used to convert the PDF files to text. This tool must be avaliable in the path.
 
 With insight running and after loading and indexing an archival package, it is possible to run SQL queries directly on the index with MySQL (version 5.6) client installed:
 
@@ -148,14 +154,14 @@ With insight running and after loading and indexing an archival package, it is p
 See Sphinx user manual for more information.
 
 
-<a id="orga28b81f"></a>
+<a id="orgd6db6a1"></a>
 
 # Reports
 
 After import a PDF-report is generated it the report folder as configured by the *REPORTS\_DIR* key in *insight.conf*. The reports are stored in a folder named *REPORTS\_DIR\yyyy\MM\DD\TTMMSS\\*. In the report folder the Sphinx index and similar data attached to the IP is stored.
 
 
-<a id="orgabe3d53"></a>
+<a id="orgfdf4cc7"></a>
 
 # Journals
 
@@ -164,7 +170,7 @@ After import a PDF-report is generated it the report folder as configured by the
 For some XML based formats there can be a one to many relation between a node in the XML and files in the archival package. An example of this is the Norwegian Health Archive package where the *avlxml.xml* file can reference multiple digitized pages and corresponding OCR metadata. This relationship can be configured using the key *INFO\_VIEW\_JOURNAL\_TYPE\_REGEXP* in the import format file. Nodes matching this key will get a **Journal** button at the bottom of the node view. The Journal view allows users to select pages that should be exported.
 
 
-<a id="org4bc7055"></a>
+<a id="org2ac13b5"></a>
 
 ## Creating *searchable-PDFs*
 
@@ -177,25 +183,25 @@ Supported OCR formats are ALTO and HOCR. For more information how this mode work
 -   [alto\_\_hocr.xsl](https://github.com/filak/hOCR-to-ALTO): XSLT scheme for translating from ALTO to hOCR OCR format.
 
 
-<a id="orgbaf2dbd"></a>
+<a id="org96a2449"></a>
 
 # Log files
 
--   **insight-v1.2.0\insight.log**: Application log.
--   **insight-v1.2.0\insight.dmp**: Generated on Windows if application crashes.
+-   **insight-v1.3.0\insight.log**: Application log.
+-   **insight-v1.3.0\insight.dmp**: Generated on Windows if application crashes.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\attachments.log**: Attachments to text convert log.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\indexer.log**: Log from Sphinx indexer.
 -   **REPORTS\_DIR\YYYY\MM\DD\TTMMSS\sphinx\test1\searchd.log**: Log from Sphinx search engine.
 
 
-<a id="org9a1e7a2"></a>
+<a id="org4675467"></a>
 
 # Configuration
 
 The config file is named *insight.conf*. The goal of the config file is that it is self documenting, so inspect it for further details. If the config file is changed the application has to be restarted. Each import format has its own config file stored under *formats*. All files ending with *.conf* in this folder will be loaded at startup and displayed in the file open dialog. 
 
 
-<a id="org4ba8149"></a>
+<a id="orgfe50afe"></a>
 
 ## Tip
 
@@ -203,45 +209,87 @@ The config file is named *insight.conf*. The goal of the config file is that it 
     It could be that the application is running in an emulator or has a screen with high resolution. Try launching the app `insight -platform windows:dpiawareness=0` to get correct window size. Description of other parameters influencing user interface are documented here: <https://doc.qt.io/qt-5/qguiapplication.html#supported-command-line-options>
 
 
-<a id="orgddd2e74"></a>
+<a id="org7bca128"></a>
 
 # Batch mode
 
+![img](batch-mode.png)
+
+To support automated dissemination workflows Insight support batch mode using the command line parameters: *&#x2013;file*, *&#x2013;file-format* and *&#x2013;auto-export*. The **auto-export** feature is useful if the format is configures to auto select nodes at import using the *TREEVIEW\_AUTO\_SELECT\_REGEXP* key.
+
+
+<a id="orga24be88"></a>
+
+## Batch mode example
+
+    insight --file nha-sip.tar --file-format "Norsk Helsearkiv SIP" \
+      --auto-export out.pdf
+
+This command will open the AIP file *nha-sip.tar* as a *Norsk Helsearkiv SIP* as defined by <./formats/nha-sip.conf> format file and export it to *out.pdf*, then exit the application. Full example [here](./nha-sip-convert.cmd).
+
+The import process is controlled by various keys in the format file:
+
+    ; File patterns supported by the format, separated by '@'
+    IMPORT_FORMAT_PATTERNS=*.7z@*.tar
+    ; Extraction tools, order must match pattern list above
+    EXTRACT_TOOL="^.*\.7z$@7z x -y \
+      -o%DESTINATION% %FILENAME%@^.*\.tar$@tar \
+      -C %DESTINATION% -xf %FILENAME%"
     
-    +-------------+     +---------+     +-----------------+
-    | Archival    |     |         |     | Searchable PDF  |
-    | Information +---->| Insight |---->| with            |
-    | Package {d} |     |         |     | OCR {d}         |
-    +-------------+     +---------+     +-----------------+
+    ; Auto load nodes will be loaded into tree view when importing XML
+    INFOVIEW_AUTO_IMPORT_REGEXP_EN=filename[^.*avlxml\\.xml$]
 
-To support automated dissemination workflows Insight support batch mode using the command line parameters: *&#x2013;file*, *&#x2013;file-format* and *&#x2013;auto-export*.
+Auto load nodes will use the first format matching the filename. For the example above this is <./formats/epjark.conf>. This format definition file uses the *TREEVIEW\_AUTO\_SELECT\_REGEXP* key to auto-select nodes at import. Only selected nodes will be included in the export.
+
+    ; Auto select nodes will be selected when importing XML
+    TREEVIEW_AUTO_SELECT_REGEXP=pasientjournal@diagnose
 
 
-<a id="orge158d15"></a>
+<a id="orga83e37a"></a>
 
 # How to report issues
 
 Please create a GitHub issue with a detailed as possible description of what happened. Attach log files and *insight.dmp* if it exists. Do not post sensitive material!
 
 
-<a id="org63997a5"></a>
+<a id="orgd10e3f4"></a>
 
 # History
 
 
-<a id="org0d7fdcd"></a>
+<a id="orge1f24fa"></a>
+
+## insight-v1.3.0
+
+-   Upgraded to Qt 6.5
+-   Replaced PDF library poppler with QPdfDocument
+-   Replaced custom built pdftotext tool with precomiled tool
+-   OS-X: Support dark mode
+-   OS-X: Fix view relative folder
+-   Upgraded to latest sphinx indexer
+-   Random format: Bugfixes.
+-   Optimize: Made reading & parsing of XMLs run in parallell.
+-   Journal: Fixed crash if journal had no pages.
+
+-   Bugs:
+    -   OS-X: Does not load config file
+    -   Parse Journal pages bug?
+    -   Attachments search button not always visible after load.
+
+
+<a id="org029cca5"></a>
 
 ## insight-v1.2.0
 
 -   Translated user manual to English.
 
 
-<a id="orgc0102c8"></a>
+<a id="org9eaf462"></a>
 
 ## insight-v1.2.0-beta3
 
 
-<a id="org9df6a3d"></a>
+<a id="org1c9ba28"></a>
 
 ### New features
 
@@ -251,12 +299,12 @@ Please create a GitHub issue with a detailed as possible description of what hap
 -   Batch mode: Support automatic export using the command line options: *&#x2013;file*, *&#x2013;file-format* and *&#x2013;auto-export*.
 
 
-<a id="org819272d"></a>
+<a id="org0a36f0c"></a>
 
 ## innsyn-v1.2.0-beta1
 
 
-<a id="org12f1b7a"></a>
+<a id="org0a3e47f"></a>
 
 ### New features
 
@@ -264,12 +312,12 @@ Please create a GitHub issue with a detailed as possible description of what hap
 -   Support journal.
 
 
-<a id="org1fc15bd"></a>
+<a id="orgdd72120"></a>
 
 ## 01.07.2020 innsyn-v1.1.0
 
 
-<a id="org78a5631"></a>
+<a id="orgacccf30"></a>
 
 ### Fixes
 
@@ -277,24 +325,24 @@ Please create a GitHub issue with a detailed as possible description of what hap
 -   Read config files as UTF-8 on Windows.
 
 
-<a id="org31b8010"></a>
+<a id="org256ce45"></a>
 
 ## innsyn-v1.1.0-beta2
 
 
-<a id="orgeccf1fc"></a>
+<a id="org21fffb0"></a>
 
 ### Fixes
 
 -   Install for Windows.
 
 
-<a id="orge4f5804"></a>
+<a id="orgddbb8e5"></a>
 
 ## innsyn-v1.1.0-beta1
 
 
-<a id="org1a99b84"></a>
+<a id="orge9e019c"></a>
 
 ### New features
 
@@ -303,59 +351,84 @@ Please create a GitHub issue with a detailed as possible description of what hap
 -   Support for loading referenced files.
 
 
-<a id="org9e30c35"></a>
+<a id="org56f71ea"></a>
 
 ### Fixes
 
 -   Setup Sphinx for Linux / OS-X.
 
 
-<a id="org7aaa33e"></a>
+<a id="org9db0ca6"></a>
 
 ## 2018.06.01 innsyn-v1.0.0
 
 
-<a id="org97d791c"></a>
+<a id="org48e9dc5"></a>
 
 ### Fixes
 
 -   Matching for special chars.
 
 
-<a id="org0aa8db4"></a>
+<a id="org4651688"></a>
 
 ## 2018.04.13 innsyn-v1.0.0-rc1
 
 Pre release.
 
 
-<a id="org9d26b4c"></a>
+<a id="org95df22d"></a>
 
 ## 2018.02.05 innsyn-v1.0.0-beta2
 
 Pre release.
 
 
-<a id="org431ad64"></a>
+<a id="org8614bac"></a>
 
 ## 2018.01.18 innsyn-v1.0.0-beta1
 
 First beta test release.
 
 
-<a id="org24540bc"></a>
+<a id="org943f71f"></a>
 
 # Development
 
 The application is created using the Qt framework. When this is installed the application can be build using:
 
-    (cd src/thirdparty ; unzip quazip-0.7.3.zip)
+    # Linux / OS-X
+    (cd src/thirdparty ; \
+     unzip quazip-1.4.zip ; \
+     cd quazip-1.4 ; \
+     cmake -S . -B ./out -D QUAZIP_QT_MAJOR_VERSION=6 ; \
+     cmake --build ./out)
     ./update-translations.sh
     qmake
     make
+    
+    # Windows
+    cd src/thirdparty
+    unzip quazip-1.4.zip
+    cd quazip-1.4
+    cmake -S . -B ./out -D QUAZIP_QT_MAJOR_VERSION=6 -D CMAKE_LIBRARY_PATH=c:\dev\Piql\zlib-win64\Release
+    cmake --build ./out --config release 
+    cmake --build ./out --config debug
+    ./update-translations.sh
+    qmake
+    nmake
 
-On systems the MySQL driver has to be built:
+On some systems the MySQL driver has to be built and copied to distribution dir:
 <https://doc.qt.io/qt-5/sql-driver.html#qmysql-for-mysql-5-and-higher>
+
+\`\`\`
+mkdir mysql
+cd mysql
+qt-cmake c:\Qt\\6.5.0\Src\qtbase\src\plugins\sqldrivers \\
+   -DCMAKE\_INSTALL\_PREFIX=c:\Qt\\6.5.0\msvc2019\_64 \\
+   -DMySQL\_INCLUDE\_DIR="c:\Program Files\MySQL\MySQL Server 8.0\include" \\
+   -DMySQL\_LIBRARY="c:\Program Files\MySQL\MySQL Server 8.0\lib\libmysql.lib"
+\`\`\`
 
 To create release packages use:
 
@@ -363,7 +436,26 @@ To create release packages use:
     create-release.cmd
 
 
-<a id="org5467307"></a>
+<a id="org032d1f7"></a>
+
+## pdftotext
+
+
+<a id="orgc5b69e2"></a>
+
+### Windows
+
+The tool pdftotext comes from the *Xpdf command line tools* pacakge downloaded from <https://www.xpdfreader.com/download.html>. The *pdf2text.exe* and config file *xpdfrc* must be in the path.
+
+
+<a id="orgb7d9b38"></a>
+
+### Other
+
+Intall with you favourite package manager and ensure tool is avaliable in path.
+
+
+<a id="orgfe9eeab"></a>
 
 ## Ubuntu
 
@@ -373,12 +465,10 @@ To create release packages use:
     sudo apt install qttools5-dev-tools
 
 
-<a id="org8275eb6"></a>
+<a id="orge2319ea"></a>
 
 ## Windows
 
     setup-win64.cmd
     qmake -tp vc
-
-Poppler PDF library have to be compiled manually.
 

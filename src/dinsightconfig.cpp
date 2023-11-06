@@ -33,6 +33,7 @@
 #include    <QCoreApplication>
 #include    <QFile>
 #include    <QDateTime>
+#include    <QtSystemDetection>
 
 
 /****************************************************************************/
@@ -53,21 +54,23 @@ DInsightConfig::DInsightConfig( const QString& fileName )
       m_Settings( m_FileName, QSettings::IniFormat )
 {
 #ifdef _WIN32
-    m_Settings.setIniCodec( "UTF-8" );
+//    m_Settings.setIniCodec( "UTF-8" );
 #endif // _WIN32
 }
 
 
 DInsightConfig::DInsightConfig()
   : m_FileName( DefaultFileName() ),
-#ifdef _WIN32
+#if defined(Q_OS_WIN)
+    m_Settings( DefaultFileName(), QSettings::IniFormat )
+#elif defined(Q_OS_MACOS)
     m_Settings( DefaultFileName(), QSettings::IniFormat )
 #else
     m_Settings( QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(), QCoreApplication::applicationName() )
 #endif
 {
 #ifdef _WIN32
-    m_Settings.setIniCodec( "UTF-8" );
+//    m_Settings.setIniCodec( "UTF-8" );
 #endif // _WIN32
 }
 
@@ -183,7 +186,7 @@ DRegExps DInsightConfig::StringToRegExps( const QString& str )
     DRegExps regExps;
 
     QStringList regExpsString = str.split( "@" );
-    foreach( const QString& r, regExpsString )
+    for ( const QString& r: regExpsString )
     {
         if ( r.length() )
         {
@@ -207,7 +210,7 @@ DLeafMatchers DInsightConfig::StringToLeafMatchers( const QString& str )
     DLeafMatchers matchers;
 
     QStringList strings = str.split( "@" );
-    foreach( const QString& r, strings )
+    for ( const QString& r: strings )
     {
         if ( r.length() )
         {
@@ -256,7 +259,7 @@ QDebug&  DInsightConfig::Log()
 
 //----------------------------------------------------------------------------
 /*!
- *  REturn current date as string, suitable for creating filenames with dates.
+ *  Return current date as string, suitable for creating filenames with dates.
  */
 
 QString DInsightConfig::FileNameDatePart()

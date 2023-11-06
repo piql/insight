@@ -104,7 +104,7 @@ void DDirParser::run()
     QDir dir( m_Filename );
     if ( !dir.exists() )
     {
-        DInsightConfig::Log() << "Opening failed, dir does not exist: " << m_Filename << endl;
+        DInsightConfig::Log() << "Opening failed, dir does not exist: " << m_Filename << Qt::endl;
         incItems( NULL, true );   
         return;
     }
@@ -157,7 +157,7 @@ void DDirParser::run()
         QString relativeFilename = absDir.relativeFilePath( absFile );
         QStringList parts = relativeFilename.split('/');
 
-        foreach( const QString& part, parts )
+        for ( const QString& part: parts )
         {
             if ( part == "." || part.length() == 0 )
             {
@@ -193,7 +193,7 @@ void DDirParser::run()
 
         // Date
         char* dateString = (char*)malloc(32);
-        time_t time = fileInfo.created().toTime_t();
+        time_t time = fileInfo.birthTime().toSecsSinceEpoch();
         // Format: 15.06.2009 20:20:00
 
 #if defined (WIN32)

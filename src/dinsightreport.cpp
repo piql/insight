@@ -257,7 +257,9 @@ bool DInsightReport::save( const QString& fileName )
     {
         QPrinter printer( QPrinter::PrinterResolution );
         printer.setOutputFormat( QPrinter::PdfFormat );
-        printer.setPaperSize( QPrinter::A4 );
+        QPageLayout pageLayout = printer.pageLayout();
+        pageLayout.setPageSize(QPageSize::A4);
+        printer.setPageLayout( pageLayout );
         printer.setOutputFileName( fileName );
 
         return print( printer );
@@ -270,7 +272,7 @@ bool DInsightReport::save( const QString& fileName )
             return false;
         }
         QTextStream stream( &out );
-        stream << m_Text << endl;
+        stream << m_Text << Qt::endl;
         return out.flush();
     }
 }
@@ -287,7 +289,7 @@ bool DInsightReport::print( QPrinter& printer )
 
     QTextDocument doc;
     doc.setHtml( m_Text );
-    doc.setPageSize( printer.pageRect().size() ); // This is necessary if you want to hide the page number
+    doc.setPageSize( printer.pageRect(QPrinter::Unit::Point).size() ); // This is necessary if you want to hide the page number
     doc.print( &printer );
 
     return true;

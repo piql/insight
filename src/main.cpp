@@ -140,28 +140,30 @@ int  main( int argc, char* argv[] )
     qtApp.setOrganizationName( "Piql" );
     qtApp.setOrganizationDomain("piql.com");
     qtApp.setApplicationName( "insight" );
-    qtApp.setApplicationVersion( "v1.2.0-beta3" );
+    qtApp.setApplicationVersion( "v1.3.0" );
 
-    QCommandLineParser parser;
-    parser.setApplicationDescription( "Archival Package Inspector and Dissimination tool" );
-    QCommandLineOption helpOption = parser.addHelpOption();
-    QCommandLineOption versionOption = parser.addVersionOption();
+    QCommandLineParser cmdLine;
+    cmdLine.setApplicationDescription( "Archival Package Inspector and Dissimination tool" );
+    QCommandLineOption helpOption = cmdLine.addHelpOption();
+    QCommandLineOption versionOption = cmdLine.addVersionOption();
 
     // Add options
     QCommandLineOption fileOption( QStringList() << "f" << "file", "<file> to open", "file" );
     QCommandLineOption fileFormatOption( QStringList() << "file-format", "<format> of file to open", "format" );
     QCommandLineOption autoExportOption( QStringList() << "a" << "auto-export", "Auto export to <file>", "file" );
-    parser.addOption( fileOption );
-    parser.addOption( fileFormatOption );
-    parser.addOption( autoExportOption );
+    QCommandLineOption serverOption(QStringList() << "s" << "server", "Run in server mode", "port");
+    cmdLine.addOption( fileOption );
+    cmdLine.addOption( fileFormatOption );
+    cmdLine.addOption( autoExportOption );
+    //cmdLine.addOption( serverOption );
 
 
     QString language = DInsightConfig::Get( "LANGUAGE", "en" );
     QString languageFile = QString( "insight_%1.qm" ).arg( language );
     languageFile = DOsXTools::GetBundleResource( languageFile.toStdString() ).c_str();
 
-    DInsightConfig::Log() << QSqlDatabase::drivers() << endl;
-    DInsightConfig::Log() << QCoreApplication::libraryPaths() << endl;
+    DInsightConfig::Log() << QSqlDatabase::drivers() << Qt::endl;
+    DInsightConfig::Log() << QCoreApplication::libraryPaths() << Qt::endl;
 
     // Localization support
     QTranslator translator;
@@ -187,11 +189,12 @@ int  main( int argc, char* argv[] )
 
     // Load the import formats
     DImportFormats formats;
-    if ( !DImportFormats::Load( formats, "./formats" ) )
+    QString formatsDefaultDir = DOsXTools::GetBundleResource( "./formats" ).c_str();
+    if ( !DImportFormats::Load( formats, formatsDefaultDir ) )
     {
         QMessageBox::warning( 
             nullptr, "Load error",
-            QString( "Failed to load import formats." ) );
+            QString( "Failed to load import formats from %1." ).arg(formatsDefaultDir) );
         return 1;
     }
 
@@ -216,28 +219,29 @@ int  main( int argc, char* argv[] )
     DImport::SetReportFormat( reportFormat );
 
     // Parse command line
-    parser.process( qtApp );
+    cmdLine.process( qtApp );
 
-    if ( !parser.parse( QCoreApplication::arguments() ) ) {
-        std::cerr << parser.errorText().toStdString() << endl;
+    if ( !cmdLine.parse( QCoreApplication::arguments() ) ) {
+        std::cerr << cmdLine.errorText().toStdString() << std::endl;
         return 1;
     }
 
-    if ( parser.isSet( versionOption ) )
+    if ( cmdLine.isSet( versionOption ) )
     {
         printf( "%s %s\n", qPrintable( QCoreApplication::applicationName() ),
             qPrintable( QCoreApplication::applicationVersion() ) );
         return 0;
     }
 
-    if ( parser.isSet( helpOption ) )
+    if ( cmdLine.isSet( helpOption ) )
     {
-        parser.showHelp();
+        cmdLine.showHelp();
         return 0;
     }
 
+    // Start GUI mode
     QString attachmentParsing = DInsightConfig::Get( "ATTACHMENT_PARSING", "ASK" );
-    if ( parser.isSet( autoExportOption ) )
+    if ( cmdLine.isSet( autoExportOption ) )
     {
         attachmentParsing = "YES";
     }
@@ -246,12 +250,12 @@ int  main( int argc, char* argv[] )
     DInsightMainWindow window( &formats, attachmentParsing );
     window.setWindowTitle( DInsightConfig::Get( "WINDOW_TITLE", "KDRS Innsyn" ) );
 
-    if ( parser.isSet( fileOption ) )
+    if ( cmdLine.isSet( fileOption ) )
     {
-        window.importFile( parser.value( fileOption ), parser.value( fileFormatOption ), parser.value( autoExportOption ) );
+        window.importFile( cmdLine.value( fileOption ), cmdLine.value( fileFormatOption ), cmdLine.value( autoExportOption ) );
     }
 
-    if ( !parser.isSet( autoExportOption ) )
+    if ( !cmdLine.isSet( autoExportOption ) )
     {
         // Start GUI
         window.show();

@@ -40,6 +40,7 @@
 #include    "qaboutdialog.h"
 #include    "dimportformat.h"
 #include    "dinsightjournalwindow.h"
+#include    "dcontext.h"
 
 //  QT INCLUDES
 //
@@ -138,13 +139,15 @@ void DTableSearchResultCell::mouseDoubleClickEvent(QMouseEvent * /*event*/)
  */
 
 DInsightMainWindow::DInsightMainWindow( 
-    DImportFormats* formats,
+    DContext& context,
     const QString& attachmentParsing )
-  : m_CurrentImport( nullptr ),
-    m_Model( nullptr ),
+  : m_Context(context),
+    m_CurrentImport( nullptr ),
+    m_Model( &context.m_Model ),
     m_SearchThread( nullptr ),
     m_SearchDeamonProcess( nullptr ),
-    m_ImportFormats( formats ),
+    m_ImportFormats( &context.m_ImportFormats ),
+    m_Imports( context.m_Imports),
     m_AttachmentParsing( attachmentParsing )
 {
     m_Ui.setupUi( this );
@@ -165,7 +168,6 @@ DInsightMainWindow::DInsightMainWindow(
     QObject::connect( m_Ui.searchEdit, SIGNAL(textChanged(const QString &)), this, SLOT(searchEditChanged(const QString &)));
     
     // Tree view and mode setup
-    m_Model = new DTreeModel( m_ImportFormats );
     QObject::connect( m_Model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &)), this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> &)));
 
 #if defined ENABLE_MODELTEST
@@ -249,8 +251,8 @@ DInsightMainWindow::DInsightMainWindow(
     m_Ui.exportButton->setEnabled( false );
     m_Ui.searchResult->setVisible( false );
 
-    // Enumerate all project files
-    enumerateProjects( DInsightReport::getReportsRootDir() );
+    // Setup project files
+    setupProjects();
 
 
     // Testing
@@ -292,7 +294,7 @@ void DInsightMainWindow::aboutButtonClicked()
 {
     QString infoText;
     infoText += "Version: " + QCoreApplication::applicationVersion() + "<br />";
-    infoText += "Copyright Piql 2021";
+    infoText += "Copyright Piql 2023";
     //infoText += "<p>Support: <a href=\"mailto:support@piql.com\">support@piql.com</a></p>";
 
     infoText += "<p><a href=\"https://www.piql.com\">www.piql.com</a></p>";
@@ -316,10 +318,10 @@ void DInsightMainWindow::importButtonClicked()
     {
         QString filters;
         //tr("NOARK-5 (arkivstruktur.xml);;NOARK-5 (arkivuttrekk.xml);;AIPs (*.xml)")
-        foreach (const DImportFormat& format, *m_ImportFormats )
+        for (const DImportFormat& format: *m_ImportFormats )
         {
             QString filter;
-            foreach( const DRegExp& pattern, format.patterns() )
+            for ( const DRegExp& pattern: format.patterns() )
             {
                 if ( filter.length() )
                 {
@@ -344,7 +346,7 @@ void DInsightMainWindow::importButtonClicked()
 
         // Get selected format
         QString importFormatName;
-        foreach (const DImportFormat& format, *m_ImportFormats )
+        for (const DImportFormat& format: *m_ImportFormats )
         {
             if (selectedFilter.startsWith( format.name() + " ("))
             {
@@ -371,26 +373,8 @@ void DInsightMainWindow::importButtonClicked()
  *  Load all project files found under root folder.
  */
 
-void DInsightMainWindow::enumerateProjects( const QString& rootDir )
+void DInsightMainWindow::setupProjects()
 {
-    QStringList nameFilters;
-    nameFilters << DInsightReport::getXmlReportName();
-    QDirIterator dirIt( rootDir, nameFilters, QDir::NoFilter, QDirIterator::Subdirectories );
-
-    while ( dirIt.hasNext() )    
-    {
-        QString fileName = dirIt.next();
-        DImport* import = DImport::CreateFromReport( fileName, m_Model, this, m_ImportFormats );
-        if ( import ) 
-        {
-            m_Imports.push_back( import );
-        }
-        else
-        {
-            DInsightConfig::Log() << "Import failed: " << fileName << endl;
-        }
-    }
-
     if ( m_Imports.size() )
     {
         updateInfo( m_Imports.at(0)->root() );
@@ -421,13 +405,13 @@ void DInsightMainWindow::importFile(
         QFileInfo info( fileNameRelative );
         if ( !info.exists() )
         {
-            DInsightConfig::Log() << "Importing failed, file does not exist: " << fileNameRelative << endl;
+            DInsightConfig::Log() << "Importing failed, file does not exist: " << fileNameRelative << Qt::endl;
             QMessageBox::information( this, tr("Failed to open file"), tr("Failed to open '%1'.").arg( fileNameRelative ), QMessageBox::Ok );
             return;
         }
 
         fileName = info.absoluteFilePath();
-        DInsightConfig::Log() << "Importing file: " << fileName << endl;
+        DInsightConfig::Log() << "Importing file: " << fileName << Qt::endl;
 
         // First check that file is not loaded already
         DImportsIterator it = m_Imports.begin();
@@ -443,7 +427,7 @@ void DInsightMainWindow::importFile(
                 }
                 else
                 {
-                    DInsightConfig::Log() << "Already loaded, reloading" << endl;
+                    DInsightConfig::Log() << "Already loaded, reloading" << Qt::endl;
                     m_CurrentImport = *it;
                     m_ExportFile = exportFile;
                     (*it)->load( m_ImportFormats->find( (*it)->formatName() ) );
@@ -473,18 +457,22 @@ void DInsightMainWindow::importFile(
     if ( format->parser() == "xml" )
     {
         import = DImport::CreateFromXml( fileName, m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else if ( format->parser() == "tar" )
     {
         import = DImport::CreateFromTar( fileName, m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else if ( format->parser() == "dir" )
     {
         import = DImport::CreateFromExtract( fileName, m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else if ( importFormatName == "random" )
     {
         import = DImport::CreateFromXml( "", m_Model, this, format, parent, parentImport );
+        connectImportLoad(import);
     }
     else
     {
@@ -638,7 +626,7 @@ void DInsightMainWindow::importFileFinished( bool ok )
     m_Ui.searchOptionsButton->setEnabled( m_Imports.size() );
 
     const QObjectList& children = m_Ui.treeNodesSearchFilterGroupBox->children();
-    foreach( QObject* child, children )
+    for ( QObject* child: children )
     {
         delete child;
     }
@@ -656,7 +644,7 @@ void DInsightMainWindow::importFileFinished( bool ok )
         QCheckBox* check = new QCheckBox( label, m_Ui.treeNodesSearchFilterGroupBox );        
         check->setChecked( true );
         QVariant variant;
-        variant.setValue<const char*>( *it );
+        variant.setValue( *it );
         check->setProperty( "node", variant );
         gridLayout->addWidget( check, count/2, count%2 );
         it++;
@@ -757,14 +745,15 @@ void DInsightMainWindow::startIndexing()
                 this );
 
             // Temp translation to norwegian
-            messageBox.setButtonText( QMessageBox::Yes, tr( "Ja" ) );
-            messageBox.setButtonText( QMessageBox::No, tr( "Nei" ) );
+            //messageBox.addButton( tr( "Ja" ), QMessageBox::AcceptRole );
+            //messageBox.addButton( tr( "Nei" ), QMessageBox::RejectRole );
             parsingAttachments = messageBox.exec() == QMessageBox::Yes;
         }
 
         if ( parsingAttachments )
         {
             // Launch attachment extractor thread
+            connectImportIndexer(import);
             import->index();
 
             m_ProgressBar->setVisible( true );
@@ -1131,39 +1120,7 @@ void DInsightMainWindow::makeAbsolute( QString& filename, const QModelIndex& ind
 
 void DInsightMainWindow::makeAbsolute( QString& filename, DTreeItem* item )
 {
-    MakeAbsolute( filename, item, m_Imports);
-}
-
-void DInsightMainWindow::MakeAbsolute( QString& filename, DTreeItem* item, DImports& imports )
-{
-    if ( !QFile::exists( filename ) )
-    {
-        const DTreeRootItem* root = item->findRootItem();
-        const DImportFormat* format = root->format();
-        DImport* import = FindImport( root, imports );
-
-        if ( format->parser() == "dir" )
-        {
-            if ( format->extractTool("a","b").length() != 0 )
-            {
-                // The content is relative to the "extract" folder under the import folder
-                QDir dir( import->reportsDir() );
-                dir.cd(tr("extract"));
-                QString path = item->findRootPath();
-                dir.cd(path);
-                filename = dir.filePath( filename );
-            }
-            else
-            {
-                // The content is relative to the import filename root
-            }
-        }
-        else
-        {
-            QDir dir( import->fileNameRoot() );
-            filename = dir.filePath( filename );
-        }
-    }
+    m_Context.makeAbsolute( filename, item );
 }
 
 
@@ -1186,7 +1143,8 @@ void DInsightMainWindow::viewDocumentClicked()
     }
     else
     {
-        QDesktopServices::openUrl( QUrl::fromLocalFile( document ) );
+        auto url = QUrl::fromLocalFile( QFileInfo(document).absoluteFilePath() );
+        QDesktopServices::openUrl( url );
     }
 }
 
@@ -1327,7 +1285,7 @@ void DInsightMainWindow::checksumClicked()
     int methodLength = checksum.length();
     if ( !method.length() )
     {
-        for ( size_t i = 0; i < sizeof(methods)/sizeof(method[0]); i++ )
+        for ( size_t i = 0; i < sizeof(methods)/sizeof(methods[0]); i++ )
         {
             // Last method is default;
             algorithm = methods[i].m_Method;
@@ -1346,7 +1304,7 @@ void DInsightMainWindow::checksumClicked()
     QFile file(document);
     if ( !file.open( QFile::ReadOnly ) )
     {
-        DInsightConfig::Log() << "Failed to open: " << document << endl;
+        DInsightConfig::Log() << "Failed to open: " << document << Qt::endl;
         QMessageBox::information( this, tr("Failed to open file"), tr("Failed to open '%1'.").arg( document ), QMessageBox::Ok );
         return;
     }
@@ -1358,7 +1316,7 @@ void DInsightMainWindow::checksumClicked()
     bool ok = calculatedHash.toLower() == checksum.toLower();
     if ( !ok )
     {
-        DInsightConfig::Log() << "Checksum mismatch: " << checksum << " vs " << calculatedHash << " for " << document << endl;
+        DInsightConfig::Log() << "Checksum mismatch: " << checksum << " vs " << calculatedHash << " for " << document << Qt::endl;
         QMessageBox::information( this, tr("Checksum mismatch"), tr("Checksum not equal for file '%1' using %2 calculation. Got '%3', expected '%4' using method %5.")
                                   .arg( document )
                                   .arg( method )
@@ -1425,6 +1383,7 @@ void DInsightMainWindow::importDocumentClicked( const QString& document, QModelI
         DImport* import = findImport( item );
         m_CurrentImport = import;
         import->setFromReport( true );
+        connectImportUnload(import);
         import->unload();
     }
     else
@@ -1440,20 +1399,20 @@ void DInsightMainWindow::importDocument( const QString& document, DTreeItem* ite
 
     if ( import )
     {
-        DInsightConfig::Log() << "Re-importing: " << import->fileName() << endl;
-        QFileInfo info( import->fileName() );
-        if ( !info.exists() )
+        DInsightConfig::Log() << "Re-importing: " << import->fileName() << Qt::endl;
+        const DImportFormat* format = m_ImportFormats->find(import->formatName());
+        if (format == nullptr)
         {
-            DInsightConfig::Log() << "Opening failed, file does not exist: " << import->fileName() << endl;
-            QMessageBox::information( this, tr( "Failed to open file" ), tr( "Failed to open '%1'." ).arg( import->fileName() ), QMessageBox::Ok );
+            DInsightConfig::Log() << "Import format not found: " << import->formatName() << Qt::endl;
+            QMessageBox::information(this, tr("Format not found"), tr("Import format not found: '%1'.").arg(import->formatName()), QMessageBox::Ok);
             return;
         }
 
-        const DImportFormat* format = m_ImportFormats->find( import->formatName() );
-        if ( format == nullptr )
+        QFileInfo info( import->fileName() );
+        if ( !info.exists() && format->parser() != "Random")
         {
-            DInsightConfig::Log() << "Import format not found: " << import->formatName() << endl;
-            QMessageBox::information( this, tr( "Format not found" ), tr( "Import format not found: '%1'." ).arg( import->formatName() ), QMessageBox::Ok );
+            DInsightConfig::Log() << "Opening failed, file does not exist: " << import->fileName() << Qt::endl;
+            QMessageBox::information( this, tr( "Failed to open file" ), tr( "Failed to open '%1'." ).arg( import->fileName() ), QMessageBox::Ok );
             return;
         }
 
@@ -1462,6 +1421,7 @@ void DInsightMainWindow::importDocument( const QString& document, DTreeItem* ite
         setupUiForImport();
 
         import->setFromReport( true );
+        connectImportLoad(import);
         import->load( format );
     }
     else
@@ -1471,7 +1431,7 @@ void DInsightMainWindow::importDocument( const QString& document, DTreeItem* ite
 
         const DImportFormat* importFormat = m_ImportFormats->findMatching( absDocument );
 
-        DInsightConfig::Log() << "Importing doc: " << absDocument << endl;
+        DInsightConfig::Log() << "Importing doc: " << absDocument << Qt::endl;
         importFile( absDocument, importFormat->name(), m_ExportFile, item );
     }
 }
@@ -1577,9 +1537,13 @@ void DInsightMainWindow::searchFinished()
     searchInfo( m_Ui.searchEdit->text() );
 
     unsigned int matchCount = 0;
+    unsigned int currentPage = 0;
+    unsigned int pageCount = 0;
     if ( m_SearchThread )
     {
         matchCount = m_SearchThread->matchCount();
+        currentPage = m_SearchThread->currentPage();
+        pageCount = m_SearchThread->pageCount();
     }
 
     // Did we find anything?
@@ -1597,11 +1561,11 @@ void DInsightMainWindow::searchFinished()
     }
 
     // Prev/next buttons?
-    m_Ui.previousSearchPageButton->setEnabled( m_SearchThread->currentPage() != 0 );
-    m_Ui.nextSearchPageButton->setEnabled( m_SearchThread->currentPage() < m_SearchThread->pageCount() - 1 || m_SearchThread->hasMorePages() );
-    m_Ui.nextSearchPageButton->setVisible( m_SearchThread->pageCount() > 1 );
-    m_Ui.previousSearchPageButton->setVisible( m_SearchThread->pageCount() > 1 );
-    m_Ui.searchNavigationFrame->setVisible( m_SearchThread->pageCount() > 1 );
+    m_Ui.previousSearchPageButton->setEnabled( currentPage != 0 );
+    m_Ui.nextSearchPageButton->setEnabled( currentPage < m_SearchThread->pageCount() - 1 || m_SearchThread->hasMorePages() );
+    m_Ui.nextSearchPageButton->setVisible( pageCount > 1 );
+    m_Ui.previousSearchPageButton->setVisible( pageCount > 1 );
+    m_Ui.searchNavigationFrame->setVisible( pageCount > 1 );
 
     m_Ui.searchResult->resizeColumnToContents( 0 );
     m_Ui.searchResult->setVisible( m_Ui.searchEdit->text().length() );
@@ -1702,23 +1666,7 @@ void DInsightMainWindow::addSearchResult( const QString& location, const QString
 
 DImport* DInsightMainWindow::findImport( const DTreeItem* item )
 {
-    return FindImport( item, m_Imports );
-}
-
-DImport* DInsightMainWindow::FindImport( const DTreeItem* item, DImports& imports )
-{
-    DImportsIterator it = imports.begin();
-    DImportsIterator itEnd = imports.end();
-
-    while ( it != itEnd )
-    {
-        if ( (*it)->root() == item )
-        {
-            return *it;
-        }
-        it++;
-    }
-    return nullptr;
+    return m_Context.findImport(item);
 }
 
 
@@ -1763,7 +1711,7 @@ void DInsightMainWindow::searchResultDoubleClicked(DTableSearchResultCell *item)
 
 void DInsightMainWindow::searchResultHeaderClicked(int logicalIndex)
 {
-    m_Ui.searchResult->sortByColumn( logicalIndex );
+    m_Ui.searchResult->sortByColumn( logicalIndex, Qt::AscendingOrder );
 }
 
 
@@ -1955,7 +1903,7 @@ bool DInsightMainWindow::searchInfo( const QString& /*text*/ )
 
 void DInsightMainWindow::dataChanged(const QModelIndex &, const QModelIndex &, const QVector<int> & roles)
 {
-    foreach( int r, roles )
+    for ( int r: roles )
     {
         if ( r == Qt::CheckStateRole )
         {
@@ -2194,7 +2142,7 @@ void DInsightMainWindow::exportReport( const QString& fileName )
                     attachmentRoot = (*it)->extractDir();
                 }
 
-                foreach( QString attachment, attachments )
+                for ( const QString& attachment: attachments )
                 {
                     QFileInfo info( attachment );
 
@@ -2204,7 +2152,7 @@ void DInsightMainWindow::exportReport( const QString& fileName )
                 // Add attachments to report
                 report.addHeader( tr( "Attachments" ), 1 );
                 report.startTable( 0 );
-                foreach( QString attachment, attachments )
+                for ( const QString& attachment: attachments )
                 {
                     report.addRow( attachment );
                 }
@@ -2327,7 +2275,7 @@ void DInsightMainWindow::createReport(
                 report.addHeader( tr("Journal sider"), level );
                 report.startTable( level );
                 int page = 1;
-                foreach(const DJournalPage& p, parent->m_Journal->m_Pages)
+                for (const DJournalPage& p: parent->m_Journal->m_Pages)
                 {
                     if (p.m_Checked)
                     {
@@ -2408,7 +2356,7 @@ int DInsightMainWindow::treeNodeCountRecursive( Node* parent, bool onlyChecked )
 
 bool DInsightMainWindow::isNode( const QString& key, const DRegExps& regExps )
 {
-    foreach( const QRegularExpression& regExp, regExps )
+    for ( const QRegularExpression& regExp: regExps )
     {
         if ( regExp.match( key ).hasMatch() )
         {
@@ -2569,7 +2517,7 @@ QString DInsightMainWindow::getAttachmentMatchString( const QString& attacmentTe
     QFile file( attacmentTextFileName );
     if ( !file.open( QFile::ReadOnly | QFile::Text ) )
     {
-        DInsightConfig::Log() << "Failed to open: " << attacmentTextFileName << endl;
+        DInsightConfig::Log() << "Failed to open: " << attacmentTextFileName << Qt::endl;
         return QString();
     }
     QTextStream stream( &file );
@@ -2605,9 +2553,9 @@ QString DInsightMainWindow::getAttachmentMatchString( const QString& attacmentTe
 
 void DInsightMainWindow::searchDeamonError(QProcess::ProcessError error)
 {
-    DInsightConfig::Log() << "Search deamon error: " << error << endl;
+    DInsightConfig::Log() << "Search deamon error: " << error << Qt::endl;
     QByteArray errorContent = m_SearchDeamonProcess->readAllStandardError();
-    DInsightConfig::Log() << "Error: " << QString(errorContent).trimmed() << endl;    
+    DInsightConfig::Log() << "Error: " << QString(errorContent).trimmed() << Qt::endl;
 }
 
 
@@ -2693,7 +2641,7 @@ QString DInsightMainWindow::createCombinedSearchConfigFile()
                 }
                 else
                 {
-                    DInsightConfig::Log() << "Failed to open: " << (*it)->searchConfig() << endl;
+                    DInsightConfig::Log() << "Failed to open: " << (*it)->searchConfig() << Qt::endl;
                 }
             }
             it++;
@@ -2713,12 +2661,12 @@ QString DInsightMainWindow::createCombinedSearchConfigFile()
         }
 	else
         {
-            DInsightConfig::Log() << "Failed to open: " << "sphinx.conf" << endl;
+            DInsightConfig::Log() << "Failed to open: " << "sphinx.conf" << Qt::endl;
             return QString();
         }
         return tempFile.fileName();    
     }
-    DInsightConfig::Log() << "Failed to open: " << "sphinx_temp.conf" << endl;
+    DInsightConfig::Log() << "Failed to open: " << "sphinx_temp.conf" << Qt::endl;
     
     return QString();
 }
@@ -2746,21 +2694,24 @@ void DInsightMainWindow::startSearchDeamon()
 
     searchTool = searchTool.replace( "%CONFIG_FILE%", combinedConfigFile );
 
-    DInsightConfig::Log() << "Starting search deamon: " << searchTool << endl;
+    DInsightConfig::Log() << "Starting search deamon: " << searchTool << Qt::endl;
 
     assert( m_SearchDeamonProcess == nullptr );
     m_SearchDeamonProcess = new QProcess( this );
     QObject::connect( m_SearchDeamonProcess, &QProcess::errorOccurred, this, &DInsightMainWindow::searchDeamonError );
     QObject::connect( QCoreApplication::instance(), SIGNAL(aboutToQuit()), m_SearchDeamonProcess, SLOT(kill()));
 
-    m_SearchDeamonProcess->start( searchTool );
+    m_SearchDeamonProcess->startCommand( searchTool );
 
 #if defined WIN32
     // Make sure deamon is killed if application crashes
     if(ghJob)
     {
-        if(0 == AssignProcessToJobObject( ghJob, m_SearchDeamonProcess->pid()->hProcess) )
+        HANDLE hProcess = OpenProcess(SYNCHRONIZE, TRUE, m_SearchDeamonProcess->processId());
+        if(hProcess)
         {
+            AssignProcessToJobObject(ghJob, hProcess);
+            CloseHandle(hProcess);
         }
     }
 #endif
@@ -2817,7 +2768,7 @@ void DInsightMainWindow::startSearchDeamon()
         message = QString( tr( "Failed to start indexer!" ) );
     }
 
-    DInsightConfig::Log() << "Search deamon: " << message << endl;
+    DInsightConfig::Log() << "Search deamon: " << message << Qt::endl;
 
     m_Ui.searchAttachmentsCheckBox->setVisible( startCount );
     m_StatusBar->showMessage( message );
@@ -2827,7 +2778,7 @@ void DInsightMainWindow::startSearchDeamon()
 void DInsightMainWindow::getNodesToExcludeFromSearch( DXmlParser::StringHash& nodesToExclude )
 {
     const QObjectList& children = m_Ui.treeNodesSearchFilterGroupBox->children();
-    foreach( QObject* child, children )
+    for ( QObject* child: children )
     {
         if ( child->isWidgetType() )
         {
@@ -2918,6 +2869,38 @@ QString DInsightMainWindow::GetTreeItemLabel( DTreeItem *item )
 }
 
 
+void DInsightMainWindow::connectImportLoad(DImport* import) 
+{
+    if (import) 
+    {
+        // Cleanup connections
+        import->disconnect();
+
+        // Connect importer to main window
+        connect(import, &DImport::imported, this, &DInsightMainWindow::importFileFinished);
+        connect(import, &DImport::nodesReady, this, &DInsightMainWindow::loadXmlProgress);
+    }
+}
+
+void DInsightMainWindow::connectImportUnload(DImport* import)
+{
+    // Cleanup connections
+    import->disconnect();
+
+    // unload
+    // Connect importer to main window
+    connect(import, &DImport::imported, this, &DInsightMainWindow::unloadFinished);
+}
+
+void DInsightMainWindow::connectImportIndexer(DImport* import)
+{
+    // Cleanup connections
+    import->disconnect();
+
+    connect(import, &DImport::indexingProgress, this, &DInsightMainWindow::indexingProgress);
+    connect(import, &DImport::indexed, this, &DInsightMainWindow::indexingFinished);
+}
+
 /****************************************************************************/
 /*! \class DTableSearchResultDelegate dinsightmainwindow.cpp
  *  \ingroup Insight
@@ -2973,7 +2956,7 @@ void DTableSearchResultDelegate::paint(QPainter *painter, const QStyleOptionView
 
 QSize DTableSearchResultDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const 
 {
-    QStyleOptionViewItemV4 options = option;
+    QStyleOptionViewItem options = option;
     initStyleOption(&options, index);
 
     QTextDocument doc;

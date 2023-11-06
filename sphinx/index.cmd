@@ -35,4 +35,8 @@ more sphinx.conf >> %CONFIG%
 ::sed -i 's/INDEX_DIR/%REPORTS%\\index/g' %CONFIG%
 
 :: Run indexer
+echo "indexer.exe --config %CONFIG% --all > %REPORTS%\indexer.log"
 indexer.exe --config %CONFIG% --all > %REPORTS%\indexer.log
+if %errorlevel% == 1 (
+	echo Indexer failed.
+)
